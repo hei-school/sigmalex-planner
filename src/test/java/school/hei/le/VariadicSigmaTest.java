@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class VariadicSigmaTest {
   @Test
   public void nested_sigma_as_variadic() {
-    var i = new ZVariable("i");
-    var j = new ZVariable("j");
+    var i = new Z("i");
+    var j = new Z("j");
     var le = new Add(new Mono(2, i), new Mono(3, j));
 
     var boundI = new Sigma.Bound(i, 4, 6);

@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class AddTest {
   @Test
   public void add_mono() {
-    var x = new ZVariable("x");
-    var y = new QVariable("y");
+    var x = new Z("x");
+    var y = new Q("y");
     assertEquals(
         new Normalized(
             Map.of(

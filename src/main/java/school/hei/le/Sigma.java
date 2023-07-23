@@ -6,7 +6,7 @@ import java.util.stream.IntStream;
 
 public record Sigma(LinearExpression le, Bound bound) implements LinearExpression {
 
-  public record Bound(ZVariable k, int kMin, int kMax) {
+  public record Bound(Z k, int kMin, int kMax) {
   }
 
   @Override

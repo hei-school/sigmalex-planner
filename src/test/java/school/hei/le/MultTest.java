@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class MultTest {
   @Test
   public void mult_variadic_add() {
-    var x = new ZVariable("x");
-    var y = new QVariable("y");
+    var x = new Z("x");
+    var y = new Q("y");
     assertEquals(
         new Normalized(
             Map.of(
