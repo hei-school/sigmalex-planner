@@ -2,7 +2,7 @@ package school.hei.le;
 
 import java.util.List;
 
-public sealed abstract class Variable permits ZVariable, QVariable {
+public sealed abstract class Variable permits Z, Q {
 
   private final String name;
   private final List<Variable> boundedTo;
