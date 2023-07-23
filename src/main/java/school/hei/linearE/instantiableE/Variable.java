@@ -1,8 +1,8 @@
-package school.hei.le;
+package school.hei.linearE.instantiableE;
 
 import java.util.List;
 
-public sealed abstract class Variable permits Z, Q {
+public sealed abstract class Variable permits InstantiableV, NonInstantiableV {
 
   private final String name;
   private final List<Variable> boundedTo;

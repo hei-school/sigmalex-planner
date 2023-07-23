@@ -1,8 +1,8 @@
-package school.hei.le;
+package school.hei.linearE;
 
 import java.util.Arrays;
 
-public record VariadicAdd(LinearExpression... leList) implements LinearExpression {
+public record VariadicAdd(LinearE... leList) implements LinearE {
   @Override
   public Normalized normalize() {
     return Arrays.stream(leList)
