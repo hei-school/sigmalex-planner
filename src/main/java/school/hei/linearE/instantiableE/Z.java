@@ -1,8 +1,8 @@
-package school.hei.le;
+package school.hei.linearE.instantiableE;
 
 import java.util.List;
 
-public final class Z extends Variable {
+public final class Z extends NonInstantiableV {
   public Z(String name, List<Variable> boundedTo) {
     super(name, boundedTo);
   }
