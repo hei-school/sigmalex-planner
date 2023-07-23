@@ -1,4 +1,4 @@
-package school.hei.lp.le;
+package school.hei.le;
 
 import java.util.Map;
 import java.util.Optional;
@@ -9,8 +9,12 @@ public record Mono(double c, Optional<Variable> optV) implements LinearExpressio
     this(c, Optional.empty());
   }
 
+  public Mono(double c, Variable v) {
+    this(c, Optional.of(v));
+  }
+
   public Mono(Variable v) {
-    this(1, Optional.of(v));
+    this(1, v);
   }
 
   @Override

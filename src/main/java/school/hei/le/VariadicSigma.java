@@ -1,13 +1,11 @@
-package school.hei.lp.le;
+package school.hei.le;
 
-import school.hei.lp.le.Sigma.Bound;
-
-public record VariadicSigma(LinearExpression le, Bound... bounds) implements LinearExpression {
+public record VariadicSigma(LinearExpression le, Sigma.Bound... bounds) implements LinearExpression {
   @Override
   public Normalized normalize() {
-    Sigma compoundSigma = new Sigma();
-    for (Bound bound : bounds) {
-      compoundSigma = new Sigma(compoundSigma, bound);
+    Sigma compoundSigma = new Sigma(le, bounds[0]);
+    for (int i = 1; i < bounds().length; i++) {
+      compoundSigma = new Sigma(compoundSigma, bounds[i]);
     }
     return compoundSigma.normalize();
   }

@@ -1,10 +1,14 @@
-package school.hei.lp.le;
+package school.hei.le;
 
 import java.util.List;
 
 public final class ZVariable extends Variable {
   public ZVariable(String name, List<Variable> boundedTo) {
     super(name, boundedTo);
+  }
+
+  public ZVariable(String name) {
+    this(name, List.of());
   }
 
   @Override

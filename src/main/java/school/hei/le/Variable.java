@@ -1,4 +1,4 @@
-package school.hei.lp.le;
+package school.hei.le;
 
 import java.util.List;
 
