@@ -15,4 +15,12 @@ public final class Z extends NonInstantiableV {
   public Variable toNew(String name, List<Variable> boundedTo) {
     return new Z(name, boundedTo);
   }
+
+  @Override
+  public String toString() {
+    return "Z{" +
+        "name='" + name + '\'' +
+        ", boundedTo=" + boundedTo +
+        '}';
+  }
 }

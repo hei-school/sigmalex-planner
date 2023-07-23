@@ -3,11 +3,14 @@ package school.hei.linearE;
 import org.junit.jupiter.api.Test;
 import school.hei.linearE.Sigma.SigmaBound;
 import school.hei.linearE.instantiableE.Constant;
+import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.SigmaZ;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static school.hei.linearE.instantiableE.Constant.ZERO;
 
 class SigmaTest {
   @Test
@@ -31,6 +34,23 @@ class SigmaTest {
             new Add(new Mono(a), new Mult(d, new Add(new Mono(k), new Mono(-1)))),
             new SigmaBound(k, 1, n))
             .normalize());
+  }
+
+  @Test
+  public void bounded_var() {
+    var i = new SigmaZ("i");
+    var x_i = new Q("x", List.of(i));
+    var le = new Mono(3, x_i);
+
+    var boundI = new SigmaBound(i, 4, 6);
+    assertEquals(
+        new Normalized(
+            Map.of(
+                new Q("x_4"), new Constant(3),
+                new Q("x_5"), new Constant(3),
+                new Q("x_6"), new Constant(3)),
+            ZERO),
+        new Sigma(le, boundI).normalize());
   }
 
   @Test
