@@ -14,10 +14,10 @@ class VariadicAddTestE {
   @Test
   public void add_constants() {
     assertEquals(
-        new Normalized(4),
+        new NormalizedLE(4),
         new VariadicAdd(new Mono(1), new Mono(3)).normalize());
     assertEquals(
-        new Normalized(2.6),
+        new NormalizedLE(2.6),
         new VariadicAdd(new Mono(0.3), new Mono(1), new Mono(1.3)).normalize());
   }
 
@@ -26,7 +26,7 @@ class VariadicAddTestE {
     var x = new Z("x");
     var y = new Q("y");
     assertEquals(
-        new Normalized(
+        new NormalizedLE(
             Map.of(
                 x, new Constant(3.),
                 y, new Constant(2.5)),

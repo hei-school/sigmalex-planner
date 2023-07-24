@@ -24,7 +24,7 @@ class SigmaTest {
     var k = new SigmaZ("k");
     int n = 10;
     assertEquals(
-        new Normalized(n * (n + 1) / 2.),
+        new NormalizedLE(n * (n + 1) / 2.),
         new Sigma(new Mono(k), new SigmaBound(k, 1, n)).normalize());
   }
 
@@ -35,7 +35,7 @@ class SigmaTest {
     var k = new SigmaZ("k");
 
     assertEquals(
-        new Normalized(n / 2. * (2 * a + (n - 1) * d)),
+        new NormalizedLE(n / 2. * (2 * a + (n - 1) * d)),
         new Sigma(
             new Add(new Mono(a), new Mult(d, new Add(new Mono(k), new Mono(-1)))),
             new SigmaBound(k, 1, n))
@@ -50,7 +50,7 @@ class SigmaTest {
 
     var boundI = new SigmaBound(i, 4, 6);
     assertEquals(
-        new Normalized(
+        new NormalizedLE(
             Map.of(
                 new Q("x_4"), new Constant(3),
                 new Q("x_5"), new Constant(3),
@@ -63,7 +63,7 @@ class SigmaTest {
     var le_i_j = new Mono(3, x_i_j);
     var boundJ = new SigmaBound(j, 10, 11);
     assertEquals(
-        new Normalized(
+        new NormalizedLE(
             Map.of(
                 new Q("x_4_10"), new Constant(3),
                 new Q("x_5_10"), new Constant(3),
@@ -83,12 +83,12 @@ class SigmaTest {
 
     var boundI = new SigmaBound(i, 4, 6);
     assertEquals(
-        new Normalized(Map.of(j, new Constant(9)), new Constant(30)),
+        new NormalizedLE(Map.of(j, new Constant(9)), new Constant(30)),
         new Sigma(le, boundI).normalize());
 
     var boundJ = new SigmaBound(j, 10, 11);
     assertEquals(
-        new Normalized(Map.of(), new Constant(249)),
+        new NormalizedLE(Map.of(), new Constant(249)),
         new Sigma(new Sigma(le, boundI), boundJ).normalize());
   }
 
@@ -102,7 +102,7 @@ class SigmaTest {
     var hours_of_weekend = new Mono(new Z("hours", List.of(weekend)));
     var weekend_bound = new SigmaBound(weekend, new Days[]{saturday, sunday});
     assertEquals(
-        new Normalized(
+        new NormalizedLE(
             Map.of(
                 new Z("hours_saturday"), new Constant(1),
                 new Z("hours_sunday"), new Constant(1)),

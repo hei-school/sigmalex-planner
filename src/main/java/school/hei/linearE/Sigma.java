@@ -22,7 +22,7 @@ public record Sigma(LinearE le, SigmaBound sigmaBound) implements LinearE {
   }
 
   @Override
-  public Normalized normalize() {
+  public NormalizedLE normalize() {
     var normalizedLeToSigma = le.normalize();
     LinearE summed = new Mono(0);
 
@@ -35,8 +35,8 @@ public record Sigma(LinearE le, SigmaBound sigmaBound) implements LinearE {
     return summed.normalize();
   }
 
-  private Normalized substitute(Variable k, BounderValue kValue, Normalized normalized) {
-    var weightedV = normalized.weightedV();
+  private NormalizedLE substitute(Variable k, BounderValue kValue, NormalizedLE normalizedLE) {
+    var weightedV = normalizedLE.weightedV();
     var substitutedWeightedV = new HashMap<>(weightedV);
     weightedV.forEach((v, c) -> {
       if (v.getBoundedTo().contains(k)) {
@@ -47,7 +47,7 @@ public record Sigma(LinearE le, SigmaBound sigmaBound) implements LinearE {
       }
     });
 
-    var newE = normalized.e();
+    var newE = normalizedLE.e();
     if (weightedV.containsKey(k)) {
       try {
         newE = new AddE(newE, new MultE(kValue.toArithmeticValue(), weightedV.get(k)));
@@ -56,6 +56,6 @@ public record Sigma(LinearE le, SigmaBound sigmaBound) implements LinearE {
       }
       substitutedWeightedV.remove(k);
     }
-    return new Normalized(substitutedWeightedV, newE);
+    return new NormalizedLE(substitutedWeightedV, newE);
   }
 }

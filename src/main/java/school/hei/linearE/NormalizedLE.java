@@ -8,23 +8,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public final class Normalized implements LinearE {
+public final class NormalizedLE implements LinearE {
 
   private final Map<Variable, InstantiableE> weightedV;
   private final InstantiableE e;
 
-  public Normalized(Map<Variable, InstantiableE> weightedV, InstantiableE e) {
+  public NormalizedLE(Map<Variable, InstantiableE> weightedV, InstantiableE e) {
     this.weightedV = new HashMap<>();
     weightedV.forEach((v, eOfV) -> this.weightedV.put(v, eOfV.simplify()));
     this.e = e.simplify();
   }
 
-  public Normalized(double c) {
+  public NormalizedLE(double c) {
     this(Map.of(), new Constant(c));
   }
 
   @Override
-  public Normalized normalize() {
+  public NormalizedLE normalize() {
     return this;
   }
 
@@ -40,7 +40,7 @@ public final class Normalized implements LinearE {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    Normalized that = (Normalized) o;
+    NormalizedLE that = (NormalizedLE) o;
     return Objects.equals(weightedV, that.weightedV) && Objects.equals(e, that.e);
   }
 

@@ -35,7 +35,7 @@ class VariadicSigmaTest {
     var boundI = new SigmaBound(i, 4, 6);
     var boundJ = new SigmaBound(j, 10, 11);
     assertEquals(
-        new Normalized(
+        new NormalizedLE(
             Map.of(
                 new Q("x_4_10"), new Constant(3),
                 new Q("x_5_10"), new Constant(3),

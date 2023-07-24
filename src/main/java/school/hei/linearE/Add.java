@@ -10,7 +10,7 @@ import static school.hei.linearE.instantiableE.Constant.ZERO;
 
 public record Add(LinearE le1, LinearE le2) implements LinearE {
   @Override
-  public Normalized normalize() {
+  public NormalizedLE normalize() {
     var normalizedLe1 = le1.normalize();
     var normalizedLe2 = le2.normalize();
     var weightedV1 = normalizedLe1.weightedV();
@@ -24,6 +24,6 @@ public record Add(LinearE le1, LinearE le2) implements LinearE {
       }
     });
 
-    return new Normalized(weightedV, new AddE(normalizedLe1.e(), (normalizedLe2.e())));
+    return new NormalizedLE(weightedV, new AddE(normalizedLe1.e(), (normalizedLe2.e())));
   }
 }

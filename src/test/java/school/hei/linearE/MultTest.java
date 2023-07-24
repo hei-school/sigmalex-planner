@@ -15,7 +15,7 @@ class MultTest {
     var x = new Z("x");
     var y = new Q("y");
     assertEquals(
-        new Normalized(
+        new NormalizedLE(
             Map.of(
                 x, new Constant(6),
                 y, new Constant(5)),

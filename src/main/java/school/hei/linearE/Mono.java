@@ -29,9 +29,9 @@ public record Mono(InstantiableE e, Optional<Variable> optV) implements LinearE 
   }
 
   @Override
-  public Normalized normalize() {
+  public NormalizedLE normalize() {
     return optV
-        .map(v -> new Normalized(Map.of(v, e), ZERO))
-        .orElseGet(() -> new Normalized(Map.of(), e));
+        .map(v -> new NormalizedLE(Map.of(v, e), ZERO))
+        .orElseGet(() -> new NormalizedLE(Map.of(), e));
   }
 }

@@ -16,7 +16,7 @@ class AddETest {
     var x = new Z("x");
     var y = new Q("y");
     assertEquals(
-        new Normalized(
+        new NormalizedLE(
             Map.of(
                 x, new Constant(3),
                 y, new Constant(2.5)),
