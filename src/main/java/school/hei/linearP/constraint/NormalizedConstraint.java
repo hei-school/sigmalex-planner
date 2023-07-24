@@ -39,4 +39,8 @@ public final class NormalizedConstraint extends Constraint {
         ", name='" + name + '\'' +
         '}';
   }
+
+  public NormalizedLE le() {
+    return le;
+  }
 }
