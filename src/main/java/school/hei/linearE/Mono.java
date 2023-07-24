@@ -15,6 +15,10 @@ public record Mono(InstantiableE e, Optional<Variable> optV) implements LinearE 
     this(new Constant(c), Optional.empty());
   }
 
+  public Mono(Constant c) {
+    this(c, Optional.empty());
+  }
+
   public Mono(double c, Variable v) {
     this(new Constant(c), Optional.of(v));
 

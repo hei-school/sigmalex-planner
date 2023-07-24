@@ -6,9 +6,9 @@ import java.util.Objects;
 public sealed abstract class Variable permits InstantiableV, NonInstantiableV {
 
   protected final String name;
-  protected final List<Variable> boundedTo;
+  protected final List<Bounder> boundedTo;
 
-  public Variable(String name, List<Variable> boundedTo) {
+  public Variable(String name, List<Bounder> boundedTo) {
     this.name = name;
     this.boundedTo = boundedTo;
   }
@@ -17,11 +17,11 @@ public sealed abstract class Variable permits InstantiableV, NonInstantiableV {
     return name;
   }
 
-  public List<Variable> getBoundedTo() {
+  public List<Bounder> getBoundedTo() {
     return boundedTo;
   }
 
-  public abstract Variable toNew(String name, List<Variable> boundedTo);
+  public abstract Variable toNew(String name, List<Bounder> boundedTo);
 
   @Override
   public boolean equals(Object o) {

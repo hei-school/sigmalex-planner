@@ -1,7 +1,10 @@
 package school.hei.linearE;
 
 import school.hei.linearE.instantiableE.AddE;
-import school.hei.linearE.instantiableE.InstantiableE;
+import school.hei.linearE.instantiableE.ArithmeticConversion;
+import school.hei.linearE.instantiableE.Bounder;
+import school.hei.linearE.instantiableE.BounderValue;
+import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.MultE;
 import school.hei.linearE.instantiableE.SigmaZ;
 import school.hei.linearE.instantiableE.Variable;
@@ -12,23 +15,27 @@ import java.util.stream.IntStream;
 
 public record Sigma(LinearE le, SigmaBound sigmaBound) implements LinearE {
 
-  public record SigmaBound(SigmaZ k, int kMin, int kMax) {
+  public record SigmaBound(Bounder bounder, BounderValue[] values) {
+    public SigmaBound(SigmaZ k, int kMin, int kMax) {
+      this(k, IntStream.range(kMin, kMax + 1).mapToObj(Constant::new).toArray(Constant[]::new));
+    }
   }
 
   @Override
   public Normalized normalize() {
     var normalizedLeToSigma = le.normalize();
-    Variable k = sigmaBound.k();
-    return IntStream.range(sigmaBound.kMin(), sigmaBound().kMax() + 1)
-        .mapToObj(kI -> new Mono(kI).normalize())
-        .reduce(
-            new Mono(0.).normalize(),
-            (k1, k2) -> new Add(
-                k1,
-                substitute(k, k2.e(), normalizedLeToSigma)).normalize());
+    LinearE summed = new Mono(0);
+
+    var bounderValues = sigmaBound.values();
+    for (BounderValue bounderValue : bounderValues) {
+      summed = new Add(
+          summed,
+          substitute(sigmaBound.bounder().variable(), bounderValue, normalizedLeToSigma));
+    }
+    return summed.normalize();
   }
 
-  private Normalized substitute(Variable k, InstantiableE kValue, Normalized normalized) {
+  private Normalized substitute(Variable k, BounderValue kValue, Normalized normalized) {
     var weightedV = normalized.weightedV();
     var substitutedWeightedV = new HashMap<>(weightedV);
     weightedV.forEach((v, c) -> {
@@ -42,7 +49,11 @@ public record Sigma(LinearE le, SigmaBound sigmaBound) implements LinearE {
 
     var newE = normalized.e();
     if (weightedV.containsKey(k)) {
-      newE = new AddE(newE, new MultE(kValue, weightedV.get(k)));
+      try {
+        newE = new AddE(newE, new MultE(kValue.toArithmeticValue(), weightedV.get(k)));
+      } catch (ArithmeticConversion e) {
+        throw new RuntimeException(e);
+      }
       substitutedWeightedV.remove(k);
     }
     return new Normalized(substitutedWeightedV, newE);

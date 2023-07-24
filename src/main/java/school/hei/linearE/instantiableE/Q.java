@@ -2,8 +2,8 @@ package school.hei.linearE.instantiableE;
 
 import java.util.List;
 
-public final class Q extends NonInstantiableV {
-  public Q(String name, List<Variable> boundedTo) {
+public final class Q extends NonInstantiableV implements Bounder {
+  public Q(String name, List<Bounder> boundedTo) {
     super(name, boundedTo);
   }
 
@@ -12,7 +12,7 @@ public final class Q extends NonInstantiableV {
   }
 
   @Override
-  public Variable toNew(String name, List<Variable> boundedTo) {
+  public Variable toNew(String name, List<Bounder> boundedTo) {
     return new Q(name, boundedTo);
   }
 
@@ -22,5 +22,10 @@ public final class Q extends NonInstantiableV {
         "name='" + name + '\'' +
         ", boundedTo=" + boundedTo +
         '}';
+  }
+
+  @Override
+  public Variable variable() {
+    return this;
   }
 }

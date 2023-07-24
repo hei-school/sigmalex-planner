@@ -2,14 +2,20 @@ package school.hei.linearE;
 
 import org.junit.jupiter.api.Test;
 import school.hei.linearE.Sigma.SigmaBound;
+import school.hei.linearE.instantiableE.ArithmeticConversion;
+import school.hei.linearE.instantiableE.BounderValue;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.SigmaZ;
+import school.hei.linearE.instantiableE.Z;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static school.hei.linearE.SigmaTest.Days.saturday;
+import static school.hei.linearE.SigmaTest.Days.sunday;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
 
 class SigmaTest {
@@ -84,5 +90,29 @@ class SigmaTest {
     assertEquals(
         new Normalized(Map.of(), new Constant(249)),
         new Sigma(new Sigma(le, boundI), boundJ).normalize());
+  }
+
+  enum Days implements BounderValue {
+    monday, tuesday, wednesday, thursday, friday, saturday, sunday;
+  }
+
+  @Test
+  public void weekend_as_bounder() {
+    var weekend = new SigmaZ("w");
+    var hours_of_weekend = new Mono(new Z("hours", List.of(weekend)));
+    var weekend_bound = new SigmaBound(weekend, new Days[]{saturday, sunday});
+    assertEquals(
+        new Normalized(
+            Map.of(
+                new Z("hours_saturday"), new Constant(1),
+                new Z("hours_sunday"), new Constant(1)),
+            ZERO),
+        new Sigma(hours_of_weekend, weekend_bound).normalize());
+
+    var add_day_to_z = new Add(new Mono(weekend), hours_of_weekend);
+    var e = assertThrows(
+        RuntimeException.class,
+        () -> new Sigma(add_day_to_z, weekend_bound).normalize());
+    assertEquals(ArithmeticConversion.class, e.getCause().getClass());
   }
 }
