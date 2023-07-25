@@ -9,7 +9,6 @@ import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearP.constraint.Eq;
 import school.hei.linearP.constraint.Geq;
-import school.hei.linearP.constraint.LP;
 import school.hei.linearP.constraint.Leq;
 import school.hei.linearP.constraint.NormalizedConstraint;
 import school.hei.linearP.constraint.VariadicAnd;

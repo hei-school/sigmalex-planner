@@ -18,9 +18,9 @@ import static java.util.stream.Collectors.joining;
 /**
  * <a href="http://web.mit.edu/lpsolve/doc/">LP Solver</a>
  */
-public class LPSolver implements Solver {
+public class LPSolver extends Solver {
   @Override
-  public Solution solve(NormalizedLP lp) {
+  public Solution solveNormalized(NormalizedLP lp) {
     var fileName = randomUUID() + ".lp";
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
       writer.write(toLPSolverFormat(lp));

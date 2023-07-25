@@ -1,8 +1,9 @@
-package school.hei.linearP.constraint;
+package school.hei.linearP;
 
 import school.hei.linearE.LinearE;
 import school.hei.linearP.NormalizedLP;
 import school.hei.linearP.OptimizationType;
+import school.hei.linearP.constraint.Constraint;
 
 import java.util.Set;
 

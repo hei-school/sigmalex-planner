@@ -3,11 +3,10 @@ package school.hei.linearP.solver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import school.hei.linearE.Add;
-import school.hei.linearE.Mono;
 import school.hei.linearE.Mult;
 import school.hei.linearE.Sub;
 import school.hei.linearE.instantiableE.Q;
-import school.hei.linearP.constraint.LP;
+import school.hei.linearP.LP;
 import school.hei.linearP.constraint.Leq;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,6 +48,6 @@ class LPSolverTest {
             Actual values of the variables:
             y                          53.125
             x                          21.875""",
-        subject.solve(lp.normalize()).toString());
+        subject.solve(lp).toString());
   }
 }
