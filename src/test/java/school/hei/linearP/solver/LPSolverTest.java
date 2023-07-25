@@ -31,10 +31,8 @@ class LPSolverTest {
        110 x + 30 y <= 4000;
        x + y <= 75"""; */
 
-    var xVar = new Q("x");
-    var yVar = new Q("y");
-    var x = new Mono(xVar);
-    var y = new Mono(yVar);
+    var x = new Q("x");
+    var y = new Q("y");
     var lpName = "lp_name";
     var cName = "constraint_name";
     var lp = new LP(

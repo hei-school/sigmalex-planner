@@ -8,6 +8,11 @@ import school.hei.linearE.instantiableE.Variable;
 import java.util.HashMap;
 
 public record Mult(double c, LinearE le) implements LinearE {
+
+  public Mult(double c, Variable v) {
+    this(c, new Mono(v));
+  }
+
   @Override
   public NormalizedLE normalize() {
     var normalizedLeToMult = le.normalize();

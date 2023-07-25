@@ -9,6 +9,11 @@ import java.util.HashMap;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
 
 public record Add(LinearE le1, LinearE le2) implements LinearE {
+
+  public Add(Variable le1, Variable le2) {
+    this(new Mono(le1), new Mono(le2));
+  }
+
   @Override
   public NormalizedLE normalize() {
     var normalizedLe1 = le1.normalize();
