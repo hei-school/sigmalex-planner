@@ -21,6 +21,12 @@ public record LP(
     this(name, optimizationType, objective, Set.of(constraints));
   }
 
+  public LP(OptimizationType optimizationType,
+            LinearE objective,
+            Constraint... constraints) {
+    this(null, optimizationType, objective, Set.of(constraints));
+  }
+
   public NormalizedLP normalize() {
     return new NormalizedLP(
         name,

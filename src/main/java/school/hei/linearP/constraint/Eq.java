@@ -16,6 +16,12 @@ public final class Eq extends Constraint {
     this.le2 = le2;
   }
 
+  public Eq(LinearE le1, LinearE le2) {
+    super();
+    this.le1 = le1;
+    this.le2 = le2;
+  }
+
   @Override
   public Set<NormalizedConstraint> normalize() {
     return Set.of(

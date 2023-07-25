@@ -16,6 +16,12 @@ public final class Geq extends Constraint {
     this.le2 = le2;
   }
 
+  public Geq(LinearE le1, LinearE le2) {
+    super();
+    this.le1 = le1;
+    this.le2 = le2;
+  }
+
   @Override
   public Set<NormalizedConstraint> normalize() {
     return Set.of(new NormalizedConstraint(name, new Sub(le2, le1).normalize()));

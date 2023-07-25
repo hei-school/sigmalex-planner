@@ -31,22 +31,16 @@ class LPSolverTest {
 
     var x = new Q("x");
     var y = new Q("y");
-    var lpName = "lp_name";
-    var cName = "constraint_name";
     var lp = new LP(
-        lpName,
         max,
         new Add(new Mult(143, x), new Mult(60, y)),
         new Leq(
-            cName,
             new Add(new Mult(120, x), new Mult(200, y)),
             new Sub(new Mono(15_000), new Mult(10, y))),
         new Leq(
-            cName,
             new Add(new Mult(110, x), new Mult(30, y)),
             new Mono(4_000)),
         new Leq(
-            cName,
             new Add(x, y),
             new Mono(75)));
     assertEquals("""
