@@ -9,8 +9,12 @@ import static java.util.stream.Collectors.toSet;
 
 public record Sub(LinearE le1, LinearE le2) implements LinearE {
 
-  public Sub(double le1, LinearE le2) {
-    this(new Mono(le1), le2);
+  public Sub(double c, LinearE le) {
+    this(new Mono(c), le);
+  }
+
+  public Sub(LinearE le, Variable v) {
+    this(le, new Mono(v));
   }
 
   @Override

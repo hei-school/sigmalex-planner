@@ -13,8 +13,20 @@ import static school.hei.linearE.instantiableE.Constant.ZERO;
 
 public record Add(LinearE le1, LinearE le2) implements LinearE {
 
-  public Add(Variable le1, Variable le2) {
-    this(new Mono(le1), new Mono(le2));
+  public Add(Variable v1, Variable v2) {
+    this(new Mono(v1), new Mono(v2));
+  }
+
+  public Add(Variable v1, LinearE le2) {
+    this(new Mono(v1), le2);
+  }
+
+  public Add(LinearE le1, Variable v2) {
+    this(le1, new Mono(v2));
+  }
+
+  public Add(LinearE le1, double c) {
+    this(le1, new Mono(c));
   }
 
   @Override

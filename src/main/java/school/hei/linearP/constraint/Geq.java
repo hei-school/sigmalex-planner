@@ -21,16 +21,20 @@ public final class Geq extends Constraint {
     this.le2 = le2;
   }
 
-  public Geq(String name, LinearE le1, double le2) {
-    this(name, le1, new Mono(le2));
+  public Geq(String name, LinearE le, double c) {
+    this(name, le, new Mono(c));
   }
 
-  public Geq(LinearE le1, LinearE le2) {
-    this(null, le1, le2);
+  public Geq(Variable v, double c) {
+    this(null, new Mono(v), c);
   }
 
-  public Geq(LinearE le1, double le2) {
-    this(null, le1, le2);
+  public Geq(double c1, double c2) {
+    this(null, new Mono(c1), c2);
+  }
+
+  public Geq(LinearE le, double c) {
+    this(null, le, c);
   }
 
   @Override

@@ -9,30 +9,27 @@ import school.hei.linearP.NormalizedLP;
 import school.hei.linearP.Solution;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.google.ortools.Loader.loadNativeLibraries;
 import static com.google.ortools.linearsolver.MPSolver.createSolver;
+import static java.lang.Double.NEGATIVE_INFINITY;
+import static java.lang.Double.NaN;
+import static java.lang.Double.POSITIVE_INFINITY;
 
 /**
  * <a href="https://developers.google.com/optimization/introduction/java">Google OR Tools</a>
  */
 public class ORTools extends Solver {
-
-  private static final double V_MIN_VALUE = -1_000_000;
-  private static final double CONSTRAINT_MIN_VALUE = 1_000_000 * V_MIN_VALUE;
-  private static final double V_MAX_VALUE = -1 * V_MIN_VALUE;
-
   @Override
   protected Solution solveNormalized(NormalizedLP lp) {
     loadNativeLibraries();
-    var solver =
-        // GLOP: Google Linear Optimization Package
-        createSolver("GLOP");
+    var solver = createSolver("SCIP"); // https://www.scipopt.org/
 
     var lpvToMpv = new HashMap<Variable, MPVariable>();
     lp.variables().forEach(v -> lpvToMpv.put(v, switch (v) {
-      case Q q -> solver.makeNumVar(V_MIN_VALUE, V_MAX_VALUE, q.getName());
-      case Z z -> solver.makeIntVar(V_MIN_VALUE, V_MAX_VALUE, z.getName());
+      case Q q -> solver.makeNumVar(NEGATIVE_INFINITY, POSITIVE_INFINITY, q.getName());
+      case Z z -> solver.makeIntVar(NEGATIVE_INFINITY, POSITIVE_INFINITY, z.getName());
       case SigmaZ sigmaZ -> throw new UnsupportedOperationException();
     }));
 
@@ -48,13 +45,16 @@ public class ORTools extends Solver {
 
     lp.constraints().forEach(constraint -> {
       var mpc = solver.makeConstraint(
-          CONSTRAINT_MIN_VALUE,
+          NEGATIVE_INFINITY,
           -1 * constraint.le().e().instantiate(),
           constraint.name() == null ? "" : constraint.name());
       constraint.variables().forEach(v -> mpc.setCoefficient(lpvToMpv.get(v), constraint.weight(v)));
     });
 
-    solver.solve();
+    int swigValue = solver.solve().swigValue();
+    if (swigValue != 0) {
+      return new Solution(NaN, Map.of());
+    }
 
     var optimalVariables = new HashMap<Variable, Double>();
     lpvToMpv.forEach((lpv, mpv) -> optimalVariables.put(lpv, mpv.solutionValue()));

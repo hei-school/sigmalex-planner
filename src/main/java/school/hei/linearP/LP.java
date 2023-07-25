@@ -1,6 +1,8 @@
 package school.hei.linearP;
 
 import school.hei.linearE.LinearE;
+import school.hei.linearE.Mono;
+import school.hei.linearE.instantiableE.Variable;
 import school.hei.linearP.constraint.Constraint;
 
 import java.util.Set;
@@ -24,6 +26,12 @@ public record LP(
             LinearE objective,
             Constraint... constraints) {
     this(null, optimizationType, objective, Set.of(constraints));
+  }
+
+  public LP(OptimizationType optimizationType,
+            Variable v,
+            Constraint... constraints) {
+    this(null, optimizationType, new Mono(v), Set.of(constraints));
   }
 
   public NormalizedLP normalize() {
