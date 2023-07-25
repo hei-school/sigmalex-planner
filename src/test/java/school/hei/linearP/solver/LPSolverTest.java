@@ -33,16 +33,16 @@ class LPSolverTest {
     var y = new Q("y");
     var lp = new LP(
         max,
-        new Add(new Mult(143, x), new Mult(60, y)),
+        new Add(
+            new Mult(143, x), new Mult(60, y)),
         new Leq(
             new Add(new Mult(120, x), new Mult(200, y)),
-            new Sub(new Mono(15_000), new Mult(10, y))),
+            new Sub(15_000, new Mult(10, y))),
         new Leq(
             new Add(new Mult(110, x), new Mult(30, y)),
-            new Mono(4_000)),
+            4_000),
         new Leq(
-            new Add(x, y),
-            new Mono(75)));
+            new Add(x, y), 75));
     assertEquals("""
             Value of objective function: 6315.62500000
                     
