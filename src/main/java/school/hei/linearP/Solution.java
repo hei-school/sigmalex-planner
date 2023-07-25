@@ -1,16 +1,8 @@
 package school.hei.linearP;
 
-public class Solution {
+import school.hei.linearE.instantiableE.Variable;
 
-  //TODO: an abstraction leak of lpSolver while waiting for a text parser from LPSolver
-  private final String lpSolverSolution;
+import java.util.Map;
 
-  public Solution(String lpSolverSolution) {
-    this.lpSolverSolution = lpSolverSolution.trim();
-  }
-
-  @Override
-  public String toString() {
-    return lpSolverSolution;
-  }
+public record Solution(double optimalObjective, Map<Variable, Double> optimalVariables) {
 }

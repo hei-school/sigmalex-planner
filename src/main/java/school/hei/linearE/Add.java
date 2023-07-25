@@ -5,7 +5,10 @@ import school.hei.linearE.instantiableE.InstantiableE;
 import school.hei.linearE.instantiableE.Variable;
 
 import java.util.HashMap;
+import java.util.Set;
+import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toSet;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
 
 public record Add(LinearE le1, LinearE le2) implements LinearE {
@@ -30,5 +33,13 @@ public record Add(LinearE le1, LinearE le2) implements LinearE {
     });
 
     return new NormalizedLE(weightedV, new AddE(normalizedLe1.e(), (normalizedLe2.e())));
+  }
+
+  @Override
+  public Set<Variable> variables() {
+    return Stream.concat(
+        le1.variables().stream(),
+        le2.variables().stream()
+    ).collect(toSet());
   }
 }

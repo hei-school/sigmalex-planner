@@ -3,8 +3,12 @@ package school.hei.linearP.constraint;
 import school.hei.linearE.LinearE;
 import school.hei.linearE.Mono;
 import school.hei.linearE.Sub;
+import school.hei.linearE.instantiableE.Variable;
 
 import java.util.Set;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toSet;
 
 public final class Eq extends Constraint {
 
@@ -34,5 +38,13 @@ public final class Eq extends Constraint {
     return Set.of(
         new NormalizedConstraint(name, new Sub(le1, le2).normalize()),
         new NormalizedConstraint(name, new Sub(le2, le1).normalize()));
+  }
+
+  @Override
+  public Set<Variable> variables() {
+    return Stream.concat(
+            le1.variables().stream(),
+            le1.variables().stream())
+        .collect(toSet());
   }
 }

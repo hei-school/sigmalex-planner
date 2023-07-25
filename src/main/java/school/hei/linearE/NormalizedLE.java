@@ -7,6 +7,7 @@ import school.hei.linearE.instantiableE.Variable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public final class NormalizedLE implements LinearE {
 
@@ -26,6 +27,11 @@ public final class NormalizedLE implements LinearE {
   @Override
   public NormalizedLE normalize() {
     return this;
+  }
+
+  @Override
+  public Set<Variable> variables() {
+    return weightedV.keySet();
   }
 
   public Map<Variable, InstantiableE> weightedV() {

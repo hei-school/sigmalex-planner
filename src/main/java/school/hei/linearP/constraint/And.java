@@ -1,5 +1,7 @@
 package school.hei.linearP.constraint;
 
+import school.hei.linearE.instantiableE.Variable;
+
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -19,6 +21,14 @@ public final class And extends Constraint {
   public Set<NormalizedConstraint> normalize() {
     return Stream
         .concat(constraint1.normalize().stream(), constraint2.normalize().stream())
+        .collect(toSet());
+  }
+
+  @Override
+  public Set<Variable> variables() {
+    return Stream.concat(
+            constraint1.variables().stream(),
+            constraint2.variables().stream())
         .collect(toSet());
   }
 }

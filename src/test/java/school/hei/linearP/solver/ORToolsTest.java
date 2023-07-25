@@ -7,18 +7,21 @@ import school.hei.linearE.Mult;
 import school.hei.linearE.Sub;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearP.LP;
+import school.hei.linearP.Solution;
 import school.hei.linearP.constraint.Leq;
+
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static school.hei.linearP.OptimizationType.max;
 
-class LPSolverTest {
+class ORToolsTest {
 
   Solver subject;
 
   @BeforeEach
   public void setUp() {
-    subject = new LPSolver();
+    subject = new ORTools();
   }
 
   @Test
@@ -26,7 +29,7 @@ class LPSolverTest {
     /* max: 143 x + 60 y;
        120 x + 200 y <= 15000 - 10 y;
        110 x + 30 y <= 4000;
-       x + y <= 75"""; */
+       x + y <= 75; */
 
     var x = new Q("x");
     var y = new Q("y");
@@ -42,12 +45,12 @@ class LPSolverTest {
             4_000),
         new Leq(
             new Add(x, y), 75));
-    assertEquals("""
-            Value of objective function: 6315.62500000
-                    
-            Actual values of the variables:
-            y                          53.125
-            x                          21.875""",
-        subject.solve(lp).toString());
+    assertEquals(
+        new Solution(
+            6315.624999993015,
+            Map.of(
+                x, 21.875,
+                y, 53.124999999883585)),
+        subject.solve(lp));
   }
 }

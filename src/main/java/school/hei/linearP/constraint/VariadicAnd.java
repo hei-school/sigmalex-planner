@@ -1,7 +1,6 @@
 package school.hei.linearP.constraint;
 
-import school.hei.linearP.constraint.Constraint;
-import school.hei.linearP.constraint.NormalizedConstraint;
+import school.hei.linearE.instantiableE.Variable;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -21,6 +20,13 @@ public final class VariadicAnd extends Constraint {
     return Arrays
         .stream(constraints)
         .flatMap(constraint -> constraint.normalize().stream())
+        .collect(toSet());
+  }
+
+  @Override
+  public Set<Variable> variables() {
+    return Arrays.stream(constraints)
+        .flatMap(constraint -> constraint.variables().stream())
         .collect(toSet());
   }
 }

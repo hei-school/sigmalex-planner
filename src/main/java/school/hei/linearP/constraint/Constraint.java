@@ -1,5 +1,7 @@
 package school.hei.linearP.constraint;
 
+import school.hei.linearE.instantiableE.Variable;
+
 import java.util.Set;
 
 public sealed abstract class Constraint permits And, Eq, Geq, Leq, NormalizedConstraint, VariadicAnd {
@@ -14,4 +16,10 @@ public sealed abstract class Constraint permits And, Eq, Geq, Leq, NormalizedCon
   }
 
   public abstract Set<NormalizedConstraint> normalize();
+
+  public abstract Set<Variable> variables();
+
+  public String name() {
+    return name;
+  }
 }

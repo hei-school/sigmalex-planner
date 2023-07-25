@@ -1,6 +1,7 @@
 package school.hei.linearP.constraint;
 
 import school.hei.linearE.NormalizedLE;
+import school.hei.linearE.instantiableE.Variable;
 
 import java.util.Objects;
 import java.util.Set;
@@ -42,5 +43,14 @@ public final class NormalizedConstraint extends Constraint {
 
   public NormalizedLE le() {
     return le;
+  }
+
+  @Override
+  public Set<Variable> variables() {
+    return le.variables();
+  }
+
+  public double weight(Variable v) {
+    return le.weightedV().get(v).instantiate();
   }
 }

@@ -11,6 +11,7 @@ import school.hei.linearE.instantiableE.Variable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.stream.IntStream;
 
 public record Sigma(LinearE le, SigmaBound sigmaBound) implements LinearE {
@@ -33,6 +34,11 @@ public record Sigma(LinearE le, SigmaBound sigmaBound) implements LinearE {
           substitute(sigmaBound.bounder().variable(), bounderValue, normalizedLeToSigma));
     }
     return summed.normalize();
+  }
+
+  @Override
+  public Set<Variable> variables() {
+    return le.variables();
   }
 
   private NormalizedLE substitute(Variable k, BounderValue kValue, NormalizedLE normalizedLE) {

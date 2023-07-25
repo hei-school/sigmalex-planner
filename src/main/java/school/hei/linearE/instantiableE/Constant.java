@@ -15,6 +15,11 @@ public record Constant(double c) implements InstantiableE, BounderValue {
   }
 
   @Override
+  public double instantiate() {
+    return c;
+  }
+
+  @Override
   public String toString() {
     return ((int) c + 0.) == c ? ((int) c + "") : (c + "");
   }
