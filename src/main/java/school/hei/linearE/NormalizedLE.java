@@ -5,9 +5,12 @@ import school.hei.linearE.instantiableE.InstantiableE;
 import school.hei.linearE.instantiableE.Variable;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
 
 public final class NormalizedLE implements LinearE {
 
@@ -17,7 +20,21 @@ public final class NormalizedLE implements LinearE {
   public NormalizedLE(Map<Variable, InstantiableE> weightedV, InstantiableE e) {
     this.weightedV = new HashMap<>();
     weightedV.forEach((v, eOfV) -> this.weightedV.put(v, eOfV.simplify()));
+    checkNoDuplicateNames(weightedV);
     this.e = e.simplify();
+  }
+
+  private static void checkNoDuplicateNames(Map<Variable, InstantiableE> weightedV) {
+    Set<String> distinctNames = new HashSet<>();
+    var variablesNames = weightedV.keySet().stream()
+        .map(Variable::getName)
+        .toList();
+    var duplicateNames = variablesNames.stream()
+        .filter(name -> !distinctNames.add(name))
+        .collect(toSet());
+    if (!duplicateNames.isEmpty()) {
+      throw new DuplicateVariableName(duplicateNames);
+    }
   }
 
   public NormalizedLE(double c) {
@@ -61,5 +78,11 @@ public final class NormalizedLE implements LinearE {
         "weightedV=" + weightedV +
         ", e=" + e +
         '}';
+  }
+
+  public static class DuplicateVariableName extends RuntimeException {
+    public DuplicateVariableName(Set<String> duplicateNames) {
+      super(duplicateNames.toString());
+    }
   }
 }

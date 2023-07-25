@@ -1,6 +1,7 @@
 package school.hei.linearE;
 
 import org.junit.jupiter.api.Test;
+import school.hei.linearE.NormalizedLE.DuplicateVariableName;
 import school.hei.linearE.Sigma.SigmaBound;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Q;
@@ -9,6 +10,7 @@ import school.hei.linearE.instantiableE.SigmaZ;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class VariadicSigmaTest {
   @Test
@@ -20,8 +22,8 @@ class VariadicSigmaTest {
     var boundI = new SigmaBound(i, 4, 6);
     var boundJ = new SigmaBound(j, 10, 11);
     assertEquals(
-        new VariadicSigma(le, boundI, boundJ).normalize(),
-        new Sigma(new Sigma(le, boundI), boundJ).normalize());
+        new Sigma(new Sigma(le, boundI), boundJ).normalize(),
+        new VariadicSigma(le, boundI, boundJ).normalize());
   }
 
   @Test
@@ -44,5 +46,20 @@ class VariadicSigmaTest {
                 new Q("x_6_11"), new Constant(3)),
             new Constant(93)),
         new VariadicSigma(le_i_j, boundJ, boundI).normalize());
+  }
+
+  @Test
+  public void duplicate_names_prohibited() {
+    var i = new SigmaZ("i");
+    var j = new SigmaZ("j");
+    var x_i_j = new Q("x", i, i);
+    var x_j_i = new Q("x", i, j);
+    var le_i_j = new VariadicAdd(new Mono(i), new Mono(x_j_i), new Mono(3, x_i_j));
+
+    var boundI = new SigmaBound(i, 4, 6);
+    var boundJ = new SigmaBound(j, 10, 11);
+    var e = assertThrows(
+        DuplicateVariableName.class,
+        () -> new VariadicSigma(le_i_j, boundI, boundJ).normalize());
   }
 }
