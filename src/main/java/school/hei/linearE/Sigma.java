@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 
 public record Sigma(LinearE le, SigmaBound sigmaBound) implements LinearE {
 
-  public record SigmaBound(Bounder bounder, BounderValue[] values) {
+  public record SigmaBound(Bounder bounder, BounderValue... values) {
     public SigmaBound(SigmaZ k, int kMin, int kMax) {
       this(k, IntStream.range(kMin, kMax + 1).mapToObj(Constant::new).toArray(Constant[]::new));
     }
@@ -39,8 +39,8 @@ public record Sigma(LinearE le, SigmaBound sigmaBound) implements LinearE {
     var weightedV = normalizedLE.weightedV();
     var substitutedWeightedV = new HashMap<>(weightedV);
     weightedV.forEach((v, c) -> {
-      if (v.getBoundedTo().contains(k)) {
-        var boundedToWithoutK = new ArrayList<>(v.getBoundedTo());
+      if (v.getBounders().contains(k)) {
+        var boundedToWithoutK = new ArrayList<>(v.getBounders());
         boundedToWithoutK.remove(k);
         substitutedWeightedV.put(v.toNew(v.getName() + "_" + kValue, boundedToWithoutK), c);
         substitutedWeightedV.remove(v);

@@ -6,7 +6,6 @@ import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.SigmaZ;
 
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,7 +28,7 @@ class VariadicSigmaTest {
   public void bounded_vars() {
     var i = new SigmaZ("i");
     var j = new SigmaZ("j");
-    var x_i_j = new Q("x", List.of(i, j));
+    var x_i_j = new Q("x", i, j);
     var le_i_j = new VariadicAdd(new Mono(i), new Mono(j), new Mono(3, x_i_j));
 
     var boundI = new SigmaBound(i, 4, 6);

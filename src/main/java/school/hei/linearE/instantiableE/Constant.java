@@ -2,6 +2,7 @@ package school.hei.linearE.instantiableE;
 
 public record Constant(double c) implements InstantiableE, BounderValue {
   public static final Constant ZERO = new Constant(0.);
+  public static final Constant ONE = new Constant(1.);
 
   @Override
   public InstantiableE toArithmeticValue() {

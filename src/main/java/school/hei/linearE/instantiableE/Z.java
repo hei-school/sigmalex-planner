@@ -1,10 +1,15 @@
 package school.hei.linearE.instantiableE;
 
+import java.util.Arrays;
 import java.util.List;
 
 public final class Z extends NonInstantiableV implements Bounder {
-  public Z(String name, List<Bounder> boundedTo) {
-    super(name, boundedTo);
+  public Z(String name, List<Bounder> bounders) {
+    super(name, bounders);
+  }
+
+  public Z(String name, Bounder... bounders) {
+    this(name, Arrays.stream(bounders).toList());
   }
 
   public Z(String name) {
@@ -20,7 +25,7 @@ public final class Z extends NonInstantiableV implements Bounder {
   public String toString() {
     return "Z{" +
         "name='" + name + '\'' +
-        ", boundedTo=" + boundedTo +
+        ", boundedTo=" + bounders +
         '}';
   }
 

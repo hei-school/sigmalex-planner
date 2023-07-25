@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static school.hei.linearE.SigmaTest.Days.saturday;
 import static school.hei.linearE.SigmaTest.Days.sunday;
+import static school.hei.linearE.instantiableE.Constant.ONE;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
 
 class SigmaTest {
@@ -99,17 +100,19 @@ class SigmaTest {
   @Test
   public void weekend_as_bounder() {
     var weekend = new SigmaZ("w");
-    var hours_of_weekend = new Mono(new Z("hours", List.of(weekend)));
-    var weekend_bound = new SigmaBound(weekend, new Days[]{saturday, sunday});
+    var weekend_bound = new SigmaBound(weekend, saturday, sunday);
+
+    var hours_weekend = new Z("hours", weekend);
+    var hours_weekend_le = new Mono(hours_weekend);
     assertEquals(
         new NormalizedLE(
             Map.of(
-                new Z("hours_saturday"), new Constant(1),
-                new Z("hours_sunday"), new Constant(1)),
+                new Z("hours_saturday"), ONE,
+                new Z("hours_sunday"), ONE),
             ZERO),
-        new Sigma(hours_of_weekend, weekend_bound).normalize());
+        new Sigma(hours_weekend_le, weekend_bound).normalize());
 
-    var add_day_to_z = new Add(new Mono(weekend), hours_of_weekend);
+    var add_day_to_z = new Add(new Mono(weekend), hours_weekend_le);
     var e = assertThrows(
         RuntimeException.class,
         () -> new Sigma(add_day_to_z, weekend_bound).normalize());
