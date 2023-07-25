@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
+
 public sealed abstract class Variable permits InstantiableV, NonInstantiableV {
 
   protected final String name;
@@ -11,7 +14,9 @@ public sealed abstract class Variable permits InstantiableV, NonInstantiableV {
 
   public Variable(String name, List<Bounder> bounders) {
     this.name = name;
-    this.bounders = bounders;
+    this.bounders = bounders.stream()
+        .sorted(comparing((Bounder bounder) -> bounder.variable().name))
+        .collect(toList());
   }
 
   public Variable(String name, Bounder... bounders) {

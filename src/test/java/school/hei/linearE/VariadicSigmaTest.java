@@ -28,7 +28,7 @@ class VariadicSigmaTest {
   public void bounded_vars() {
     var i = new SigmaZ("i");
     var j = new SigmaZ("j");
-    var x_i_j = new Q("x", i, j);
+    var x_i_j = new Q("x", j, i);
     var le_i_j = new VariadicAdd(new Mono(i), new Mono(j), new Mono(3, x_i_j));
 
     var boundI = new SigmaBound(i, 4, 6);
@@ -43,6 +43,6 @@ class VariadicSigmaTest {
                 new Q("x_5_11"), new Constant(3),
                 new Q("x_6_11"), new Constant(3)),
             new Constant(93)),
-        new VariadicSigma(le_i_j, boundI, boundJ).normalize());
+        new VariadicSigma(le_i_j, boundJ, boundI).normalize());
   }
 }
