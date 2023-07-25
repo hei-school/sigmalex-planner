@@ -1,15 +1,15 @@
 package school.hei.linearE.instantiableE;
 
-import java.util.List;
+import java.util.Set;
 
 public final class SigmaZ extends InstantiableV implements Bounder {
 
   public SigmaZ(String name) {
-    super(name, List.of());
+    super(name, Set.of());
   }
 
   @Override
-  public Variable toNew(String name, List<Bounder> boundedTo) {
+  public Variable toNew(String name, Set<Bounder> bounders) {
     throw new RuntimeException("Not implemented");
   }
 

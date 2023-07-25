@@ -9,8 +9,8 @@ import school.hei.linearE.instantiableE.MultE;
 import school.hei.linearE.instantiableE.SigmaZ;
 import school.hei.linearE.instantiableE.Variable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.IntStream;
 
@@ -46,7 +46,7 @@ public record Sigma(LinearE le, SigmaBound sigmaBound) implements LinearE {
     var substitutedWeightedV = new HashMap<>(weightedV);
     weightedV.forEach((v, c) -> {
       if (v.getBounders().contains(k)) {
-        var boundedToWithoutK = new ArrayList<>(v.getBounders());
+        var boundedToWithoutK = new HashSet<>(v.getBounders());
         boundedToWithoutK.remove(k);
         substitutedWeightedV.put(v.toNew(v.getName() + "_" + kValue, boundedToWithoutK), c);
         substitutedWeightedV.remove(v);

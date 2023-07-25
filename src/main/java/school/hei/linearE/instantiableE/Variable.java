@@ -1,37 +1,33 @@
 package school.hei.linearE.instantiableE;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
-
-import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public sealed abstract class Variable permits InstantiableV, NonInstantiableV {
 
   protected final String name;
-  protected final List<Bounder> bounders;
+  protected final Set<Bounder> bounders;
 
-  public Variable(String name, List<Bounder> bounders) {
+  public Variable(String name, Set<Bounder> bounders) {
     this.name = name;
-    this.bounders = bounders.stream()
-        .sorted(comparing((Bounder bounder) -> bounder.variable().name))
-        .collect(toList());
+    this.bounders = bounders;
   }
 
   public Variable(String name, Bounder... bounders) {
-    this(name, Arrays.stream(bounders).toList());
+    this(name, Arrays.stream(bounders).collect(Collectors.toSet()));
   }
 
   public String getName() {
     return name;
   }
 
-  public List<Bounder> getBounders() {
+  public Set<Bounder> getBounders() {
     return bounders;
   }
 
-  public abstract Variable toNew(String name, List<Bounder> boundedTo);
+  public abstract Variable toNew(String name, Set<Bounder> bounders);
 
   @Override
   public boolean equals(Object o) {

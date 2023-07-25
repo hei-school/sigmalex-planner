@@ -9,8 +9,8 @@ import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.SigmaZ;
 import school.hei.linearE.instantiableE.Z;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -46,7 +46,7 @@ class SigmaTest {
   @Test
   public void bounded_vars() {
     var i = new SigmaZ("i");
-    var x_i = new Q("x", List.of(i));
+    var x_i = new Q("x", Set.of(i));
     var le_i = new Mono(3, x_i);
 
     var boundI = new SigmaBound(i, 4, 6);
@@ -60,7 +60,7 @@ class SigmaTest {
         new Sigma(le_i, boundI).normalize());
 
     var j = new SigmaZ("j");
-    var x_i_j = new Q("x", List.of(i, j));
+    var x_i_j = new Q("x", Set.of(i, j));
     var le_i_j = new Mono(3, x_i_j);
     var boundJ = new SigmaBound(j, 10, 11);
     assertEquals(

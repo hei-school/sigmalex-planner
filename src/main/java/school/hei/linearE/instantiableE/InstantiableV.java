@@ -1,10 +1,10 @@
 package school.hei.linearE.instantiableE;
 
-import java.util.List;
+import java.util.Set;
 
 public abstract sealed class InstantiableV
     extends Variable implements InstantiableE permits SigmaZ {
-  public InstantiableV(String name, List<Bounder> boundedTo) {
-    super(name, boundedTo);
+  public InstantiableV(String name, Set<Bounder> bounders) {
+    super(name, bounders);
   }
 }
