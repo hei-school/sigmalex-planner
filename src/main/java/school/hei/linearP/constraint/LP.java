@@ -14,6 +14,13 @@ public record LP(
     LinearE objective,
     Set<Constraint> constraints) {
 
+  public LP(String name,
+            OptimizationType optimizationType,
+            LinearE objective,
+            Constraint... constraints) {
+    this(name, optimizationType, objective, Set.of(constraints));
+  }
+
   public NormalizedLP normalize() {
     return new NormalizedLP(
         name,
