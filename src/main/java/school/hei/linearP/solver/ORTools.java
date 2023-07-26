@@ -9,13 +9,12 @@ import school.hei.linearP.NormalizedLP;
 import school.hei.linearP.Solution;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import static com.google.ortools.Loader.loadNativeLibraries;
 import static com.google.ortools.linearsolver.MPSolver.createSolver;
 import static java.lang.Double.NEGATIVE_INFINITY;
-import static java.lang.Double.NaN;
 import static java.lang.Double.POSITIVE_INFINITY;
+import static school.hei.linearP.Solution.UNFEASIBLE;
 
 /**
  * <a href="https://developers.google.com/optimization/introduction/java">Google OR Tools</a>
@@ -53,7 +52,7 @@ public class ORTools extends Solver {
 
     int swigValue = solver.solve().swigValue();
     if (swigValue != 0) {
-      return new Solution(NaN, Map.of());
+      return UNFEASIBLE;
     }
 
     var optimalVariables = new HashMap<Variable, Double>();

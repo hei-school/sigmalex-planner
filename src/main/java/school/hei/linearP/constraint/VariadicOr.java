@@ -7,15 +7,15 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
 
-public final class VariadicAnd extends Constraint {
+public final class VariadicOr extends Constraint {
   private final Constraint[] constraints;
 
-  public VariadicAnd(String name, Constraint... constraints) {
+  public VariadicOr(String name, Constraint... constraints) {
     super(name);
     this.constraints = constraints;
   }
 
-  public VariadicAnd(Constraint... constraints) {
+  public VariadicOr(Constraint... constraints) {
     super(null);
     this.constraints = constraints;
   }
@@ -24,7 +24,7 @@ public final class VariadicAnd extends Constraint {
   public Set<Set<NormalizedConstraint>> normalize() {
     Constraint nested = constraints[0];
     for (int i = 1; i < constraints.length; i++) {
-      nested = new And(name, nested, constraints[i]);
+      nested = new Or(name, nested, constraints[i]);
     }
     return nested.normalize();
   }

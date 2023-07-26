@@ -16,6 +16,12 @@ public record LP(
     LinearE objective,
     Set<Constraint> constraints) {
 
+  public LP(OptimizationType optimizationType,
+            LinearE objective,
+            Set<Constraint> constraints) {
+    this(null, optimizationType, objective, constraints);
+  }
+
   public LP(String name,
             OptimizationType optimizationType,
             LinearE objective,
