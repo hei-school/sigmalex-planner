@@ -31,7 +31,7 @@ class LPTest {
     var cName = "constraint_name";
 
     assertEquals(
-        new NormalizedLP(
+        Set.of(new NormalizedLP(
             lpName,
             min,
             new NormalizedLE(Map.of(x, new Constant(1)), new Constant(7)),
@@ -42,7 +42,7 @@ class LPTest {
                         Map.of(
                             x, new Constant(1),
                             y, new Constant(-1)),
-                        ZERO)))),
+                        ZERO))))),
         new LP(
             lpName,
             min,
@@ -60,7 +60,7 @@ class LPTest {
     var cName = "constraint_name";
 
     assertEquals(
-        new NormalizedLP(
+        Set.of(new NormalizedLP(
             lpName,
             min,
             new NormalizedLE(Map.of(x, new Constant(1)), new Constant(7)),
@@ -71,7 +71,7 @@ class LPTest {
                         Map.of(
                             x, new Constant(-1),
                             y, new Constant(1)),
-                        ZERO)))),
+                        ZERO))))),
         new LP(
             lpName,
             min,
@@ -89,7 +89,7 @@ class LPTest {
     var cName = "constraint_name";
 
     assertEquals(
-        new NormalizedLP(
+        Set.of(new NormalizedLP(
             lpName,
             max,
             new NormalizedLE(Map.of(x, new Constant(1)), new Constant(7)),
@@ -107,7 +107,7 @@ class LPTest {
                         Map.of(
                             x, new Constant(-1),
                             y, new Constant(1)),
-                        new Constant(-9))))),
+                        new Constant(-9)))))),
         new LP(
             lpName,
             max,
@@ -126,7 +126,7 @@ class LPTest {
 
     Sub yPlus9 = new Sub(new Mono(y), new Mono(9));
     assertEquals(
-        new NormalizedLP(
+        Set.of(new NormalizedLP(
             lpName,
             max,
             new NormalizedLE(Map.of(x, new Constant(1)), new Constant(7)),
@@ -144,7 +144,7 @@ class LPTest {
                         Map.of(
                             x, new Constant(-1),
                             y, new Constant(1)),
-                        new Constant(-9))))),
+                        new Constant(-9)))))),
         new LP(
             lpName,
             max,

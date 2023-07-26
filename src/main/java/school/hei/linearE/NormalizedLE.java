@@ -12,6 +12,9 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
 
+/**
+ * normalizedLe := toLinear(weightedV) + e <= 0
+ */
 public final class NormalizedLE implements LinearE {
 
   private final Map<Variable, InstantiableE> weightedV;

@@ -21,8 +21,8 @@ public final class NormalizedConstraint extends Constraint {
   }
 
   @Override
-  public Set<NormalizedConstraint> normalize() {
-    return Set.of(this);
+  public Set<Set<NormalizedConstraint>> normalize() {
+    return Set.of(Set.of(this));
   }
 
   @Override

@@ -37,8 +37,8 @@ public final class Leq extends Constraint {
   }
 
   @Override
-  public Set<NormalizedConstraint> normalize() {
-    return Set.of(new NormalizedConstraint(name, new Sub(le1, le2).normalize()));
+  public Set<Set<NormalizedConstraint>> normalize() {
+    return Set.of(Set.of(new NormalizedConstraint(name, new Sub(le1, le2).normalize())));
   }
 
   @Override

@@ -21,11 +21,12 @@ public final class VariadicAnd extends Constraint {
   }
 
   @Override
-  public Set<NormalizedConstraint> normalize() {
-    return Arrays
-        .stream(constraints)
-        .flatMap(constraint -> constraint.normalize().stream())
-        .collect(toSet());
+  public Set<Set<NormalizedConstraint>> normalize() {
+    Constraint nestedAnds = constraints[0];
+    for (int i = 1; i < constraints.length; i++) {
+      nestedAnds = new And(name, nestedAnds, constraints[i]);
+    }
+    return nestedAnds.normalize();
   }
 
   @Override

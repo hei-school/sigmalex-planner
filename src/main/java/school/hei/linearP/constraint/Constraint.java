@@ -4,7 +4,8 @@ import school.hei.linearE.instantiableE.Variable;
 
 import java.util.Set;
 
-public sealed abstract class Constraint permits And, Eq, Geq, Leq, NormalizedConstraint, VariadicAnd {
+public sealed abstract class Constraint
+    permits True, False, And, VariadicAnd, Or, Geq, Leq, Eq, NormalizedConstraint {
   protected final String name;
 
   public Constraint() {
@@ -15,7 +16,7 @@ public sealed abstract class Constraint permits And, Eq, Geq, Leq, NormalizedCon
     this.name = name;
   }
 
-  public abstract Set<NormalizedConstraint> normalize();
+  public abstract Set<Set<NormalizedConstraint>> normalize(); // set of set due to Or
 
   public abstract Set<Variable> variables();
 

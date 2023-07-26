@@ -2,7 +2,6 @@ package school.hei.linearP.constraint;
 
 import school.hei.linearE.LinearE;
 import school.hei.linearE.Mono;
-import school.hei.linearE.Sub;
 import school.hei.linearE.instantiableE.Variable;
 
 import java.util.Set;
@@ -17,6 +16,12 @@ public final class Geq extends Constraint {
 
   public Geq(String name, LinearE le1, LinearE le2) {
     super(name);
+    this.le1 = le1;
+    this.le2 = le2;
+  }
+
+  public Geq(LinearE le1, LinearE le2) {
+    super(null);
     this.le1 = le1;
     this.le2 = le2;
   }
@@ -38,8 +43,8 @@ public final class Geq extends Constraint {
   }
 
   @Override
-  public Set<NormalizedConstraint> normalize() {
-    return Set.of(new NormalizedConstraint(name, new Sub(le2, le1).normalize()));
+  public Set<Set<NormalizedConstraint>> normalize() {
+    return new Leq(name, le2, le1).normalize();
   }
 
   @Override

@@ -2,6 +2,7 @@ package school.hei.linearP.constraint;
 
 import school.hei.linearE.instantiableE.Variable;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -18,10 +19,19 @@ public final class And extends Constraint {
   }
 
   @Override
-  public Set<NormalizedConstraint> normalize() {
-    return Stream
-        .concat(constraint1.normalize().stream(), constraint2.normalize().stream())
-        .collect(toSet());
+  public Set<Set<NormalizedConstraint>> normalize() {
+    Set<Set<NormalizedConstraint>> res = new HashSet<>();
+
+    // Illustration: ({a}|{b}) & ({c}|{d}) is normalized to: {a&c} | {a&d} | {b&c} | {b&d}
+    for (Set<NormalizedConstraint> setFromConstraint1 : constraint1.normalize()) {
+      for (Set<NormalizedConstraint> setFromConstraint2 : constraint2.normalize()) {
+        res.add(Stream.concat(
+                setFromConstraint1.stream(),
+                setFromConstraint2.stream())
+            .collect(toSet()));
+      }
+    }
+    return res;
   }
 
   @Override

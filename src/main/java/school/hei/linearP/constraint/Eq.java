@@ -2,7 +2,6 @@ package school.hei.linearP.constraint;
 
 import school.hei.linearE.LinearE;
 import school.hei.linearE.Mono;
-import school.hei.linearE.Sub;
 import school.hei.linearE.instantiableE.Variable;
 
 import java.util.Set;
@@ -34,10 +33,12 @@ public final class Eq extends Constraint {
   }
 
   @Override
-  public Set<NormalizedConstraint> normalize() {
-    return Set.of(
-        new NormalizedConstraint(name, new Sub(le1, le2).normalize()),
-        new NormalizedConstraint(name, new Sub(le2, le1).normalize()));
+  public Set<Set<NormalizedConstraint>> normalize() {
+    return new And(
+        name,
+        new Leq(name, le1, le2),
+        new Leq(name, le2, le1))
+        .normalize();
   }
 
   @Override

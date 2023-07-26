@@ -4,6 +4,7 @@ import school.hei.linearE.LinearE;
 import school.hei.linearE.Mono;
 import school.hei.linearE.instantiableE.Variable;
 import school.hei.linearP.constraint.Constraint;
+import school.hei.linearP.constraint.VariadicAnd;
 
 import java.util.Set;
 
@@ -34,13 +35,16 @@ public record LP(
     this(null, optimizationType, new Mono(v), Set.of(constraints));
   }
 
-  public NormalizedLP normalize() {
-    return new NormalizedLP(
-        name,
-        optimizationType,
-        objective.normalize(),
-        constraints.stream()
-            .flatMap(constraint -> constraint.normalize().stream())
-            .collect(toSet()));
+  public Set<NormalizedLP> normalize() {
+    var normalizedConstraintsSets = new VariadicAnd(
+        name, constraints.toArray(new Constraint[0]))
+        .normalize();
+    return normalizedConstraintsSets.stream()
+        .map(normalizedConstraintsSet -> new NormalizedLP(
+            name,
+            optimizationType,
+            objective.normalize(),
+            normalizedConstraintsSet))
+        .collect(toSet());
   }
 }

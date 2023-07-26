@@ -18,9 +18,9 @@ class VariadicAndTest {
     var y = new Q("y");
 
     assertEquals(
-        Set.of(
+        Set.of(Set.of(
             new NormalizedConstraint(new NormalizedLE(Map.of(x, ONE), ZERO)),
-            new NormalizedConstraint(new NormalizedLE(Map.of(y, ONE), ZERO))),
+            new NormalizedConstraint(new NormalizedLE(Map.of(y, ONE), ZERO)))),
         new VariadicAnd(new Leq(x, 0), new Leq(y, 0)).normalize());
   }
 }
