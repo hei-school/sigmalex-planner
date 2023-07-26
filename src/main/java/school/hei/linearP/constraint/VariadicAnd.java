@@ -15,6 +15,11 @@ public final class VariadicAnd extends Constraint {
     this.constraints = constraints;
   }
 
+  public VariadicAnd(Constraint... constraints) {
+    super(null);
+    this.constraints = constraints;
+  }
+
   @Override
   public Set<NormalizedConstraint> normalize() {
     return Arrays

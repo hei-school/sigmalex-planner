@@ -20,16 +20,20 @@ public final class Leq extends Constraint {
     this.le2 = le2;
   }
 
-  public Leq(String name, LinearE le1, double le2) {
-    this(name, le1, new Mono(le2));
+  public Leq(String name, LinearE le, double c) {
+    this(name, le, new Mono(c));
   }
 
   public Leq(LinearE le1, LinearE le2) {
     this(null, le1, le2);
   }
 
-  public Leq(LinearE le1, double le2) {
-    this(null, le1, le2);
+  public Leq(LinearE le, double c) {
+    this(null, le, c);
+  }
+
+  public Leq(Variable v, double c) {
+    this(null, new Mono(v), c);
   }
 
   @Override

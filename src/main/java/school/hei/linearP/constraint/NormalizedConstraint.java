@@ -15,6 +15,11 @@ public final class NormalizedConstraint extends Constraint {
     this.le = le;
   }
 
+  public NormalizedConstraint(NormalizedLE le) {
+    super(null);
+    this.le = le;
+  }
+
   @Override
   public Set<NormalizedConstraint> normalize() {
     return Set.of(this);
