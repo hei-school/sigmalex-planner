@@ -11,10 +11,16 @@ import school.hei.linearE.instantiableE.Z;
 import school.hei.linearP.LP;
 import school.hei.linearP.Solution;
 import school.hei.linearP.constraint.And;
+import school.hei.linearP.constraint.Eq;
+import school.hei.linearP.constraint.False;
 import school.hei.linearP.constraint.Geq;
 import school.hei.linearP.constraint.Le;
 import school.hei.linearP.constraint.Leq;
+import school.hei.linearP.constraint.Not;
 import school.hei.linearP.constraint.Or;
+import school.hei.linearP.constraint.True;
+import school.hei.linearP.constraint.VariadicAnd;
+import school.hei.linearP.constraint.VariadicOr;
 
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static school.hei.linearP.OptimizationType.max;
 import static school.hei.linearP.OptimizationType.min;
 import static school.hei.linearP.Solution.UNFEASIBLE;
+import static school.hei.linearP.constraint.False.FALSE;
+import static school.hei.linearP.constraint.True.TRUE;
 
 class ORToolsTest {
 
@@ -149,6 +157,67 @@ class ORToolsTest {
   }
 
   @Test
+  public void ip_with_negated_constraints() {
+    /* https://en.wikipedia.org/wiki/Integer_programming
+       Z+ x, y;
+       max: y;
+       - x + y <= 1;    (a)
+       3 x + 2 y <= 12; (b)
+       2 x + 3 y <= 12; (c) */
+    var x = new Z("x");
+    var y = new Z("y");
+    var x_domain = new Geq(x, 0);
+    var y_domain = new Geq(y, 0);
+    var a = new Leq(new Add(new Mult(-1, x), y), 1);
+    var b = new Leq(new Add(new Mult(3, x), 2), 12);
+    var c = new Leq(new Add(new Mult(2, x), new Mult(3, y)), 12);
+
+    var feasible1 = new LP(
+        max, y,
+        x_domain, y_domain,
+        new Not(a), b, c);
+    assertEquals(
+        new Solution(
+            4,
+            Map.of(x, -0., y, 4.)),
+        subject.solve(feasible1));
+
+    var feasible2 = new LP(
+        max, y,
+        x_domain, y_domain,
+        a, new Not(b), c);
+    assertEquals(
+        new Solution(
+            1,
+            Map.of(x, 4., y, 1.)),
+        subject.solve(feasible2));
+
+    var unfeasible = new LP(
+        max, y,
+        x_domain, y_domain,
+        new Not(a), new Not(b), c);
+    assertEquals(UNFEASIBLE, subject.solve(unfeasible));
+
+    var a_and_b_and_c = new LP(
+        max, y,
+        x_domain, y_domain,
+        a, b, c);
+    var a_and_b_and_c_but_in_a_fancy_way = new LP(
+        max, y,
+        x_domain, y_domain,
+        new Not(new Not(a)), new Not(new Or(new Not(b), new Not(c))), // fancy a&b&c
+        new Not(new Or(new Not(new And(a, b)), FALSE)),  // fancy (redundant) a,b
+        new Not(new False()), new Or(TRUE, new Not(new True())),
+        new Not(new Or(new Not(new And(new Eq(x, x), new Eq(x, x))), new Not(new Eq(x, x)))), // fancy x=x...
+        new Not(new And(new Not(new Or(new Eq(x, x), new Eq(x, x))), new Not(new Eq(x, x)))), // ...still
+        new Not(new VariadicOr(new Not(new VariadicAnd(new Eq(x, x), new Eq(x, x))))), // ...as variadic
+        new Not(new VariadicAnd(new Not(new VariadicOr(new Eq(x, x), new Eq(x, x)))))); // ...still!
+    assertEquals(
+        subject.solve(a_and_b_and_c),
+        subject.solve(a_and_b_and_c_but_in_a_fancy_way));
+  }
+
+  @Test
   public void feasible_ip_wikipedia_as_fancy_propositional_constraints() {
     /* https://en.wikipedia.org/wiki/Integer_programming
        Z+ x, y;
@@ -183,7 +252,6 @@ class ORToolsTest {
         new Or(a, b), c);
     var chosenSolution = subject.solve(chooseBetweenAAndB);
     assertEquals(greaterSolution, chosenSolution);
-
   }
 
   @Test

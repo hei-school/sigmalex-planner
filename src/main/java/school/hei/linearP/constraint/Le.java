@@ -7,11 +7,16 @@ import java.util.Set;
 
 public final class Le extends BiLeConstraint {
 
-  private static final double DEFAULT_EPSILON = 0.001;
+  public static double DEFAULT_EPSILON = 0.001;
   private final double epsilon;
 
   public Le(String name, LinearE le1, LinearE le2) {
     super(name, le1, le2);
+    this.epsilon = DEFAULT_EPSILON;
+  }
+
+  public Le(LinearE le1, LinearE le2) {
+    super(le1, le2);
     this.epsilon = DEFAULT_EPSILON;
   }
 

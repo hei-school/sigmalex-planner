@@ -31,6 +31,10 @@ public abstract sealed class BiLeConstraint extends Constraint permits Eq, Geq, 
     this(null, le1, le2);
   }
 
+  public BiLeConstraint(Variable v1, Variable v2) {
+    this(null, new Mono(v1), new Mono(v2));
+  }
+
   public BiLeConstraint(Variable v, double c) {
     this(null, new Mono(v), new Mono(c));
   }

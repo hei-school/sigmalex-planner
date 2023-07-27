@@ -22,11 +22,15 @@ public final class VariadicAnd extends Constraint {
 
   @Override
   public Set<Set<NormalizedConstraint>> normalize() {
+    return asNested().normalize();
+  }
+
+  public Constraint asNested() {
     Constraint nested = constraints[0];
     for (int i = 1; i < constraints.length; i++) {
       nested = new And(name, nested, constraints[i]);
     }
-    return nested.normalize();
+    return nested;
   }
 
   @Override

@@ -5,7 +5,7 @@ import school.hei.linearE.instantiableE.Variable;
 import java.util.Set;
 
 public sealed abstract class Constraint
-    permits BiConstraint, BiLeConstraint, False, NormalizedConstraint, True, VariadicAnd, VariadicOr {
+    permits BiConstraint, BiLeConstraint, False, NormalizedConstraint, Not, True, VariadicAnd, VariadicOr {
   protected final String name;
 
   public Constraint() {
