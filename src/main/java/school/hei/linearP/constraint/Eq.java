@@ -1,35 +1,13 @@
 package school.hei.linearP.constraint;
 
 import school.hei.linearE.LinearE;
-import school.hei.linearE.Mono;
-import school.hei.linearE.instantiableE.Variable;
 
 import java.util.Set;
-import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toSet;
-
-public final class Eq extends Constraint {
-
-  private final LinearE le1;
-  private final LinearE le2;
+public final class Eq extends BiLeConstraint {
 
   public Eq(String name, LinearE le1, LinearE le2) {
-    super(name);
-    this.le1 = le1;
-    this.le2 = le2;
-  }
-
-  public Eq(String name, LinearE le1, double le2) {
-    this(name, le1, new Mono(le2));
-  }
-
-  public Eq(LinearE le1, LinearE le2) {
-    this(null, le1, le2);
-  }
-
-  public Eq(LinearE le1, double le2) {
-    this(null, le1, le2);
+    super(name, le1, le2);
   }
 
   @Override
@@ -39,13 +17,5 @@ public final class Eq extends Constraint {
         new Leq(name, le1, le2),
         new Leq(name, le2, le1))
         .normalize();
-  }
-
-  @Override
-  public Set<Variable> variables() {
-    return Stream.concat(
-            le1.variables().stream(),
-            le1.variables().stream())
-        .collect(toSet());
   }
 }

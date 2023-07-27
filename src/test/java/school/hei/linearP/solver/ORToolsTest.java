@@ -3,6 +3,7 @@ package school.hei.linearP.solver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import school.hei.linearE.Add;
+import school.hei.linearE.Mono;
 import school.hei.linearE.Mult;
 import school.hei.linearE.Sub;
 import school.hei.linearE.instantiableE.Q;
@@ -11,6 +12,7 @@ import school.hei.linearP.LP;
 import school.hei.linearP.Solution;
 import school.hei.linearP.constraint.And;
 import school.hei.linearP.constraint.Geq;
+import school.hei.linearP.constraint.Le;
 import school.hei.linearP.constraint.Leq;
 import school.hei.linearP.constraint.Or;
 
@@ -87,6 +89,62 @@ class ORToolsTest {
         new Solution(
             2,
             Map.of(x, 1., y, 2.)),
+        subject.solve(lp));
+  }
+
+  @Test
+  public void feasible_ip_wikipedia_but_with_le() {
+    /* https://en.wikipedia.org/wiki/Integer_programming
+       Z+ x, y;
+       max: y;
+       - x + y < 1; // instead of <=
+       3 x + 2 y <= 12;
+       2 x + 3 y <= 12; */
+    var x = new Z("x");
+    var y = new Z("y");
+    var lp = new LP(
+        max,
+        y,
+        new Geq(x, 0),
+        new Geq(y, 0),
+        new Le(null, new Add(new Mult(-1, x), y), new Mono(1)), // instead of Leq
+        new Leq(new Add(new Mult(3, x), 2), 12),
+        new Leq(new Add(new Mult(2, x), new Mult(3, y)), 12));
+
+    assertEquals(
+        new Solution(
+            2,
+            Map.of(x, 2., y, 2.)),
+        subject.solve(lp));
+  }
+
+  @Test
+  public void feasible_ip_wikipedia_but_with_huge_epsilon_le() {
+    /* https://en.wikipedia.org/wiki/Integer_programming
+       Z+ x, y;
+       max: y;
+       - x + y < 1; // compiled into a <= with hugeEpsilon
+       3 x + 2 y <= 12;
+       2 x + 3 y <= 12; */
+    var x = new Z("x");
+    var y = new Z("y");
+    var hugeEpsilon = 3;
+    var lp = new LP(
+        max,
+        y,
+        new Geq(x, 0),
+        new Geq(y, 0),
+        new Le( // instead of Leq
+            null,
+            new Add(new Mult(-1, x), y), new Mono(1),
+            hugeEpsilon),
+        new Leq(new Add(new Mult(3, x), 2), 12),
+        new Leq(new Add(new Mult(2, x), new Mult(3, y)), 12));
+
+    assertEquals(
+        new Solution(
+            1,
+            Map.of(x, 3., y, 1.)),
         subject.solve(lp));
   }
 

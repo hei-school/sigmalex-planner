@@ -13,6 +13,10 @@ public record Sub(LinearE le1, LinearE le2) implements LinearE {
     this(new Mono(c), le);
   }
 
+  public Sub(LinearE le, double c) {
+    this(le, new Mono(c));
+  }
+
   public Sub(LinearE le, Variable v) {
     this(le, new Mono(v));
   }
