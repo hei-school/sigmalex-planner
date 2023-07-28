@@ -10,9 +10,6 @@ import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Z;
 import school.hei.linearP.LP;
 import school.hei.linearP.Solution;
-import school.hei.linearP.constraint.False;
-import school.hei.linearP.constraint.True;
-import school.hei.linearP.constraint.VariadicOr;
 
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +28,7 @@ import static school.hei.linearP.constraint.Constraint.leq;
 import static school.hei.linearP.constraint.Constraint.not;
 import static school.hei.linearP.constraint.Constraint.or;
 import static school.hei.linearP.constraint.Constraint.vand;
+import static school.hei.linearP.constraint.Constraint.vor;
 import static school.hei.linearP.constraint.False.FALSE;
 import static school.hei.linearP.constraint.True.TRUE;
 
@@ -207,11 +205,11 @@ class ORToolsTest {
         x_domain, y_domain,
         not(not(a)), not(or(not(b), not(c))), // fancy a&b&c
         not(or(not(and(a, b)), FALSE)),  // fancy (redundant) a,b
-        not(new False()), or(TRUE, not(new True())),
+        not(FALSE), or(TRUE, not(FALSE)),
         not(or(not(and(eq(x, x), eq(x, x))), not(eq(x, x)))), // fancy x=x...
         not(and(not(or(eq(x, x), eq(x, x))), not(eq(x, x)))), // ...still
-        not(new VariadicOr(not(vand(eq(x, x), eq(x, x))))), // ...as variadic
-        not(vand(not(new VariadicOr(eq(x, x), eq(x, x)))))); // ...still!
+        not(vor(not(vand(eq(x, x), eq(x, x))))), // ...as variadic
+        not(vand(not(vor(eq(x, x), eq(x, x)))))); // ...still!
     assertEquals(
         subject.solve(a_and_b_and_c),
         subject.solve(a_and_b_and_c_but_in_a_fancy_way));

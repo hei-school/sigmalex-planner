@@ -7,6 +7,9 @@ import java.util.Set;
 
 public final class False extends Constraint {
 
+  False() {
+  }
+
   public static final NormalizedConstraint FALSE =
       new NormalizedConstraint(new NormalizedLE(1)); // 1 <= 0
 

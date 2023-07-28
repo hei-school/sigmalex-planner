@@ -9,7 +9,7 @@ import java.util.Set;
 import static school.hei.linearP.constraint.Le.DEFAULT_EPSILON;
 
 public sealed abstract class Constraint
-    permits BiConstraint, BiLeConstraint, False, NormalizedConstraint, Not, True, VariadicOr {
+    permits BiConstraint, BiLeConstraint, False, NormalizedConstraint, Not, True {
   protected final String name;
 
   public Constraint() {
@@ -111,5 +111,17 @@ public sealed abstract class Constraint
 
   public static Constraint vand(Constraint... constraints) {
     return vand(null, constraints);
+  }
+
+  public static Constraint vor(String name, Constraint... constraints) {
+    Constraint nested = constraints[0];
+    for (int i = 1; i < constraints.length; i++) {
+      nested = new Or(name, nested, constraints[i]);
+    }
+    return nested;
+  }
+
+  public static Constraint vor(Constraint... constraints) {
+    return vor(null, constraints);
   }
 }
