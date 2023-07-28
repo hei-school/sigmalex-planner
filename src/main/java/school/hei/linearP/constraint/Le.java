@@ -10,7 +10,7 @@ public final class Le extends BiLeConstraint {
   public static double DEFAULT_EPSILON = 0.001;
   private final double epsilon;
 
-  public Le(String name, LinearE le1, LinearE le2, double epsilon) {
+  Le(String name, LinearE le1, LinearE le2, double epsilon) {
     super(name, le1, le2);
     this.epsilon = epsilon;
   }

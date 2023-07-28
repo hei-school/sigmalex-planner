@@ -14,7 +14,6 @@ import school.hei.linearP.constraint.Eq;
 import school.hei.linearP.constraint.False;
 import school.hei.linearP.constraint.Geq;
 import school.hei.linearP.constraint.Leq;
-import school.hei.linearP.constraint.Or;
 import school.hei.linearP.constraint.True;
 import school.hei.linearP.constraint.VariadicAnd;
 import school.hei.linearP.constraint.VariadicOr;
@@ -31,6 +30,7 @@ import static school.hei.linearP.Solution.UNFEASIBLE;
 import static school.hei.linearP.constraint.Constraint.and;
 import static school.hei.linearP.constraint.Constraint.le;
 import static school.hei.linearP.constraint.Constraint.not;
+import static school.hei.linearP.constraint.Constraint.or;
 import static school.hei.linearP.constraint.False.FALSE;
 import static school.hei.linearP.constraint.True.TRUE;
 
@@ -205,11 +205,11 @@ class ORToolsTest {
     var a_and_b_and_c_but_in_a_fancy_way = new LP(
         max, y,
         x_domain, y_domain,
-        not(not(a)), not(new Or(not(b), not(c))), // fancy a&b&c
-        not(new Or(not(and(a, b)), FALSE)),  // fancy (redundant) a,b
-        not(new False()), new Or(TRUE, not(new True())),
-        not(new Or(not(and(new Eq(x, x), new Eq(x, x))), not(new Eq(x, x)))), // fancy x=x...
-        not(and(not(new Or(new Eq(x, x), new Eq(x, x))), not(new Eq(x, x)))), // ...still
+        not(not(a)), not(or(not(b), not(c))), // fancy a&b&c
+        not(or(not(and(a, b)), FALSE)),  // fancy (redundant) a,b
+        not(new False()), or(TRUE, not(new True())),
+        not(or(not(and(new Eq(x, x), new Eq(x, x))), not(new Eq(x, x)))), // fancy x=x...
+        not(and(not(or(new Eq(x, x), new Eq(x, x))), not(new Eq(x, x)))), // ...still
         not(new VariadicOr(not(new VariadicAnd(new Eq(x, x), new Eq(x, x))))), // ...as variadic
         not(new VariadicAnd(not(new VariadicOr(new Eq(x, x), new Eq(x, x)))))); // ...still!
     assertEquals(
@@ -249,7 +249,7 @@ class ORToolsTest {
     var chooseBetweenAAndB = new LP(
         max, y,
         new Geq(x, 0), new Geq(y, 0),
-        new Or(a, b), c);
+        or(a, b), c);
     var chosenSolution = subject.solve(chooseBetweenAAndB);
     assertEquals(greaterSolution, chosenSolution);
   }
@@ -319,7 +319,7 @@ class ORToolsTest {
     var unfeasible3 = new LP(min, objective, Set.of(a, c));
     assertTrue(subject.solve(unfeasible3).isEmpty());
 
-    var feasible = new LP(min, objective, new Or(a, and(b, c)));
+    var feasible = new LP(min, objective, or(a, and(b, c)));
     assertEquals(
         new Solution(58.99999999999999, Map.of(x1, 6.500000000000002, x2, 7.)),
         subject.solve(feasible));

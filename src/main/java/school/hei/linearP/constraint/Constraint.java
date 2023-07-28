@@ -27,6 +27,15 @@ public sealed abstract class Constraint
     return name;
   }
 
+
+  public static Or or(String name, Constraint constraint1, Constraint constraint2) {
+    return new Or(name, constraint1, constraint2);
+  }
+
+  public static Or or(Constraint constraint1, Constraint constraint2) {
+    return new Or(null, constraint1, constraint2);
+  }
+
   public static Not not(Constraint constraint) {
     return new Not(constraint);
   }

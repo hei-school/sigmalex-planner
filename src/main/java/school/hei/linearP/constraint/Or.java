@@ -9,14 +9,8 @@ import static school.hei.linearP.constraint.True.TRUE;
 
 public final class Or extends BiConstraint {
 
-
-  public Or(String name, Constraint constraint1, Constraint constraint2) {
+  Or(String name, Constraint constraint1, Constraint constraint2) {
     super(name, constraint1, constraint2);
-  }
-
-  public Or(Constraint constraint1, Constraint constraint2) {
-    super(constraint1, constraint2);
-
   }
 
   @Override
