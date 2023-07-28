@@ -10,7 +10,6 @@ import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Z;
 import school.hei.linearP.LP;
 import school.hei.linearP.Solution;
-import school.hei.linearP.constraint.Eq;
 import school.hei.linearP.constraint.False;
 import school.hei.linearP.constraint.True;
 import school.hei.linearP.constraint.VariadicAnd;
@@ -26,6 +25,7 @@ import static school.hei.linearP.OptimizationType.max;
 import static school.hei.linearP.OptimizationType.min;
 import static school.hei.linearP.Solution.UNFEASIBLE;
 import static school.hei.linearP.constraint.Constraint.and;
+import static school.hei.linearP.constraint.Constraint.eq;
 import static school.hei.linearP.constraint.Constraint.geq;
 import static school.hei.linearP.constraint.Constraint.le;
 import static school.hei.linearP.constraint.Constraint.leq;
@@ -208,10 +208,10 @@ class ORToolsTest {
         not(not(a)), not(or(not(b), not(c))), // fancy a&b&c
         not(or(not(and(a, b)), FALSE)),  // fancy (redundant) a,b
         not(new False()), or(TRUE, not(new True())),
-        not(or(not(and(new Eq(x, x), new Eq(x, x))), not(new Eq(x, x)))), // fancy x=x...
-        not(and(not(or(new Eq(x, x), new Eq(x, x))), not(new Eq(x, x)))), // ...still
-        not(new VariadicOr(not(new VariadicAnd(new Eq(x, x), new Eq(x, x))))), // ...as variadic
-        not(new VariadicAnd(not(new VariadicOr(new Eq(x, x), new Eq(x, x)))))); // ...still!
+        not(or(not(and(eq(x, x), eq(x, x))), not(eq(x, x)))), // fancy x=x...
+        not(and(not(or(eq(x, x), eq(x, x))), not(eq(x, x)))), // ...still
+        not(new VariadicOr(not(new VariadicAnd(eq(x, x), eq(x, x))))), // ...as variadic
+        not(new VariadicAnd(not(new VariadicOr(eq(x, x), eq(x, x)))))); // ...still!
     assertEquals(
         subject.solve(a_and_b_and_c),
         subject.solve(a_and_b_and_c_but_in_a_fancy_way));

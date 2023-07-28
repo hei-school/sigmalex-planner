@@ -92,4 +92,12 @@ public sealed abstract class Constraint
   public static And and(Constraint constraint1, Constraint constraint2) {
     return and(null, constraint1, constraint2);
   }
+
+  public static And eq(String name, LinearE le1, LinearE le2) {
+    return and(name, leq(le1, le2), leq(le2, le1));
+  }
+
+  public static And eq(Variable v1, Variable v2) {
+    return eq(null, new Mono(v1), new Mono(v2));
+  }
 }
