@@ -34,7 +34,7 @@ public sealed abstract class Constraint
   }
 
   public static Or or(Constraint constraint1, Constraint constraint2) {
-    return new Or(null, constraint1, constraint2);
+    return or(null, constraint1, constraint2);
   }
 
   public static Not not(Constraint constraint) {
@@ -46,15 +46,15 @@ public sealed abstract class Constraint
   }
 
   public static Leq leq(LinearE le1, LinearE le2) {
-    return new Leq(null, le1, le2);
+    return leq(null, le1, le2);
   }
 
   public static Leq leq(LinearE le, double c) {
-    return new Leq(null, le, new Mono(c));
+    return leq(null, le, new Mono(c));
   }
 
   public static Leq leq(Variable v, double c) {
-    return new Leq(null, new Mono(v), new Mono(c));
+    return leq(null, new Mono(v), new Mono(c));
   }
 
   public static Le le(String name, LinearE le1, LinearE le2, double epsilon) {
@@ -62,11 +62,27 @@ public sealed abstract class Constraint
   }
 
   public static Le le(String name, LinearE le1, LinearE le2) {
-    return new Le(name, le1, le2, DEFAULT_EPSILON);
+    return le(name, le1, le2, DEFAULT_EPSILON);
   }
 
   public static Le le(LinearE le1, LinearE le2) {
-    return new Le(null, le1, le2, DEFAULT_EPSILON);
+    return le(null, le1, le2, DEFAULT_EPSILON);
+  }
+
+  public static Leq geq(String name, LinearE le1, LinearE le2) {
+    return new Leq(name, le2, le1);
+  }
+
+  public static Leq geq(Variable v, double c) {
+    return geq(null, new Mono(v), new Mono(c));
+  }
+
+  public static Leq geq(double c1, double c2) {
+    return geq(null, new Mono(c1), new Mono(c2));
+  }
+
+  public static Leq geq(LinearE le, double c) {
+    return geq(null, le, new Mono(c));
   }
 
   public static And and(String name, Constraint constraint1, Constraint constraint2) {
@@ -74,6 +90,6 @@ public sealed abstract class Constraint
   }
 
   public static And and(Constraint constraint1, Constraint constraint2) {
-    return new And(null, constraint1, constraint2);
+    return and(null, constraint1, constraint2);
   }
 }

@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toSet;
 
-public abstract sealed class BiLeConstraint extends Constraint permits Eq, Geq, Le, Leq {
+public abstract sealed class BiLeConstraint extends Constraint permits Eq, Le, Leq {
   protected final LinearE le1;
   protected final LinearE le2;
 

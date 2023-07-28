@@ -12,8 +12,6 @@ import school.hei.linearP.LP;
 import school.hei.linearP.Solution;
 import school.hei.linearP.constraint.Eq;
 import school.hei.linearP.constraint.False;
-import school.hei.linearP.constraint.Geq;
-import school.hei.linearP.constraint.Leq;
 import school.hei.linearP.constraint.True;
 import school.hei.linearP.constraint.VariadicAnd;
 import school.hei.linearP.constraint.VariadicOr;
@@ -28,6 +26,7 @@ import static school.hei.linearP.OptimizationType.max;
 import static school.hei.linearP.OptimizationType.min;
 import static school.hei.linearP.Solution.UNFEASIBLE;
 import static school.hei.linearP.constraint.Constraint.and;
+import static school.hei.linearP.constraint.Constraint.geq;
 import static school.hei.linearP.constraint.Constraint.le;
 import static school.hei.linearP.constraint.Constraint.leq;
 import static school.hei.linearP.constraint.Constraint.not;
@@ -88,8 +87,8 @@ class ORToolsTest {
     var lp = new LP(
         max,
         y,
-        new Geq(x, 0),
-        new Geq(y, 0),
+        geq(x, 0),
+        geq(y, 0),
         leq(new Add(new Mult(-1, x), y), 1),
         leq(new Add(new Mult(3, x), 2), 12),
         leq(new Add(new Mult(2, x), new Mult(3, y)), 12));
@@ -114,8 +113,8 @@ class ORToolsTest {
     var lp = new LP(
         max,
         y,
-        new Geq(x, 0),
-        new Geq(y, 0),
+        geq(x, 0),
+        geq(y, 0),
         le(null, new Add(new Mult(-1, x), y), new Mono(1)), // instead of Leq
         leq(new Add(new Mult(3, x), 2), 12),
         leq(new Add(new Mult(2, x), new Mult(3, y)), 12));
@@ -141,8 +140,8 @@ class ORToolsTest {
     var lp = new LP(
         max,
         y,
-        new Geq(x, 0),
-        new Geq(y, 0),
+        geq(x, 0),
+        geq(y, 0),
         le( // instead of Leq
             null,
             new Add(new Mult(-1, x), y), new Mono(1),
@@ -167,8 +166,8 @@ class ORToolsTest {
        2 x + 3 y <= 12; (c) */
     var x = new Z("x");
     var y = new Z("y");
-    var x_domain = new Geq(x, 0);
-    var y_domain = new Geq(y, 0);
+    var x_domain = geq(x, 0);
+    var y_domain = geq(y, 0);
     var a = leq(new Add(new Mult(-1, x), y), 1);
     var b = leq(new Add(new Mult(3, x), 2), 12);
     var c = leq(new Add(new Mult(2, x), new Mult(3, y)), 12);
@@ -235,21 +234,21 @@ class ORToolsTest {
 
     var withGreaterObjective = new LP(
         max, y,
-        new Geq(x, 0), new Geq(y, 0),
+        geq(x, 0), geq(y, 0),
         b, c);
     var greaterSolution = subject.solve(withGreaterObjective);
     assertEquals(4, greaterSolution.optimalObjective());
 
     var withLesserObjective = new LP(
         max, y,
-        new Geq(x, 0), new Geq(y, 0),
+        geq(x, 0), geq(y, 0),
         a, c);
     var lesserSolution = subject.solve(withLesserObjective);
     assertEquals(2, lesserSolution.optimalObjective());
 
     var chooseBetweenAAndB = new LP(
         max, y,
-        new Geq(x, 0), new Geq(y, 0),
+        geq(x, 0), geq(y, 0),
         or(a, b), c);
     var chosenSolution = subject.solve(chooseBetweenAAndB);
     assertEquals(greaterSolution, chosenSolution);
@@ -269,7 +268,7 @@ class ORToolsTest {
     var lp = new LP(
         min,
         new Add(new Mult(8, x1), x2),
-        new Geq(
+        geq(
             new Add(x1, new Mult(2, x2)),
             -14),
         leq(
@@ -307,7 +306,7 @@ class ORToolsTest {
     var x1 = new Q("x1");
     var x2 = new Z("x2");
     var objective = new Add(new Mult(8, x1), x2);
-    var a = new Geq(new Add(x1, new Mult(2, x2)), -14);
+    var a = geq(new Add(x1, new Mult(2, x2)), -14);
     var b = leq(new Add(new Mult(2, x1), x2), 20);
     var c = leq(new Sub(new Mult(-4, x1), x2), -33);
 
@@ -331,7 +330,7 @@ class ORToolsTest {
     var lp = new LP(
         min,
         new Q("x"),
-        new Geq(0, 1));
+        geq(0, 1));
 
     var solution = subject.solve(lp);
 

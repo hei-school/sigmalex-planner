@@ -8,6 +8,7 @@ import school.hei.linearP.solver.Solver;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static school.hei.linearP.constraint.Constraint.and;
+import static school.hei.linearP.constraint.Constraint.geq;
 import static school.hei.linearP.constraint.Constraint.or;
 import static school.hei.linearP.constraint.False.FALSE;
 import static school.hei.linearP.constraint.True.TRUE;
@@ -23,38 +24,38 @@ public class PropositionalLogicTest {
 
   @Test
   public void true_and_p_is_p() {
-    var p = new Geq(new Q("p"), 9);
+    var p = geq(new Q("p"), 9);
     assertEquals(p.normalize(), and(TRUE, p).normalize());
     assertEquals(p.normalize(), and(p, TRUE).normalize());
   }
 
   @Test
   public void false_and_p_is_false() {
-    var p = new Geq(new Q("p"), 9);
+    var p = geq(new Q("p"), 9);
     assertEquals(FALSE.normalize(), and(FALSE, p).normalize());
     assertEquals(FALSE.normalize(), and(p, FALSE).normalize());
   }
 
   @Test
   public void true_or_p_is_true() {
-    var p = new Geq(new Q("p"), 9);
+    var p = geq(new Q("p"), 9);
     assertEquals(TRUE.normalize(), or(TRUE, p).normalize());
     assertEquals(TRUE.normalize(), or(p, TRUE).normalize());
   }
 
   @Test
   public void false_or_p_is_p() {
-    var p = new Geq(new Q("p"), 9);
+    var p = geq(new Q("p"), 9);
     assertEquals(p.normalize(), or(FALSE, p).normalize());
     assertEquals(p.normalize(), or(p, FALSE).normalize());
   }
 
   @Test
   public void distribute_and_over_or() {
-    var a = new Geq(new Q("a"), 9);
-    var b = new Geq(new Q("b"), 7);
-    var c = new Geq(new Q("c"), 5);
-    var d = new Geq(new Q("d"), 3);
+    var a = geq(new Q("a"), 9);
+    var b = geq(new Q("b"), 7);
+    var c = geq(new Q("c"), 5);
+    var d = geq(new Q("d"), 3);
 
     // a * (c+d) = a*c + a*d
     assertEquals(

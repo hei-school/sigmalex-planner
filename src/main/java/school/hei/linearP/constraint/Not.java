@@ -31,7 +31,6 @@ public final class Not extends Constraint {
       // TODO: rm them from sum-type and create isolated factories for them
       case True t -> FALSE;
       case Eq eq -> and(le(eq.le1, eq.le2), le(eq.le2, eq.le1));
-      case Geq geq -> le(geq.le2, geq.le1);
       case Le le -> negDisjOfConj(le.normalize());
     }).normalize();
   }
