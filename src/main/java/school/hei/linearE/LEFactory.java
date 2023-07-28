@@ -2,6 +2,8 @@ package school.hei.linearE;
 
 import school.hei.linearE.instantiableE.Variable;
 
+import java.util.Arrays;
+
 public class LEFactory {
 
   public static Add sub(LinearE le1, LinearE le2) {
@@ -18,5 +20,11 @@ public class LEFactory {
 
   public static Add sub(LinearE le, Variable v) {
     return sub(le, new Mono(v));
+  }
+
+  public static LinearE vadd(LinearE... leList) {
+    return Arrays.stream(leList)
+        .reduce(Add::new)
+        .orElse(new Mono(0.));
   }
 }

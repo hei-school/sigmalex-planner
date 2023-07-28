@@ -11,6 +11,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static school.hei.linearE.LEFactory.vadd;
 
 class VariadicSigmaTest {
   @Test
@@ -31,7 +32,7 @@ class VariadicSigmaTest {
     var i = new SigmaZ("i");
     var j = new SigmaZ("j");
     var x_i_j = new Q("x", j, i);
-    var le_i_j = new VariadicAdd(new Mono(i), new Mono(j), new Mono(3, x_i_j));
+    var le_i_j = vadd(new Mono(i), new Mono(j), new Mono(3, x_i_j));
 
     var boundI = new SigmaBound(i, 4, 6);
     var boundJ = new SigmaBound(j, 10, 11);
@@ -54,7 +55,7 @@ class VariadicSigmaTest {
     var j = new SigmaZ("j");
     var x_i_j = new Q("x", i, i);
     var x_j_i = new Q("x", i, j);
-    var le_i_j = new VariadicAdd(new Mono(i), new Mono(x_j_i), new Mono(3, x_i_j));
+    var le_i_j = vadd(new Mono(i), new Mono(x_j_i), new Mono(3, x_i_j));
 
     var boundI = new SigmaBound(i, 4, 6);
     var boundJ = new SigmaBound(j, 10, 11);
