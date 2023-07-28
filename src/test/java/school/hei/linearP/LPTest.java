@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import school.hei.linearE.Add;
 import school.hei.linearE.Mono;
 import school.hei.linearE.NormalizedLE;
-import school.hei.linearE.Sub;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearP.constraint.NormalizedConstraint;
@@ -13,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static school.hei.linearE.LEFactory.sub;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
 import static school.hei.linearP.OptimizationType.max;
 import static school.hei.linearP.OptimizationType.min;
@@ -113,7 +113,7 @@ class LPTest {
             max,
             new Add(new Mono(x), new Mono(7)),
             Set.of(
-                eq(cName, new Mono(x), new Sub(new Mono(y), new Mono(9)))))
+                eq(cName, new Mono(x), sub(new Mono(y), new Mono(9)))))
             .normalize());
   }
 
@@ -124,7 +124,7 @@ class LPTest {
     var lpName = "lp_name";
     var cName = "constraint_name";
 
-    Sub yPlus9 = new Sub(new Mono(y), new Mono(9));
+    var yPlus9 = sub(new Mono(y), new Mono(9));
     assertEquals(
         Set.of(new NormalizedLP(
             lpName,

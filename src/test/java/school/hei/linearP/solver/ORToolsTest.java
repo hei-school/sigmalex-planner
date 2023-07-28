@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import school.hei.linearE.Add;
 import school.hei.linearE.Mono;
 import school.hei.linearE.Mult;
-import school.hei.linearE.Sub;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Z;
 import school.hei.linearP.LP;
@@ -17,6 +16,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static school.hei.linearE.LEFactory.sub;
 import static school.hei.linearP.OptimizationType.max;
 import static school.hei.linearP.OptimizationType.min;
 import static school.hei.linearP.Solution.UNFEASIBLE;
@@ -57,7 +57,7 @@ class ORToolsTest {
             new Mult(143, x), new Mult(60, y)),
         leq(
             new Add(new Mult(120, x), new Mult(200, y)),
-            new Sub(15_000, new Mult(10, y))),
+            sub(15_000, new Mult(10, y))),
         leq(
             new Add(new Mult(110, x), new Mult(30, y)),
             4_000),
@@ -270,7 +270,7 @@ class ORToolsTest {
             new Add(x1, new Mult(2, x2)),
             -14),
         leq(
-            new Sub(new Mult(-4, x1), x2),
+            sub(new Mult(-4, x1), x2),
             -33),
         leq(
             new Add(new Mult(2, x1), x2),
@@ -306,7 +306,7 @@ class ORToolsTest {
     var objective = new Add(new Mult(8, x1), x2);
     var a = geq(new Add(x1, new Mult(2, x2)), -14);
     var b = leq(new Add(new Mult(2, x1), x2), 20);
-    var c = leq(new Sub(new Mult(-4, x1), x2), -33);
+    var c = leq(sub(new Mult(-4, x1), x2), -33);
 
     var unfeasible1 = new LP(min, objective, a);
     assertTrue(subject.solve(unfeasible1).isEmpty());
