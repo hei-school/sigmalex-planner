@@ -48,7 +48,8 @@ public record Sigma(LinearE le, SigmaBound sigmaBound) implements LinearE {
       if (v.getBounders().contains(k)) {
         var boundedToWithoutK = new HashSet<>(v.getBounders());
         boundedToWithoutK.remove(k);
-        substitutedWeightedV.put(v.toNew(v.getName() + "_" + kValue, boundedToWithoutK), c);
+        substitutedWeightedV.put(
+            v.toNew(v.getName() + "[" + k.getName() + ":" + kValue + "]", boundedToWithoutK), c);
         substitutedWeightedV.remove(v);
       }
     });
