@@ -42,4 +42,12 @@ public sealed abstract class Constraint
   public static Le le(LinearE le1, LinearE le2) {
     return new Le(null, le1, le2, DEFAULT_EPSILON);
   }
+
+  public static And and(String name, Constraint constraint1, Constraint constraint2) {
+    return new And(name, constraint1, constraint2);
+  }
+
+  public static And and(Constraint constraint1, Constraint constraint2) {
+    return new And(null, constraint1, constraint2);
+  }
 }

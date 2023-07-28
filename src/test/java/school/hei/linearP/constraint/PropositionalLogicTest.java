@@ -7,6 +7,7 @@ import school.hei.linearP.solver.ORTools;
 import school.hei.linearP.solver.Solver;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static school.hei.linearP.constraint.Constraint.and;
 import static school.hei.linearP.constraint.False.FALSE;
 import static school.hei.linearP.constraint.True.TRUE;
 
@@ -22,15 +23,15 @@ public class PropositionalLogicTest {
   @Test
   public void true_and_p_is_p() {
     var p = new Geq(new Q("p"), 9);
-    assertEquals(p.normalize(), new And(TRUE, p).normalize());
-    assertEquals(p.normalize(), new And(p, TRUE).normalize());
+    assertEquals(p.normalize(), and(TRUE, p).normalize());
+    assertEquals(p.normalize(), and(p, TRUE).normalize());
   }
 
   @Test
   public void false_and_p_is_false() {
     var p = new Geq(new Q("p"), 9);
-    assertEquals(FALSE.normalize(), new And(FALSE, p).normalize());
-    assertEquals(FALSE.normalize(), new And(p, FALSE).normalize());
+    assertEquals(FALSE.normalize(), and(FALSE, p).normalize());
+    assertEquals(FALSE.normalize(), and(p, FALSE).normalize());
   }
 
   @Test
@@ -56,11 +57,11 @@ public class PropositionalLogicTest {
 
     // a * (c+d) = a*c + a*d
     assertEquals(
-        new VariadicOr(new And(a, c), new And(a, d)).normalize(),
-        new And(a, new Or(c, d)).normalize());
+        new VariadicOr(and(a, c), and(a, d)).normalize(),
+        and(a, new Or(c, d)).normalize());
     // (a+b) * (c+d) = a*c + a*d + b*c + b*d
     assertEquals(
-        new VariadicOr(new And(a, c), new And(a, d), new And(b, c), new And(b, d)).normalize(),
-        new And(new Or(a, b), new Or(c, d)).normalize());
+        new VariadicOr(and(a, c), and(a, d), and(b, c), and(b, d)).normalize(),
+        and(new Or(a, b), new Or(c, d)).normalize());
   }
 }

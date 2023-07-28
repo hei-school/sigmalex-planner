@@ -10,7 +10,6 @@ import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Z;
 import school.hei.linearP.LP;
 import school.hei.linearP.Solution;
-import school.hei.linearP.constraint.And;
 import school.hei.linearP.constraint.Eq;
 import school.hei.linearP.constraint.False;
 import school.hei.linearP.constraint.Geq;
@@ -29,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static school.hei.linearP.OptimizationType.max;
 import static school.hei.linearP.OptimizationType.min;
 import static school.hei.linearP.Solution.UNFEASIBLE;
+import static school.hei.linearP.constraint.Constraint.and;
 import static school.hei.linearP.constraint.Constraint.le;
 import static school.hei.linearP.constraint.Constraint.not;
 import static school.hei.linearP.constraint.False.FALSE;
@@ -206,10 +206,10 @@ class ORToolsTest {
         max, y,
         x_domain, y_domain,
         not(not(a)), not(new Or(not(b), not(c))), // fancy a&b&c
-        not(new Or(not(new And(a, b)), FALSE)),  // fancy (redundant) a,b
+        not(new Or(not(and(a, b)), FALSE)),  // fancy (redundant) a,b
         not(new False()), new Or(TRUE, not(new True())),
-        not(new Or(not(new And(new Eq(x, x), new Eq(x, x))), not(new Eq(x, x)))), // fancy x=x...
-        not(new And(not(new Or(new Eq(x, x), new Eq(x, x))), not(new Eq(x, x)))), // ...still
+        not(new Or(not(and(new Eq(x, x), new Eq(x, x))), not(new Eq(x, x)))), // fancy x=x...
+        not(and(not(new Or(new Eq(x, x), new Eq(x, x))), not(new Eq(x, x)))), // ...still
         not(new VariadicOr(not(new VariadicAnd(new Eq(x, x), new Eq(x, x))))), // ...as variadic
         not(new VariadicAnd(not(new VariadicOr(new Eq(x, x), new Eq(x, x)))))); // ...still!
     assertEquals(
@@ -319,7 +319,7 @@ class ORToolsTest {
     var unfeasible3 = new LP(min, objective, Set.of(a, c));
     assertTrue(subject.solve(unfeasible3).isEmpty());
 
-    var feasible = new LP(min, objective, new Or(a, new And(b, c)));
+    var feasible = new LP(min, objective, new Or(a, and(b, c)));
     assertEquals(
         new Solution(58.99999999999999, Map.of(x1, 6.500000000000002, x2, 7.)),
         subject.solve(feasible));
