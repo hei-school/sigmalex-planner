@@ -9,7 +9,7 @@ import java.util.Set;
 import static school.hei.linearP.constraint.Le.DEFAULT_EPSILON;
 
 public sealed abstract class Constraint
-    permits BiConstraint, BiLeConstraint, False, NormalizedConstraint, Not, True, VariadicAnd, VariadicOr {
+    permits BiConstraint, BiLeConstraint, False, NormalizedConstraint, Not, True, VariadicOr {
   protected final String name;
 
   public Constraint() {
@@ -99,5 +99,17 @@ public sealed abstract class Constraint
 
   public static And eq(Variable v1, Variable v2) {
     return eq(null, new Mono(v1), new Mono(v2));
+  }
+
+  public static Constraint vand(String name, Constraint... constraints) {
+    Constraint nested = constraints[0];
+    for (int i = 1; i < constraints.length; i++) {
+      nested = new And(name, nested, constraints[i]);
+    }
+    return nested;
+  }
+
+  public static Constraint vand(Constraint... constraints) {
+    return vand(null, constraints);
   }
 }

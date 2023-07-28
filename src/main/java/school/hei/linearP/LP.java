@@ -4,11 +4,11 @@ import school.hei.linearE.LinearE;
 import school.hei.linearE.Mono;
 import school.hei.linearE.instantiableE.Variable;
 import school.hei.linearP.constraint.Constraint;
-import school.hei.linearP.constraint.VariadicAnd;
 
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
+import static school.hei.linearP.constraint.Constraint.vand;
 
 public record LP(
     String name,
@@ -42,7 +42,7 @@ public record LP(
   }
 
   public Set<NormalizedLP> normalize() {
-    var normalizedConstraintsSets = new VariadicAnd(
+    var normalizedConstraintsSets = vand(
         name, constraints.toArray(new Constraint[0]))
         .normalize();
     return normalizedConstraintsSets.stream()

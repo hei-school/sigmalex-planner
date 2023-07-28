@@ -22,7 +22,6 @@ public final class Not extends Constraint {
       case True t -> FALSE;
       case Not not -> not.constraint;
       case NormalizedConstraint norm -> negDisjOfConj(norm.normalize());
-      case VariadicAnd variadicAnd -> negDisjOfConj(variadicAnd.normalize());
       case VariadicOr variadicOr -> negDisjOfConj(variadicOr.normalize());
       case And and -> or(not(and.constraint1), not(and.constraint2));
       case Or or -> and(not(or.constraint1), not(or.constraint2));
@@ -31,9 +30,9 @@ public final class Not extends Constraint {
     }).normalize();
   }
 
-  private VariadicAnd negDisjOfConj(
+  private Constraint negDisjOfConj(
       Set<Set<NormalizedConstraint>> disjunctionsOfConjunctions) {
-    return new VariadicAnd(
+    return vand(
         name,
         disjunctionsOfConjunctions.stream()
             .map(this::negCong)

@@ -8,7 +8,6 @@ import school.hei.linearE.Sub;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearP.constraint.NormalizedConstraint;
-import school.hei.linearP.constraint.VariadicAnd;
 
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +19,7 @@ import static school.hei.linearP.OptimizationType.min;
 import static school.hei.linearP.constraint.Constraint.eq;
 import static school.hei.linearP.constraint.Constraint.geq;
 import static school.hei.linearP.constraint.Constraint.leq;
+import static school.hei.linearP.constraint.Constraint.vand;
 
 class LPTest {
 
@@ -150,7 +150,7 @@ class LPTest {
             max,
             new Add(new Mono(x), new Mono(7)),
             Set.of(
-                new VariadicAnd(
+                vand(
                     cName,
                     leq(cName, new Mono(x), yPlus9),
                     geq(cName, new Mono(x), yPlus9))))
