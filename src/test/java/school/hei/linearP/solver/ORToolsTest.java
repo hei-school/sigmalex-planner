@@ -14,7 +14,6 @@ import school.hei.linearP.constraint.And;
 import school.hei.linearP.constraint.Eq;
 import school.hei.linearP.constraint.False;
 import school.hei.linearP.constraint.Geq;
-import school.hei.linearP.constraint.Le;
 import school.hei.linearP.constraint.Leq;
 import school.hei.linearP.constraint.Or;
 import school.hei.linearP.constraint.True;
@@ -30,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static school.hei.linearP.OptimizationType.max;
 import static school.hei.linearP.OptimizationType.min;
 import static school.hei.linearP.Solution.UNFEASIBLE;
+import static school.hei.linearP.constraint.Constraint.le;
 import static school.hei.linearP.constraint.Constraint.not;
 import static school.hei.linearP.constraint.False.FALSE;
 import static school.hei.linearP.constraint.True.TRUE;
@@ -115,7 +115,7 @@ class ORToolsTest {
         y,
         new Geq(x, 0),
         new Geq(y, 0),
-        new Le(null, new Add(new Mult(-1, x), y), new Mono(1)), // instead of Leq
+        le(null, new Add(new Mult(-1, x), y), new Mono(1)), // instead of Leq
         new Leq(new Add(new Mult(3, x), 2), 12),
         new Leq(new Add(new Mult(2, x), new Mult(3, y)), 12));
 
@@ -142,7 +142,7 @@ class ORToolsTest {
         y,
         new Geq(x, 0),
         new Geq(y, 0),
-        new Le( // instead of Leq
+        le( // instead of Leq
             null,
             new Add(new Mult(-1, x), y), new Mono(1),
             hugeEpsilon),
