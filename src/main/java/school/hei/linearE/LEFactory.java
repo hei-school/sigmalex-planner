@@ -4,6 +4,8 @@ import school.hei.linearE.instantiableE.Variable;
 
 import java.util.Arrays;
 
+import static java.util.Comparator.comparing;
+
 public class LEFactory {
 
   public static Add sub(LinearE le1, LinearE le2) {
@@ -26,5 +28,16 @@ public class LEFactory {
     return Arrays.stream(leList)
         .reduce(Add::new)
         .orElse(new Mono(0.));
+  }
+
+  public static LinearE vsigma(LinearE le, Sigma.SigmaBound... sigmaBounds) {
+    var sortedBounds = Arrays.stream(sigmaBounds)
+        .sorted(comparing(bound -> bound.bounder().variable().getName()))
+        .toList();
+    Sigma compoundSigma = new Sigma(le, sortedBounds.get(0));
+    for (int i = 1; i < sortedBounds.size(); i++) {
+      compoundSigma = new Sigma(compoundSigma, sortedBounds.get(i));
+    }
+    return compoundSigma;
   }
 }

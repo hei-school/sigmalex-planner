@@ -12,6 +12,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static school.hei.linearE.LEFactory.vadd;
+import static school.hei.linearE.LEFactory.vsigma;
 
 class VariadicSigmaTest {
   @Test
@@ -24,7 +25,7 @@ class VariadicSigmaTest {
     var boundJ = new SigmaBound(j, 10, 11);
     assertEquals(
         new Sigma(new Sigma(le, boundI), boundJ).normalize(),
-        new VariadicSigma(le, boundI, boundJ).normalize());
+        vsigma(le, boundI, boundJ).normalize());
   }
 
   @Test
@@ -46,7 +47,7 @@ class VariadicSigmaTest {
                 new Q("x_5_11"), new Constant(3),
                 new Q("x_6_11"), new Constant(3)),
             new Constant(93)),
-        new VariadicSigma(le_i_j, boundJ, boundI).normalize());
+        vsigma(le_i_j, boundJ, boundI).normalize());
   }
 
   @Test
@@ -61,6 +62,6 @@ class VariadicSigmaTest {
     var boundJ = new SigmaBound(j, 10, 11);
     var e = assertThrows(
         DuplicateVariableName.class,
-        () -> new VariadicSigma(le_i_j, boundI, boundJ).normalize());
+        () -> vsigma(le_i_j, boundI, boundJ).normalize());
   }
 }

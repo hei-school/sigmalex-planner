@@ -1,9 +1,9 @@
 package school.hei.linearE;
 
-import school.hei.linearE.instantiableE.AddE;
+import school.hei.linearE.instantiableE.AddIE;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.InstantiableE;
-import school.hei.linearE.instantiableE.MultE;
+import school.hei.linearE.instantiableE.MultIE;
 import school.hei.linearE.instantiableE.Variable;
 
 import java.util.HashMap;
@@ -94,11 +94,11 @@ public final class NormalizedLE implements LinearE {
 
   public NormalizedLE not() {
     Map<Variable, InstantiableE> wTimesNeg1 = new HashMap<>();
-    weightedV.forEach((var, val) -> wTimesNeg1.put(var, new MultE(new Constant(-1.), val)));
+    weightedV.forEach((var, val) -> wTimesNeg1.put(var, new MultIE(new Constant(-1.), val)));
     return new NormalizedLE(
         wTimesNeg1,
-        new AddE(
-            new MultE(new Constant(-1.), e),
+        new AddIE(
+            new MultIE(new Constant(-1.), e),
             // DEFAULT_EPSILON is publicly writable in case tuning is needed
             new Constant(DEFAULT_EPSILON)));
   }

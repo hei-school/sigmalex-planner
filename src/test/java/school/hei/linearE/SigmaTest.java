@@ -2,7 +2,7 @@ package school.hei.linearE;
 
 import org.junit.jupiter.api.Test;
 import school.hei.linearE.Sigma.SigmaBound;
-import school.hei.linearE.instantiableE.ArithmeticConversion;
+import school.hei.linearE.instantiableE.ArithmeticConversionException;
 import school.hei.linearE.instantiableE.BounderValue;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Q;
@@ -116,6 +116,6 @@ class SigmaTest {
     var e = assertThrows(
         RuntimeException.class,
         () -> new Sigma(add_day_to_z, weekend_bound).normalize());
-    assertEquals(ArithmeticConversion.class, e.getCause().getClass());
+    assertEquals(ArithmeticConversionException.class, e.getCause().getClass());
   }
 }

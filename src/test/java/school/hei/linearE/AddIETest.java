@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
 
-class AddETest {
+class AddIETest {
   @Test
   public void add_mono() {
     var x = new Z("x");

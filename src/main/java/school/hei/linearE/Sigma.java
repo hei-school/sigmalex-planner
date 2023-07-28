@@ -1,11 +1,11 @@
 package school.hei.linearE;
 
-import school.hei.linearE.instantiableE.AddE;
-import school.hei.linearE.instantiableE.ArithmeticConversion;
+import school.hei.linearE.instantiableE.AddIE;
+import school.hei.linearE.instantiableE.ArithmeticConversionException;
 import school.hei.linearE.instantiableE.Bounder;
 import school.hei.linearE.instantiableE.BounderValue;
 import school.hei.linearE.instantiableE.Constant;
-import school.hei.linearE.instantiableE.MultE;
+import school.hei.linearE.instantiableE.MultIE;
 import school.hei.linearE.instantiableE.SigmaZ;
 import school.hei.linearE.instantiableE.Variable;
 
@@ -56,8 +56,8 @@ public record Sigma(LinearE le, SigmaBound sigmaBound) implements LinearE {
     var newE = normalizedLE.e();
     if (weightedV.containsKey(k)) {
       try {
-        newE = new AddE(newE, new MultE(kValue.toArithmeticValue(), weightedV.get(k)));
-      } catch (ArithmeticConversion e) {
+        newE = new AddIE(newE, new MultIE(kValue.toArithmeticValue(), weightedV.get(k)));
+      } catch (ArithmeticConversionException e) {
         throw new RuntimeException(e);
       }
       substitutedWeightedV.remove(k);
