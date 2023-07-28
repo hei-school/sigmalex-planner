@@ -11,7 +11,7 @@ public final class Not extends Constraint {
 
   private final Constraint constraint;
 
-  public Not(Constraint constraint) {
+  Not(Constraint constraint) {
     this.constraint = constraint;
   }
 
@@ -20,9 +20,9 @@ public final class Not extends Constraint {
     return (switch (constraint) {
       case False f -> TRUE;
       case Not not -> not.constraint;
-      case NormalizedConstraint normalizedConstraint -> not(normalizedConstraint);
-      case VariadicAnd variadicAnd -> not(variadicAnd);
-      case VariadicOr variadicOr -> not(variadicOr);
+      case NormalizedConstraint normalizedConstraint -> negDisjOfConj(normalizedConstraint.normalize());
+      case VariadicAnd variadicAnd -> negDisjOfConj(variadicAnd.normalize());
+      case VariadicOr variadicOr -> negDisjOfConj(variadicOr.normalize());
       case And and -> new Or(new Not(and.constraint1), new Not(and.constraint2));
       case Or or -> new And(new Not(or.constraint1), new Not(or.constraint2));
       case Leq leq -> new Le(leq.le2, leq.le1);
@@ -32,24 +32,20 @@ public final class Not extends Constraint {
       case True t -> FALSE;
       case Eq eq -> new And(new Le(eq.le1, eq.le2), new Le(eq.le2, eq.le1));
       case Geq geq -> new Le(geq.le2, geq.le1);
-      case Le le -> negateDisjunctionsOfConjunctions(le.normalize());
+      case Le le -> negDisjOfConj(le.normalize());
     }).normalize();
   }
 
-  private VariadicAnd not(Constraint constraint) {
-    return negateDisjunctionsOfConjunctions(constraint.normalize());
-  }
-
-  private VariadicAnd negateDisjunctionsOfConjunctions(
+  private VariadicAnd negDisjOfConj(
       Set<Set<NormalizedConstraint>> disjunctionsOfConjunctions) {
     return new VariadicAnd(
         name,
         disjunctionsOfConjunctions.stream()
-            .map(this::negateConjunctions)
+            .map(this::negCong)
             .toArray(VariadicOr[]::new));
   }
 
-  private VariadicOr negateConjunctions(Set<NormalizedConstraint> conjunctionOfConstraints) {
+  private VariadicOr negCong(Set<NormalizedConstraint> conjunctionOfConstraints) {
     return new VariadicOr(
         name,
         conjunctionOfConstraints.stream()

@@ -23,4 +23,8 @@ public sealed abstract class Constraint
   public String name() {
     return name;
   }
+
+  public static Not not(Constraint constraint) {
+    return new Not(constraint);
+  }
 }

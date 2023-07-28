@@ -16,7 +16,6 @@ import school.hei.linearP.constraint.False;
 import school.hei.linearP.constraint.Geq;
 import school.hei.linearP.constraint.Le;
 import school.hei.linearP.constraint.Leq;
-import school.hei.linearP.constraint.Not;
 import school.hei.linearP.constraint.Or;
 import school.hei.linearP.constraint.True;
 import school.hei.linearP.constraint.VariadicAnd;
@@ -31,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static school.hei.linearP.OptimizationType.max;
 import static school.hei.linearP.OptimizationType.min;
 import static school.hei.linearP.Solution.UNFEASIBLE;
+import static school.hei.linearP.constraint.Constraint.not;
 import static school.hei.linearP.constraint.False.FALSE;
 import static school.hei.linearP.constraint.True.TRUE;
 
@@ -175,7 +175,7 @@ class ORToolsTest {
     var feasible1 = new LP(
         max, y,
         x_domain, y_domain,
-        new Not(a), b, c);
+        not(a), b, c);
     assertEquals(
         new Solution(
             4,
@@ -185,7 +185,7 @@ class ORToolsTest {
     var feasible2 = new LP(
         max, y,
         x_domain, y_domain,
-        a, new Not(b), c);
+        a, not(b), c);
     assertEquals(
         new Solution(
             1,
@@ -195,7 +195,7 @@ class ORToolsTest {
     var unfeasible = new LP(
         max, y,
         x_domain, y_domain,
-        new Not(a), new Not(b), c);
+        not(a), not(b), c);
     assertEquals(UNFEASIBLE, subject.solve(unfeasible));
 
     var a_and_b_and_c = new LP(
@@ -205,13 +205,13 @@ class ORToolsTest {
     var a_and_b_and_c_but_in_a_fancy_way = new LP(
         max, y,
         x_domain, y_domain,
-        new Not(new Not(a)), new Not(new Or(new Not(b), new Not(c))), // fancy a&b&c
-        new Not(new Or(new Not(new And(a, b)), FALSE)),  // fancy (redundant) a,b
-        new Not(new False()), new Or(TRUE, new Not(new True())),
-        new Not(new Or(new Not(new And(new Eq(x, x), new Eq(x, x))), new Not(new Eq(x, x)))), // fancy x=x...
-        new Not(new And(new Not(new Or(new Eq(x, x), new Eq(x, x))), new Not(new Eq(x, x)))), // ...still
-        new Not(new VariadicOr(new Not(new VariadicAnd(new Eq(x, x), new Eq(x, x))))), // ...as variadic
-        new Not(new VariadicAnd(new Not(new VariadicOr(new Eq(x, x), new Eq(x, x)))))); // ...still!
+        not(not(a)), not(new Or(not(b), not(c))), // fancy a&b&c
+        not(new Or(not(new And(a, b)), FALSE)),  // fancy (redundant) a,b
+        not(new False()), new Or(TRUE, not(new True())),
+        not(new Or(not(new And(new Eq(x, x), new Eq(x, x))), not(new Eq(x, x)))), // fancy x=x...
+        not(new And(not(new Or(new Eq(x, x), new Eq(x, x))), not(new Eq(x, x)))), // ...still
+        not(new VariadicOr(not(new VariadicAnd(new Eq(x, x), new Eq(x, x))))), // ...as variadic
+        not(new VariadicAnd(not(new VariadicOr(new Eq(x, x), new Eq(x, x)))))); // ...still!
     assertEquals(
         subject.solve(a_and_b_and_c),
         subject.solve(a_and_b_and_c_but_in_a_fancy_way));
