@@ -29,6 +29,7 @@ import static school.hei.linearP.OptimizationType.min;
 import static school.hei.linearP.Solution.UNFEASIBLE;
 import static school.hei.linearP.constraint.Constraint.and;
 import static school.hei.linearP.constraint.Constraint.le;
+import static school.hei.linearP.constraint.Constraint.leq;
 import static school.hei.linearP.constraint.Constraint.not;
 import static school.hei.linearP.constraint.Constraint.or;
 import static school.hei.linearP.constraint.False.FALSE;
@@ -57,13 +58,13 @@ class ORToolsTest {
         max,
         new Add(
             new Mult(143, x), new Mult(60, y)),
-        new Leq(
+        leq(
             new Add(new Mult(120, x), new Mult(200, y)),
             new Sub(15_000, new Mult(10, y))),
-        new Leq(
+        leq(
             new Add(new Mult(110, x), new Mult(30, y)),
             4_000),
-        new Leq(
+        leq(
             new Add(x, y), 75));
     assertEquals(
         new Solution(
@@ -89,9 +90,9 @@ class ORToolsTest {
         y,
         new Geq(x, 0),
         new Geq(y, 0),
-        new Leq(new Add(new Mult(-1, x), y), 1),
-        new Leq(new Add(new Mult(3, x), 2), 12),
-        new Leq(new Add(new Mult(2, x), new Mult(3, y)), 12));
+        leq(new Add(new Mult(-1, x), y), 1),
+        leq(new Add(new Mult(3, x), 2), 12),
+        leq(new Add(new Mult(2, x), new Mult(3, y)), 12));
 
     assertEquals(
         new Solution(
@@ -116,8 +117,8 @@ class ORToolsTest {
         new Geq(x, 0),
         new Geq(y, 0),
         le(null, new Add(new Mult(-1, x), y), new Mono(1)), // instead of Leq
-        new Leq(new Add(new Mult(3, x), 2), 12),
-        new Leq(new Add(new Mult(2, x), new Mult(3, y)), 12));
+        leq(new Add(new Mult(3, x), 2), 12),
+        leq(new Add(new Mult(2, x), new Mult(3, y)), 12));
 
     assertEquals(
         new Solution(
@@ -146,8 +147,8 @@ class ORToolsTest {
             null,
             new Add(new Mult(-1, x), y), new Mono(1),
             hugeEpsilon),
-        new Leq(new Add(new Mult(3, x), 2), 12),
-        new Leq(new Add(new Mult(2, x), new Mult(3, y)), 12));
+        leq(new Add(new Mult(3, x), 2), 12),
+        leq(new Add(new Mult(2, x), new Mult(3, y)), 12));
 
     assertEquals(
         new Solution(
@@ -168,9 +169,9 @@ class ORToolsTest {
     var y = new Z("y");
     var x_domain = new Geq(x, 0);
     var y_domain = new Geq(y, 0);
-    var a = new Leq(new Add(new Mult(-1, x), y), 1);
-    var b = new Leq(new Add(new Mult(3, x), 2), 12);
-    var c = new Leq(new Add(new Mult(2, x), new Mult(3, y)), 12);
+    var a = leq(new Add(new Mult(-1, x), y), 1);
+    var b = leq(new Add(new Mult(3, x), 2), 12);
+    var c = leq(new Add(new Mult(2, x), new Mult(3, y)), 12);
 
     var feasible1 = new LP(
         max, y,
@@ -228,9 +229,9 @@ class ORToolsTest {
        If (a) is removed: objective optimal increases from 2 to 4 */
     var x = new Z("x");
     var y = new Z("y");
-    var a = new Leq(new Add(new Mult(-1, x), y), 1);
-    var b = new Leq(new Add(new Mult(3, x), 2), 12);
-    var c = new Leq(new Add(new Mult(2, x), new Mult(3, y)), 12);
+    var a = leq(new Add(new Mult(-1, x), y), 1);
+    var b = leq(new Add(new Mult(3, x), 2), 12);
+    var c = leq(new Add(new Mult(2, x), new Mult(3, y)), 12);
 
     var withGreaterObjective = new LP(
         max, y,
@@ -271,10 +272,10 @@ class ORToolsTest {
         new Geq(
             new Add(x1, new Mult(2, x2)),
             -14),
-        new Leq(
+        leq(
             new Sub(new Mult(-4, x1), x2),
             -33),
-        new Leq(
+        leq(
             new Add(new Mult(2, x1), x2),
             20));
 
@@ -307,8 +308,8 @@ class ORToolsTest {
     var x2 = new Z("x2");
     var objective = new Add(new Mult(8, x1), x2);
     var a = new Geq(new Add(x1, new Mult(2, x2)), -14);
-    var b = new Leq(new Add(new Mult(2, x1), x2), 20);
-    var c = new Leq(new Sub(new Mult(-4, x1), x2), -33);
+    var b = leq(new Add(new Mult(2, x1), x2), 20);
+    var c = leq(new Sub(new Mult(-4, x1), x2), -33);
 
     var unfeasible1 = new LP(min, objective, a);
     assertTrue(subject.solve(unfeasible1).isEmpty());

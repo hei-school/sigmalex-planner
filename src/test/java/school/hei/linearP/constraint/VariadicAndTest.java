@@ -10,6 +10,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static school.hei.linearE.instantiableE.Constant.ONE;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
+import static school.hei.linearP.constraint.Constraint.leq;
 
 class VariadicAndTest {
   @Test
@@ -21,6 +22,6 @@ class VariadicAndTest {
         Set.of(Set.of(
             new NormalizedConstraint(new NormalizedLE(Map.of(x, ONE), ZERO)),
             new NormalizedConstraint(new NormalizedLE(Map.of(y, ONE), ZERO)))),
-        new VariadicAnd(new Leq(x, 0), new Leq(y, 0)).normalize());
+        new VariadicAnd(leq(x, 0), leq(y, 0)).normalize());
   }
 }

@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
 import static school.hei.linearP.OptimizationType.max;
 import static school.hei.linearP.OptimizationType.min;
+import static school.hei.linearP.constraint.Constraint.leq;
 
 class LPTest {
 
@@ -48,7 +49,7 @@ class LPTest {
             min,
             new Add(new Mono(x), new Mono(7)),
             Set.of(
-                new Leq(cName, new Mono(x), new Mono(y))))
+                leq(cName, new Mono(x), new Mono(y))))
             .normalize());
   }
 
@@ -152,7 +153,7 @@ class LPTest {
             Set.of(
                 new VariadicAnd(
                     cName,
-                    new Leq(cName, new Mono(x), yPlus9),
+                    leq(cName, new Mono(x), yPlus9),
                     new Geq(cName, new Mono(x), yPlus9))))
             .normalize());
   }

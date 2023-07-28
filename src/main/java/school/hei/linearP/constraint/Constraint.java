@@ -1,6 +1,7 @@
 package school.hei.linearP.constraint;
 
 import school.hei.linearE.LinearE;
+import school.hei.linearE.Mono;
 import school.hei.linearE.instantiableE.Variable;
 
 import java.util.Set;
@@ -38,6 +39,22 @@ public sealed abstract class Constraint
 
   public static Not not(Constraint constraint) {
     return new Not(constraint);
+  }
+
+  public static Leq leq(String name, LinearE le1, LinearE le2) {
+    return new Leq(name, le1, le2);
+  }
+
+  public static Leq leq(LinearE le1, LinearE le2) {
+    return new Leq(null, le1, le2);
+  }
+
+  public static Leq leq(LinearE le, double c) {
+    return new Leq(null, le, new Mono(c));
+  }
+
+  public static Leq leq(Variable v, double c) {
+    return new Leq(null, new Mono(v), new Mono(c));
   }
 
   public static Le le(String name, LinearE le1, LinearE le2, double epsilon) {
