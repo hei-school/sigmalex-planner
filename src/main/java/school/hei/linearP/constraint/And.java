@@ -1,7 +1,8 @@
 package school.hei.linearP.constraint;
 
-import java.util.HashSet;
-import java.util.Set;
+import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
+import school.hei.linearP.constraint.polytope.Polytope;
+
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toSet;
@@ -15,7 +16,7 @@ public final class And extends BiConstraint {
   }
 
   @Override
-  public Set<Set<NormalizedConstraint>> normalize() {
+  public DisjunctivePolytopes normalize() {
     if (constraint1.equals(TRUE)) {
       return constraint2.normalize();
     }
@@ -26,14 +27,14 @@ public final class And extends BiConstraint {
       return FALSE.normalize();
     }
 
-    Set<Set<NormalizedConstraint>> res = new HashSet<>();
+    DisjunctivePolytopes res = DisjunctivePolytopes.of();
     // Illustration: ({a}|{b}) & ({c}|{d}) is normalized to: {a&c} | {a&d} | {b&c} | {b&d}
-    for (Set<NormalizedConstraint> setFromConstraint1 : constraint1.normalize()) {
-      for (Set<NormalizedConstraint> setFromConstraint2 : constraint2.normalize()) {
-        res.add(Stream.concat(
-                setFromConstraint1.stream(),
-                setFromConstraint2.stream())
-            .collect(toSet()));
+    for (Polytope polytopeFromConstraint1 : constraint1.normalize().polytopes()) {
+      for (Polytope polytopeConstraint2 : constraint2.normalize().polytopes()) {
+        res.add(new Polytope(Stream.concat(
+                polytopeFromConstraint1.constraints().stream(),
+                polytopeConstraint2.constraints().stream())
+            .collect(toSet())));
       }
     }
     return res;

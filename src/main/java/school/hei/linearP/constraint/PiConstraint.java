@@ -2,6 +2,7 @@ package school.hei.linearP.constraint;
 
 import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.Variable;
+import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
 
 import java.util.Set;
 
@@ -17,7 +18,7 @@ public final class PiConstraint extends Constraint {
   }
 
   @Override
-  public Set<Set<NormalizedConstraint>> normalize() {
+  public DisjunctivePolytopes normalize() {
     return constraint.normalize(); //TODO
   }
 

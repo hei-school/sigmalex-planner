@@ -1,8 +1,8 @@
 package school.hei.linearP.constraint;
 
 import school.hei.linearE.LinearE;
-
-import java.util.Set;
+import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
+import school.hei.linearP.constraint.polytope.Polytope;
 
 import static school.hei.linearE.LEFactory.sub;
 
@@ -13,7 +13,7 @@ public final class Leq extends BiLeConstraint {
   }
 
   @Override
-  public Set<Set<NormalizedConstraint>> normalize() {
-    return Set.of(Set.of(new NormalizedConstraint(name, sub(le1, le2).normalize())));
+  public DisjunctivePolytopes normalize() {
+    return DisjunctivePolytopes.of(Polytope.of(new NormalizedConstraint(name, sub(le1, le2).normalize())));
   }
 }

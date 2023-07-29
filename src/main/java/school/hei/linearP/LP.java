@@ -42,15 +42,15 @@ public record LP(
   }
 
   public Set<NormalizedLP> normalize() {
-    var normalizedConstraintsSets = vand(
+    var disjunctivePolytopes = vand(
         name, constraints.toArray(new Constraint[0]))
         .normalize();
-    return normalizedConstraintsSets.stream()
-        .map(normalizedConstraintsSet -> new NormalizedLP(
+    return disjunctivePolytopes.polytopes().stream()
+        .map(polytope -> new NormalizedLP(
             name,
             optimizationType,
             objective.normalize(),
-            normalizedConstraintsSet))
+            polytope.constraints()))
         .collect(toSet());
   }
 }

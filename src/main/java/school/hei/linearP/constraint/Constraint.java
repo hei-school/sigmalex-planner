@@ -3,6 +3,7 @@ package school.hei.linearP.constraint;
 import school.hei.linearE.LinearE;
 import school.hei.linearE.Mono;
 import school.hei.linearE.instantiableE.Variable;
+import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
 
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public sealed abstract class Constraint
     this.name = name;
   }
 
-  public abstract Set<Set<NormalizedConstraint>> normalize(); // set of set due to Or
+  public abstract DisjunctivePolytopes normalize(); // disjunction is due to Or
 
   public abstract Set<Variable> variables();
 

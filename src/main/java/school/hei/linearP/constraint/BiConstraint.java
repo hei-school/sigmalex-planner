@@ -18,12 +18,6 @@ public abstract sealed class BiConstraint extends Constraint permits And, Or {
     this.constraint2 = constraint2;
   }
 
-  public BiConstraint(Constraint constraint1, Constraint constraint2) {
-    super(null);
-    this.constraint1 = constraint1;
-    this.constraint2 = constraint2;
-  }
-
   @Override
   public Set<Variable> variables() {
     return Stream.concat(

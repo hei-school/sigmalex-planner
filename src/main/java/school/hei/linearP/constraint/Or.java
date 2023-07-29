@@ -1,6 +1,7 @@
 package school.hei.linearP.constraint;
 
-import java.util.Set;
+import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
+
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toSet;
@@ -14,7 +15,7 @@ public final class Or extends BiConstraint {
   }
 
   @Override
-  public Set<Set<NormalizedConstraint>> normalize() {
+  public DisjunctivePolytopes normalize() {
     if (constraint1.equals(FALSE)) {
       return constraint2.normalize();
     }
@@ -25,9 +26,9 @@ public final class Or extends BiConstraint {
       return TRUE.normalize();
     }
 
-    return Stream.concat(
-            constraint1.normalize().stream(),
-            constraint2.normalize().stream())
-        .collect(toSet());
+    return new DisjunctivePolytopes(Stream.concat(
+            constraint1.normalize().polytopes().stream(),
+            constraint2.normalize().polytopes().stream())
+        .collect(toSet()));
   }
 }

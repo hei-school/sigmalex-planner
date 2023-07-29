@@ -1,6 +1,8 @@
 package school.hei.linearP.constraint;
 
 import school.hei.linearE.instantiableE.Variable;
+import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
+import school.hei.linearP.constraint.polytope.Polytope;
 
 import java.util.Set;
 
@@ -16,33 +18,32 @@ public final class Not extends Constraint {
   }
 
   @Override
-  public Set<Set<NormalizedConstraint>> normalize() {
+  public DisjunctivePolytopes normalize() {
     return (switch (constraint) {
       case False f -> TRUE;
       case True t -> FALSE;
       case Not not -> not.constraint;
-      case NormalizedConstraint norm -> negDisjOfConj(norm.normalize());
+      case NormalizedConstraint norm -> not(norm.normalize());
       case And and -> or(not(and.constraint1), not(and.constraint2));
       case Or or -> and(not(or.constraint1), not(or.constraint2));
       case Leq leq -> le(leq.le2, leq.le1);
-      case Le le -> negDisjOfConj(le.normalize());
+      case Le le -> not(le.normalize());
       case PiConstraint piConstraint -> throw new RuntimeException("TODO");
     }).normalize();
   }
 
-  private Constraint negDisjOfConj(
-      Set<Set<NormalizedConstraint>> disjunctionsOfConjunctions) {
+  private Constraint not(DisjunctivePolytopes disjunctivePolytopes) {
     return vand(
         name,
-        disjunctionsOfConjunctions.stream()
+        disjunctivePolytopes.polytopes().stream()
             .map(this::negCong)
             .toArray(Constraint[]::new));
   }
 
-  private Constraint negCong(Set<NormalizedConstraint> conjunctionOfConstraints) {
+  private Constraint negCong(Polytope polytope) {
     return vor(
         name,
-        conjunctionOfConstraints.stream()
+        polytope.constraints().stream()
             .map(constraint -> new NormalizedConstraint(constraint.le().not()))
             .toArray(NormalizedConstraint[]::new));
   }

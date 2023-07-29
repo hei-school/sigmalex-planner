@@ -2,6 +2,8 @@ package school.hei.linearP.constraint;
 
 import school.hei.linearE.NormalizedLE;
 import school.hei.linearE.instantiableE.Variable;
+import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
+import school.hei.linearP.constraint.polytope.Polytope;
 
 import java.util.Objects;
 import java.util.Set;
@@ -21,8 +23,8 @@ public final class NormalizedConstraint extends Constraint {
   }
 
   @Override
-  public Set<Set<NormalizedConstraint>> normalize() {
-    return Set.of(Set.of(this));
+  public DisjunctivePolytopes normalize() {
+    return DisjunctivePolytopes.of(Polytope.of(this));
   }
 
   @Override
