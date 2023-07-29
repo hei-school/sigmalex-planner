@@ -1,8 +1,8 @@
 package school.hei.linearE;
 
 import org.junit.jupiter.api.Test;
-import school.hei.linearE.Sigma.SigmaBound;
 import school.hei.linearE.instantiableE.ArithmeticConversionException;
+import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.BounderValue;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Q;
@@ -26,7 +26,7 @@ class SigmaTest {
     int n = 10;
     assertEquals(
         new NormalizedLE(n * (n + 1) / 2.),
-        new Sigma(new Mono(k), new SigmaBound(k, 1, n)).normalize());
+        new Sigma(new Mono(k), new Bound(k, 1, n)).normalize());
   }
 
   @Test
@@ -39,7 +39,7 @@ class SigmaTest {
         new NormalizedLE(n / 2. * (2 * a + (n - 1) * d)),
         new Sigma(
             new Add(new Mono(a), new Mult(d, new Add(new Mono(k), new Mono(-1)))),
-            new SigmaBound(k, 1, n))
+            new Bound(k, 1, n))
             .normalize());
   }
 
@@ -49,7 +49,7 @@ class SigmaTest {
     var x_i = new Q("x", Set.of(i));
     var le_i = new Mono(3, x_i);
 
-    var boundI = new SigmaBound(i, 4, 6);
+    var boundI = new Bound(i, 4, 6);
     assertEquals(
         new NormalizedLE(
             Map.of(
@@ -62,7 +62,7 @@ class SigmaTest {
     var j = new SigmaZ("j");
     var x_i_j = new Q("x", Set.of(i, j));
     var le_i_j = new Mono(3, x_i_j);
-    var boundJ = new SigmaBound(j, 10, 11);
+    var boundJ = new Bound(j, 10, 11);
     assertEquals(
         new NormalizedLE(
             Map.of(
@@ -82,12 +82,12 @@ class SigmaTest {
     var j = new SigmaZ("j");
     var le = new Add(new Mono(2, i), new Mono(3, j));
 
-    var boundI = new SigmaBound(i, 4, 6);
+    var boundI = new Bound(i, 4, 6);
     assertEquals(
         new NormalizedLE(Map.of(j, new Constant(9)), new Constant(30)),
         new Sigma(le, boundI).normalize());
 
-    var boundJ = new SigmaBound(j, 10, 11);
+    var boundJ = new Bound(j, 10, 11);
     assertEquals(
         new NormalizedLE(Map.of(), new Constant(249)),
         new Sigma(new Sigma(le, boundI), boundJ).normalize());
@@ -100,7 +100,7 @@ class SigmaTest {
   @Test
   public void weekend_as_bounder() {
     var weekend = new SigmaZ("w");
-    var weekend_bound = new SigmaBound(weekend, saturday, sunday);
+    var weekend_bound = new Bound(weekend, saturday, sunday);
 
     var hours_weekend = new Z("hours", weekend);
     var hours_weekend_le = new Mono(hours_weekend);

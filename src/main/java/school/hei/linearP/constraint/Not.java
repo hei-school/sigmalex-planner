@@ -26,6 +26,7 @@ public final class Not extends Constraint {
       case Or or -> and(not(or.constraint1), not(or.constraint2));
       case Leq leq -> le(leq.le2, leq.le1);
       case Le le -> negDisjOfConj(le.normalize());
+      case PiConstraint piConstraint -> throw new RuntimeException("TODO");
     }).normalize();
   }
 

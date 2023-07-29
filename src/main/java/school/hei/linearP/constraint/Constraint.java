@@ -9,7 +9,7 @@ import java.util.Set;
 import static school.hei.linearP.constraint.Le.DEFAULT_EPSILON;
 
 public sealed abstract class Constraint
-    permits BiConstraint, BiLeConstraint, False, NormalizedConstraint, Not, True {
+    permits BiConstraint, BiLeConstraint, False, NormalizedConstraint, Not, PiConstraint, True {
   protected final String name;
 
   public Constraint() {

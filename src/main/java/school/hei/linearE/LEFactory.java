@@ -1,5 +1,6 @@
 package school.hei.linearE;
 
+import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.Variable;
 
 import java.util.Arrays;
@@ -30,8 +31,8 @@ public class LEFactory {
         .orElse(new Mono(0.));
   }
 
-  public static LinearE vsigma(LinearE le, Sigma.SigmaBound... sigmaBounds) {
-    var sortedBounds = Arrays.stream(sigmaBounds)
+  public static LinearE vsigma(LinearE le, Bound... bounds) {
+    var sortedBounds = Arrays.stream(bounds)
         .sorted(comparing(bound -> bound.bounder().variable().getName()))
         .toList();
     Sigma compoundSigma = new Sigma(le, sortedBounds.get(0));
