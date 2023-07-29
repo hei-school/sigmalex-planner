@@ -16,6 +16,7 @@ import java.util.function.Function;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static school.hei.linearE.LEFactory.vadd;
 import static school.hei.linearE.LEFactory.vsigma;
+import static school.hei.linearP.constraint.Constraint.geq;
 import static school.hei.linearP.constraint.Constraint.leq;
 import static school.hei.linearP.constraint.Constraint.pic;
 
@@ -49,4 +50,26 @@ class PiConstraintTest {
         pic(leq(vsigma(le_i_j, sigmaBoundJ, sigmaBoundI), 0), picBoundK).normalize());
   }
 
+  @Test
+  public void vpic_as_nested_pic() {
+    var i = new BounderZ("i");
+    var j = new BounderZ("j");
+    var x_i_j = new Q("x", j, i);
+
+    var boundI = new Bound(i, 4, 6);
+    var boundJ = new Bound(j, 10, 11);
+    Function<String, NormalizedConstraint> getExpectedNormalizedConstraint = vName ->
+        new NormalizedConstraint(new NormalizedLE(
+            Map.of(new Q(vName), new Constant(-1)),
+            new Constant(0)));
+    assertEquals(
+        DisjunctivePolytopes.of(Polytope.of(
+            getExpectedNormalizedConstraint.apply("x[i:4][j:10]"),
+            getExpectedNormalizedConstraint.apply("x[i:5][j:10]"),
+            getExpectedNormalizedConstraint.apply("x[i:6][j:10]"),
+            getExpectedNormalizedConstraint.apply("x[i:4][j:11]"),
+            getExpectedNormalizedConstraint.apply("x[i:5][j:11]"),
+            getExpectedNormalizedConstraint.apply("x[i:6][j:11]"))),
+        pic(geq(x_i_j, 0), boundI, boundJ).normalize());
+  }
 }

@@ -6,8 +6,10 @@ import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.Variable;
 import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
 
+import java.util.List;
 import java.util.Set;
 
+import static school.hei.linearE.instantiableE.Bound.sort;
 import static school.hei.linearP.constraint.Le.DEFAULT_EPSILON;
 
 public sealed abstract class Constraint
@@ -59,6 +61,10 @@ public sealed abstract class Constraint
     return leq(null, new Mono(v), new Mono(c));
   }
 
+  public static Leq leq(double c, Variable v) {
+    return leq(null, new Mono(c), new Mono(v));
+  }
+
   public static Le le(String name, LinearE le1, LinearE le2, double epsilon) {
     return new Le(name, le1, le2, epsilon);
   }
@@ -95,12 +101,28 @@ public sealed abstract class Constraint
     return and(null, constraint1, constraint2);
   }
 
+  public static Or imply(Constraint constraint1, Constraint constraint2) {
+    return or(null, not(constraint1), constraint2);
+  }
+
+  public static And equiv(Constraint constraint1, Constraint constraint2) {
+    return and(null, imply(constraint1, constraint2), imply(constraint2, constraint1));
+  }
+
   public static And eq(String name, LinearE le1, LinearE le2) {
     return and(name, leq(le1, le2), leq(le2, le1));
   }
 
   public static And eq(Variable v1, Variable v2) {
     return eq(null, new Mono(v1), new Mono(v2));
+  }
+
+  public static And eq(Variable v, LinearE le) {
+    return eq(null, new Mono(v), le);
+  }
+
+  public static And eq(Variable v, double c) {
+    return eq(null, new Mono(v), new Mono(c));
   }
 
   public static Constraint vand(String name, Constraint... constraints) {
@@ -131,7 +153,16 @@ public sealed abstract class Constraint
     return new PiConstraint(name, constraint, bound);
   }
 
-  public static PiConstraint pic(Constraint constraint, Bound bound) {
-    return new PiConstraint(null, constraint, bound);
+  public static PiConstraint pic(String name, Constraint constraint, Bound... bounds) {
+    List<Bound> sortedBounds = sort(bounds);
+    PiConstraint nested = new PiConstraint(name, constraint, sortedBounds.get(0));
+    for (int i = 1; i < sortedBounds.size(); i++) {
+      nested = new PiConstraint(name, nested, sortedBounds.get(i));
+    }
+    return nested;
+  }
+
+  public static PiConstraint pic(Constraint constraint, Bound... bounds) {
+    return pic(null, constraint, bounds);
   }
 }

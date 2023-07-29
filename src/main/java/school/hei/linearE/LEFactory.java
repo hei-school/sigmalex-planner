@@ -4,8 +4,9 @@ import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.Variable;
 
 import java.util.Arrays;
+import java.util.List;
 
-import static java.util.Comparator.comparing;
+import static school.hei.linearE.instantiableE.Bound.sort;
 
 public class LEFactory {
 
@@ -32,13 +33,15 @@ public class LEFactory {
   }
 
   public static LinearE vsigma(LinearE le, Bound... bounds) {
-    var sortedBounds = Arrays.stream(bounds)
-        .sorted(comparing(bound -> bound.bounder().variable().getName()))
-        .toList();
+    List<Bound> sortedBounds = sort(bounds);
     Sigma compoundSigma = new Sigma(le, sortedBounds.get(0));
     for (int i = 1; i < sortedBounds.size(); i++) {
       compoundSigma = new Sigma(compoundSigma, sortedBounds.get(i));
     }
     return compoundSigma;
+  }
+
+  public static LinearE vsigma(Variable le, Bound... bounds) {
+    return vsigma(new Mono(le), bounds);
   }
 }
