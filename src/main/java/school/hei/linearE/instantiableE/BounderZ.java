@@ -2,9 +2,9 @@ package school.hei.linearE.instantiableE;
 
 import java.util.Set;
 
-public final class SigmaZ extends InstantiableV implements Bounder {
+public final class BounderZ extends InstantiableV implements Bounder {
 
-  public SigmaZ(String name) {
+  public BounderZ(String name) {
     super(name, Set.of());
   }
 

@@ -1,6 +1,9 @@
 package school.hei.linearE;
 
 import school.hei.linearE.instantiableE.AddIE;
+import school.hei.linearE.instantiableE.ArithmeticConversionException;
+import school.hei.linearE.instantiableE.Bounder;
+import school.hei.linearE.instantiableE.BounderValue;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.InstantiableE;
 import school.hei.linearE.instantiableE.MultIE;
@@ -101,5 +104,29 @@ public final class NormalizedLE implements LinearE {
             new MultIE(new Constant(-1.), e),
             // DEFAULT_EPSILON is publicly writable in case tuning is needed
             new Constant(DEFAULT_EPSILON)));
+  }
+
+  public NormalizedLE substitute(Bounder k, BounderValue kValue) {
+    var substitutedWeightedV = new HashMap<>(weightedV);
+    weightedV.forEach((v, c) -> {
+      if (v.getBounders().contains(k)) {
+        var boundedToWithoutK = new HashSet<>(v.getBounders());
+        boundedToWithoutK.remove(k);
+        substitutedWeightedV.put(
+            v.toNew(v.getName() + "[" + k.variable().getName() + ":" + kValue + "]", boundedToWithoutK), c);
+        substitutedWeightedV.remove(v);
+      }
+    });
+
+    var newE = e;
+    if (weightedV.containsKey(k)) {
+      try {
+        newE = new AddIE(newE, new MultIE(kValue.toArithmeticValue(), weightedV.get(k)));
+      } catch (ArithmeticConversionException e) {
+        throw new RuntimeException(e);
+      }
+      substitutedWeightedV.remove(k);
+    }
+    return new NormalizedLE(substitutedWeightedV, newE);
   }
 }

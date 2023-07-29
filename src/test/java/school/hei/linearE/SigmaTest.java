@@ -6,7 +6,7 @@ import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.BounderValue;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Q;
-import school.hei.linearE.instantiableE.SigmaZ;
+import school.hei.linearE.instantiableE.BounderZ;
 import school.hei.linearE.instantiableE.Z;
 
 import java.util.Map;
@@ -22,7 +22,7 @@ import static school.hei.linearE.instantiableE.Constant.ZERO;
 class SigmaTest {
   @Test
   public void first_n_sum() {
-    var k = new SigmaZ("k");
+    var k = new BounderZ("k");
     int n = 10;
     assertEquals(
         new NormalizedLE(n * (n + 1) / 2.),
@@ -33,7 +33,7 @@ class SigmaTest {
   public void first_arith_progression_sum() {
     // Does Wikipedia know math? https://en.wikipedia.org/wiki/Arithmetic_progression
     int n = 5, a = 2, d = 3;
-    var k = new SigmaZ("k");
+    var k = new BounderZ("k");
 
     assertEquals(
         new NormalizedLE(n / 2. * (2 * a + (n - 1) * d)),
@@ -45,7 +45,7 @@ class SigmaTest {
 
   @Test
   public void bounded_vars() {
-    var i = new SigmaZ("i");
+    var i = new BounderZ("i");
     var x_i = new Q("x", Set.of(i));
     var le_i = new Mono(3, x_i);
 
@@ -59,7 +59,7 @@ class SigmaTest {
             ZERO),
         new Sigma(le_i, boundI).normalize());
 
-    var j = new SigmaZ("j");
+    var j = new BounderZ("j");
     var x_i_j = new Q("x", Set.of(i, j));
     var le_i_j = new Mono(3, x_i_j);
     var boundJ = new Bound(j, 10, 11);
@@ -78,8 +78,8 @@ class SigmaTest {
 
   @Test
   public void nested_sigma() {
-    var i = new SigmaZ("i");
-    var j = new SigmaZ("j");
+    var i = new BounderZ("i");
+    var j = new BounderZ("j");
     var le = new Add(new Mono(2, i), new Mono(3, j));
 
     var boundI = new Bound(i, 4, 6);
@@ -99,7 +99,7 @@ class SigmaTest {
 
   @Test
   public void weekend_as_bounder() {
-    var weekend = new SigmaZ("w");
+    var weekend = new BounderZ("w");
     var weekend_bound = new Bound(weekend, saturday, sunday);
 
     var hours_weekend = new Z("hours", weekend);

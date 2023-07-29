@@ -1,6 +1,8 @@
 package school.hei.linearP.constraint;
 
 import school.hei.linearE.NormalizedLE;
+import school.hei.linearE.instantiableE.Bounder;
+import school.hei.linearE.instantiableE.BounderValue;
 import school.hei.linearE.instantiableE.Variable;
 import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
 import school.hei.linearP.constraint.polytope.Polytope;
@@ -59,5 +61,9 @@ public final class NormalizedConstraint extends Constraint {
 
   public double weight(Variable v) {
     return le.weightedV().get(v).instantiate();
+  }
+
+  public NormalizedConstraint substitute(Bounder k, BounderValue kValue) {
+    return new NormalizedConstraint(le.substitute(k, kValue));
   }
 }

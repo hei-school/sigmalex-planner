@@ -5,7 +5,7 @@ import school.hei.linearE.NormalizedLE.DuplicateVariableName;
 import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Q;
-import school.hei.linearE.instantiableE.SigmaZ;
+import school.hei.linearE.instantiableE.BounderZ;
 
 import java.util.Map;
 
@@ -17,8 +17,8 @@ import static school.hei.linearE.LEFactory.vsigma;
 class VariadicSigmaTest {
   @Test
   public void nested_sigma_as_variadic() {
-    var i = new SigmaZ("i");
-    var j = new SigmaZ("j");
+    var i = new BounderZ("i");
+    var j = new BounderZ("j");
     var le = new Add(new Mono(2, i), new Mono(3, j));
 
     var boundI = new Bound(i, 4, 6);
@@ -30,8 +30,8 @@ class VariadicSigmaTest {
 
   @Test
   public void bounded_vars() {
-    var i = new SigmaZ("i");
-    var j = new SigmaZ("j");
+    var i = new BounderZ("i");
+    var j = new BounderZ("j");
     var x_i_j = new Q("x", j, i);
     var le_i_j = vadd(new Mono(i), new Mono(j), new Mono(3, x_i_j));
 
@@ -52,8 +52,8 @@ class VariadicSigmaTest {
 
   @Test
   public void duplicate_names_prohibited() {
-    var i = new SigmaZ("i");
-    var j = new SigmaZ("j");
+    var i = new BounderZ("i");
+    var j = new BounderZ("j");
     var x_i_j = new Q("x", i, i);
     var x_j_i = new Q("x", i, j);
     var le_i_j = vadd(new Mono(i), new Mono(x_j_i), new Mono(3, x_i_j));

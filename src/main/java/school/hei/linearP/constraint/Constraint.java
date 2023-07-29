@@ -2,6 +2,7 @@ package school.hei.linearP.constraint;
 
 import school.hei.linearE.LinearE;
 import school.hei.linearE.Mono;
+import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.Variable;
 import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
 
@@ -124,5 +125,13 @@ public sealed abstract class Constraint
 
   public static Constraint vor(Constraint... constraints) {
     return vor(null, constraints);
+  }
+
+  public static PiConstraint pic(String name, Constraint constraint, Bound bound) {
+    return new PiConstraint(name, constraint, bound);
+  }
+
+  public static PiConstraint pic(Constraint constraint, Bound bound) {
+    return new PiConstraint(null, constraint, bound);
   }
 }
