@@ -33,6 +33,12 @@ public class LEFactory {
         .orElse(new Mono(0.));
   }
 
+  public static LinearE vadd(Variable... vList) {
+    return vadd(Arrays.stream(vList)
+        .map(Mono::new)
+        .toArray(Mono[]::new));
+  }
+
   public static LinearE vsigma(LinearE le, Bound... bounds) {
     Sigma compoundSigma = new Sigma(le, bounds[0]);
     for (int i = 1; i < bounds.length; i++) {
