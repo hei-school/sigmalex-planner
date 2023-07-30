@@ -6,10 +6,8 @@ import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.Variable;
 import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
 
-import java.util.List;
 import java.util.Set;
 
-import static school.hei.linearE.instantiableE.Bound.sort;
 import static school.hei.linearP.constraint.Le.DEFAULT_EPSILON;
 
 public sealed abstract class Constraint
@@ -154,10 +152,9 @@ public sealed abstract class Constraint
   }
 
   public static PiConstraint pic(String name, Constraint constraint, Bound... bounds) {
-    List<Bound> sortedBounds = sort(bounds);
-    PiConstraint nested = new PiConstraint(name, constraint, sortedBounds.get(0));
-    for (int i = 1; i < sortedBounds.size(); i++) {
-      nested = new PiConstraint(name, nested, sortedBounds.get(i));
+    PiConstraint nested = new PiConstraint(name, constraint, bounds[0]);
+    for (int i = 1; i < bounds.length; i++) {
+      nested = new PiConstraint(name, nested, bounds[i]);
     }
     return nested;
   }

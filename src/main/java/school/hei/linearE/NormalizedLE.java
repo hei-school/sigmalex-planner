@@ -26,6 +26,7 @@ public final class NormalizedLE implements LinearE {
   private final Map<Variable, InstantiableE> weightedV;
   private final InstantiableE e;
 
+
   public NormalizedLE(Map<Variable, InstantiableE> weightedV, InstantiableE e) {
     this.weightedV = new HashMap<>();
     weightedV.forEach((v, eOfV) -> this.weightedV.put(v, eOfV.simplify()));
@@ -36,7 +37,7 @@ public final class NormalizedLE implements LinearE {
   private static void checkNoDuplicateNames(Map<Variable, InstantiableE> weightedV) {
     Set<String> distinctNames = new HashSet<>();
     var variablesNames = weightedV.keySet().stream()
-        .map(Variable::getName)
+        .map(Variable::boundedName)
         .toList();
     var duplicateNames = variablesNames.stream()
         .filter(name -> !distinctNames.add(name))
@@ -109,11 +110,9 @@ public final class NormalizedLE implements LinearE {
   public NormalizedLE substitute(Bounder k, BounderValue kValue) {
     var substitutedWeightedV = new HashMap<>(weightedV);
     weightedV.forEach((v, c) -> {
-      if (v.getBounders().contains(k)) {
-        var boundedToWithoutK = new HashSet<>(v.getBounders());
-        boundedToWithoutK.remove(k);
-        substitutedWeightedV.put(
-            v.toNew(v.getName() + "[" + k.variable().getName() + ":" + kValue + "]", boundedToWithoutK), c);
+      var substitutedV = v.substitute(k, kValue);
+      substitutedWeightedV.put(substitutedV, c);
+      if (!substitutedV.equals(v)) {
         substitutedWeightedV.remove(v);
       }
     });
@@ -125,8 +124,10 @@ public final class NormalizedLE implements LinearE {
       } catch (ArithmeticConversionException e) {
         throw new RuntimeException(e);
       }
-      substitutedWeightedV.remove(k);
+      substitutedWeightedV.keySet()
+          .removeIf(variable -> variable.name().equals(k.variable().boundedName()));
     }
+
     return new NormalizedLE(substitutedWeightedV, newE);
   }
 }

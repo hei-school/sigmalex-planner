@@ -3,9 +3,9 @@ package school.hei.linearE;
 import org.junit.jupiter.api.Test;
 import school.hei.linearE.NormalizedLE.DuplicateVariableName;
 import school.hei.linearE.instantiableE.Bound;
+import school.hei.linearE.instantiableE.BounderZ;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Q;
-import school.hei.linearE.instantiableE.BounderZ;
 
 import java.util.Map;
 

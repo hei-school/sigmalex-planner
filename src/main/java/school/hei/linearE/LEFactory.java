@@ -4,11 +4,12 @@ import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.Variable;
 
 import java.util.Arrays;
-import java.util.List;
-
-import static school.hei.linearE.instantiableE.Bound.sort;
 
 public class LEFactory {
+
+  public static Mult mult(double c, LinearE le) {
+    return new Mult(c, le);
+  }
 
   public static Add sub(LinearE le1, LinearE le2) {
     return new Add(le1, new Mult(-1, le2));
@@ -33,10 +34,9 @@ public class LEFactory {
   }
 
   public static LinearE vsigma(LinearE le, Bound... bounds) {
-    List<Bound> sortedBounds = sort(bounds);
-    Sigma compoundSigma = new Sigma(le, sortedBounds.get(0));
-    for (int i = 1; i < sortedBounds.size(); i++) {
-      compoundSigma = new Sigma(compoundSigma, sortedBounds.get(i));
+    Sigma compoundSigma = new Sigma(le, bounds[0]);
+    for (int i = 1; i < bounds.length; i++) {
+      compoundSigma = new Sigma(compoundSigma, bounds[i]);
     }
     return compoundSigma;
   }
