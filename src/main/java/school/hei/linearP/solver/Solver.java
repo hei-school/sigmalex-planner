@@ -20,7 +20,7 @@ public abstract class Solver {
     System.out.println("done.");
 
     totalMilp = normalizedLp.size();
-    System.out.println("Nb of MILP to solve: " + totalMilp);
+    System.out.println("Nb of MILP to solve: " + totalMilp + "...");
     return normalizedLp.stream()
         .map(this::solveNormalized)
         .peek(solution -> solvedMilp++)
@@ -32,8 +32,11 @@ public abstract class Solver {
 
   private void printProgress(Solution solution) {
     if (solvedMilp - printedSolvedMilp > 500) {
-      System.out.printf("Solved MILP: %d / %d%n", solvedMilp, totalMilp);
+      System.out.printf("Solved MILP: %d / %d...%n", solvedMilp, totalMilp);
       printedSolvedMilp = solvedMilp;
+    }
+    if (solvedMilp == totalMilp) {
+      System.out.printf("... all %d MILP solved.%n", totalMilp);
     }
   }
 
