@@ -1,8 +1,9 @@
 package school.hei.linearP.constraint;
 
-import school.hei.linearE.Add;
 import school.hei.linearE.LinearE;
 import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
+
+import static school.hei.linearE.LEFactory.add;
 
 public final class Le extends BiLeConstraint {
 
@@ -16,6 +17,6 @@ public final class Le extends BiLeConstraint {
 
   @Override
   public DisjunctivePolytopes normalize() {
-    return new Leq(new Add(le1, epsilon), le2).normalize();
+    return new Leq(add(le1, epsilon), le2).normalize();
   }
 }

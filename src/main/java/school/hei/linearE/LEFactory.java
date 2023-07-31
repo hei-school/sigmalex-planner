@@ -26,6 +26,27 @@ public class LEFactory {
     return mono(1, v);
   }
 
+
+  public static Add add(LinearE e1, LinearE e2) {
+    return new Add(e1, e2);
+  }
+
+  public static Add add(Variable v1, Variable v2) {
+    return new Add(mono(v1), mono(v2));
+  }
+
+  public static Add add(Variable v1, LinearE le2) {
+    return new Add(mono(v1), le2);
+  }
+
+  public static Add add(LinearE le1, Variable v2) {
+    return new Add(le1, mono(v2));
+  }
+
+  public static Add add(LinearE le1, double c) {
+    return new Add(le1, mono(c));
+  }
+
   public static Mult mult(double c, LinearE le) {
     return new Mult(new Constant(c), le);
   }

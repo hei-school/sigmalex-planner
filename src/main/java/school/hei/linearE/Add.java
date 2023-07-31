@@ -9,27 +9,10 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toSet;
-import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
 import static school.hei.linearE.instantiableE.InstantiableEFactory.addie;
 
 public record Add(LinearE le1, LinearE le2) implements LinearE {
-
-  public Add(Variable v1, Variable v2) {
-    this(mono(v1), mono(v2));
-  }
-
-  public Add(Variable v1, LinearE le2) {
-    this(mono(v1), le2);
-  }
-
-  public Add(LinearE le1, Variable v2) {
-    this(le1, mono(v2));
-  }
-
-  public Add(LinearE le1, double c) {
-    this(le1, mono(c));
-  }
 
   @Override
   public NormalizedLE normalize() {
