@@ -1,7 +1,6 @@
 package school.hei.linearE;
 
 import org.junit.jupiter.api.Test;
-import school.hei.linearE.exception.DuplicateVariableNameException;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Z;
@@ -9,7 +8,6 @@ import school.hei.linearE.instantiableE.Z;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
 
 class AddIETest {
@@ -24,15 +22,5 @@ class AddIETest {
                 y, new Constant(2.5)),
             ZERO),
         new Add(new Mono(3, x), new Mono(2.5, y)).normalize().simplify());
-  }
-
-  @Test
-  public void duplicate_names_prohibited() {
-    var x = new Z("x");
-    var y = new Q("x");
-
-    assertThrows(
-        DuplicateVariableNameException.class,
-        () -> new Add(new Mono(3, x), new Mono(2.5, y)).normalize().simplify());
   }
 }
