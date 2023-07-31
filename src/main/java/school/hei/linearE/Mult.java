@@ -8,6 +8,8 @@ import school.hei.linearE.instantiableE.Variable;
 import java.util.HashMap;
 import java.util.Set;
 
+import static school.hei.linearE.instantiableE.InstantiableEFactory.multie;
+
 public record Mult(InstantiableE e, LinearE le) implements LinearE {
 
   public Mult(double c, Variable v) {
@@ -19,7 +21,7 @@ public record Mult(InstantiableE e, LinearE le) implements LinearE {
     var normalizedLeToMult = le.normalize();
     var weightedV = new HashMap<Variable, InstantiableE>();
     normalizedLeToMult.weightedV().forEach((v, cToMult) -> weightedV.put(v, new MultIE(e, (cToMult))));
-    return new NormalizedLE(weightedV, new MultIE(e, (normalizedLeToMult.e())));
+    return new NormalizedLE(weightedV, multie(e, normalizedLeToMult.e()));
   }
 
   @Override

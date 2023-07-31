@@ -34,8 +34,9 @@ public class ORTools extends Solver {
 
     var objective = solver.objective();
     lp.objective()
-        .simplifiedWeightedV()
-        .forEach((v, c) -> objective.setCoefficient(lpvToMpv.get(v), c));
+        .simplify()
+        .weightedV()
+        .forEach((v, c) -> objective.setCoefficient(lpvToMpv.get(v), c.simplify()));
     switch (lp.optimizationType()) {
       case min -> objective.setMinimization();
       case max -> objective.setMaximization();
@@ -45,7 +46,7 @@ public class ORTools extends Solver {
     lp.constraints().forEach(constraint -> {
       var mpc = solver.makeConstraint(
           NEGATIVE_INFINITY,
-          -1 * constraint.le().simplifiedE(),
+          -1 * constraint.le().e().simplify(),
           constraint.name() == null ? "" : constraint.name());
       constraint.variables().forEach(v -> mpc.setCoefficient(lpvToMpv.get(v), constraint.weight(v)));
     });

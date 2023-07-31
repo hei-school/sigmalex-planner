@@ -47,7 +47,7 @@ class PiConstraintTest {
         DisjunctivePolytopes.of(Polytope.of(
             getExpectedNormalizedConstraint.apply("[k:1]"),
             getExpectedNormalizedConstraint.apply("[k:2]"))),
-        pic(leq(vsigma(le_i_j, sigmaBoundJ, sigmaBoundI), 0), picBoundK).normalize());
+        pic(leq(vsigma(le_i_j, sigmaBoundJ, sigmaBoundI), 0), picBoundK).normalize().simplify());
   }
 
   @Test
@@ -70,6 +70,6 @@ class PiConstraintTest {
             getExpectedNormalizedConstraint.apply("x[i:4][j:11]"),
             getExpectedNormalizedConstraint.apply("x[i:5][j:11]"),
             getExpectedNormalizedConstraint.apply("x[i:6][j:11]"))),
-        pic(geq(x_i_j, 0), boundI, boundJ).normalize());
+        pic(geq(x_i_j, 0), boundI, boundJ).normalize().simplify());
   }
 }

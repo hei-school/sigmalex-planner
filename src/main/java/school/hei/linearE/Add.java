@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toSet;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
+import static school.hei.linearE.instantiableE.InstantiableEFactory.addie;
 
 public record Add(LinearE le1, LinearE le2) implements LinearE {
 
@@ -44,7 +45,7 @@ public record Add(LinearE le1, LinearE le2) implements LinearE {
       }
     });
 
-    return new NormalizedLE(weightedV, new AddIE(normalizedLe1.e(), (normalizedLe2.e())));
+    return new NormalizedLE(weightedV, addie(normalizedLe1.e(), normalizedLe2.e()));
   }
 
   @Override

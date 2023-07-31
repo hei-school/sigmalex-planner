@@ -27,4 +27,10 @@ public record Polytope(Set<NormalizedConstraint> constraints) {
         .map(constraint -> constraint.substitute(bounder, bounderValue))
         .collect(toSet()));
   }
+
+  public Polytope simplify() {
+    return new Polytope(constraints.stream()
+        .map(NormalizedConstraint::simplify)
+        .collect(toSet()));
+  }
 }

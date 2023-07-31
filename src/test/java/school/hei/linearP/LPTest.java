@@ -49,7 +49,7 @@ class LPTest {
             new Add(new Mono(x), new Mono(7)),
             Set.of(
                 leq(cName, new Mono(x), new Mono(y))))
-            .normalize());
+            .normify());
   }
 
   @Test
@@ -78,7 +78,7 @@ class LPTest {
             new Add(new Mono(x), new Mono(7)),
             Set.of(
                 geq(cName, new Mono(x), new Mono(y))))
-            .normalize());
+            .normify());
   }
 
   @Test
@@ -114,7 +114,7 @@ class LPTest {
             new Add(new Mono(x), new Mono(7)),
             Set.of(
                 eq(cName, new Mono(x), sub(new Mono(y), new Mono(9)))))
-            .normalize());
+            .normify());
   }
 
   @Test
@@ -154,6 +154,6 @@ class LPTest {
                     cName,
                     leq(cName, new Mono(x), yPlus9),
                     geq(cName, new Mono(x), yPlus9))))
-            .normalize());
+            .normify());
   }
 }

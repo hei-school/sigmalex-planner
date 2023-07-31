@@ -32,4 +32,10 @@ public record DisjunctivePolytopes(Set<Polytope> polytopes) {
         .map(Polytope::toCnf)
         .toArray(Constraint[]::new));
   }
+
+  public DisjunctivePolytopes simplify() {
+    return new DisjunctivePolytopes(polytopes.stream()
+        .map(Polytope::simplify)
+        .collect(toSet()));
+  }
 }

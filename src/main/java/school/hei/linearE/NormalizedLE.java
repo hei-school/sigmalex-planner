@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
+import static school.hei.linearE.instantiableE.InstantiableEFactory.multie;
 import static school.hei.linearP.constraint.Le.DEFAULT_EPSILON;
 
 /**
@@ -28,9 +29,10 @@ public final class NormalizedLE implements LinearE {
 
 
   public NormalizedLE(Map<Variable, InstantiableE> weightedV, InstantiableE e) {
+    checkNoDuplicateNames(weightedV);
     this.weightedV = new HashMap<>();
     this.weightedV.putAll(weightedV);
-    checkNoDuplicateNames(weightedV);
+
     this.e = e;
   }
 
@@ -56,27 +58,24 @@ public final class NormalizedLE implements LinearE {
     return this;
   }
 
-  @Override
-  public Set<Variable> variables() {
-    return weightedV.keySet();
+  public NormalizedLE simplify() {
+    var simplifiedWeightedV = new HashMap<Variable, InstantiableE>();
+    weightedV.forEach((v, c) -> simplifiedWeightedV.put(v, new Constant(c.simplify())));
+
+    return new NormalizedLE(simplifiedWeightedV, new Constant(e.simplify()));
   }
 
   public Map<Variable, InstantiableE> weightedV() {
     return weightedV;
   }
 
-  public Map<Variable, Double> simplifiedWeightedV() {
-    var res = new HashMap<Variable, Double>();
-    weightedV.forEach((v, c) -> res.put(v, c.simplify()));
-    return res;
-  }
-
   public InstantiableE e() {
     return e;
   }
 
-  public double simplifiedE() {
-    return e.simplify();
+  @Override
+  public Set<Variable> variables() {
+    return weightedV.keySet();
   }
 
   @Override
@@ -112,7 +111,7 @@ public final class NormalizedLE implements LinearE {
     return new NormalizedLE(
         wTimesNeg1,
         new AddIE(
-            new MultIE(new Constant(-1.), e),
+            multie(-1., e),
             // DEFAULT_EPSILON is publicly writable in case tuning is needed
             new Constant(DEFAULT_EPSILON)));
   }

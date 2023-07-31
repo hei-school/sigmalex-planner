@@ -47,7 +47,7 @@ class VariadicSigmaTest {
                 new Q("x[i:5][j:11]"), new Constant(3),
                 new Q("x[i:6][j:11]"), new Constant(3)),
             new Constant(93)),
-        vsigma(le_i_j, boundJ, boundI).normalize());
+        vsigma(le_i_j, boundJ, boundI).normalize().simplify());
   }
 
   @Test

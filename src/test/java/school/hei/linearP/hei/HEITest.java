@@ -1,5 +1,6 @@
 package school.hei.linearP.hei;
 
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import school.hei.linearE.LinearE;
 import school.hei.linearE.instantiableE.AddIE;
@@ -65,32 +66,32 @@ public class HEITest {
 
     var actual_solution = new ORTools().solve(lp);
     Map<String, Double> expected_solution = new HashMap<>();
-    //-------------------------------- MONDAY ---------------------------------------//
-    expected_solution.put("occupation[c:prog2][d:jul20][g:g1][r:a][s:f8t10]", 1.);
+    //-------------------------------- JUL 20 ---------------------------------------//
     expected_solution.put("occupation[c:th1][d:jul20][g:g2][r:b][s:f8t10]", 1.);
+    expected_solution.put("occupation[c:prog2][d:jul20][g:g1][r:a][s:f8t10]", 1.);
 
-    expected_solution.put("occupation[c:prog2][d:jul20][g:g2][r:a][s:f10t12]", 1.);
-    expected_solution.put("occupation[c:prog2][d:jul20][g:g1][r:b][s:f10t12]", 1.);
+    expected_solution.put("occupation[c:th1][d:jul20][g:g2][r:a][s:f10t12]", 1.);
+    expected_solution.put("occupation[c:th1][d:jul20][g:g1][r:b][s:f10t12]", 1.);
 
-    expected_solution.put("occupation[c:prog2][d:jul20][g:g2][r:a][s:f13t15]", 1.);
     expected_solution.put("occupation[c:th1][d:jul20][g:g1][r:b][s:f13t15]", 1.);
+    expected_solution.put("occupation[c:prog2][d:jul20][g:g2][r:a][s:f13t15]", 1.);
 
-    //-------------------------------- TUESDAY ---------------------------------------//
-    expected_solution.put("occupation[c:th1][d:jul21][g:g1][r:a][s:f8t10]", 1.);
-    expected_solution.put("occupation[c:prog2][d:jul21][g:g2][r:b][s:f8t10]", 1.);
+    //-------------------------------- JUL 21 ---------------------------------------//
+    expected_solution.put("occupation[c:th1][d:jul21][g:g2][r:a][s:f8t10]", 1.);
+    expected_solution.put("occupation[c:prog2][d:jul21][g:g1][r:b][s:f8t10]", 1.);
 
-    expected_solution.put("occupation[c:th1][d:jul21][g:g2][r:a][s:f10t12]", 1.);
-    expected_solution.put("occupation[c:prog2][d:jul21][g:g1][r:b][s:f10t12]", 1.);
+    expected_solution.put("occupation[c:prog2][d:jul21][g:g1][r:a][s:f10t12]", 1.);
+    expected_solution.put("occupation[c:prog2][d:jul21][g:g2][r:b][s:f10t12]", 1.);
 
     expected_solution.put("occupation[c:prog2][d:jul21][g:g1][r:a][s:f13t15]", 1.);
     expected_solution.put("occupation[c:prog2][d:jul21][g:g2][r:b][s:f13t15]", 1.);
 
-    //-------------------------------- WEDNESDAY -------------------------------------//
+    //-------------------------------- JUL 22 -------------------------------------//
     expected_solution.put("occupation[c:th1][d:jul22][g:g1][r:a][s:f8t10]", 1.);
     expected_solution.put("occupation[c:th1][d:jul22][g:g2][r:b][s:f8t10]", 1.);
 
-    expected_solution.put("occupation[c:th1][d:jul22][g:g2][r:a][s:f10t12]", 1.);
     expected_solution.put("occupation[c:th1][d:jul22][g:g1][r:b][s:f10t12]", 1.);
+    expected_solution.put("occupation[c:prog2][d:jul22][g:g2][r:a][s:f10t12]", 1.);
 
     //------------------------------------------ -------------------------------------//
     assertEquals(9645266.399999999, actual_solution.optimalObjective());

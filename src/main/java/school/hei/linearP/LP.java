@@ -4,6 +4,7 @@ import school.hei.linearE.LinearE;
 import school.hei.linearE.Mono;
 import school.hei.linearE.instantiableE.Variable;
 import school.hei.linearP.constraint.Constraint;
+import school.hei.linearP.constraint.NormalizedConstraint;
 
 import java.util.Set;
 
@@ -41,7 +42,7 @@ public record LP(
     this(null, optimizationType, new Mono(v), Set.of(constraints));
   }
 
-  public Set<NormalizedLP> normalize() {
+  public Set<NormalizedLP> normify() {
     var disjunctivePolytopes = vand(
         name, constraints.toArray(new Constraint[0]))
         .normalize();
@@ -49,8 +50,10 @@ public record LP(
         .map(polytope -> new NormalizedLP(
             name,
             optimizationType,
-            objective.normalize(),
-            polytope.constraints()))
+            objective.normalize().simplify(),
+            polytope.constraints().stream()
+                .map(NormalizedConstraint::simplify)
+                .collect(toSet())))
         .collect(toSet());
   }
 }

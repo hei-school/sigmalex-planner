@@ -28,7 +28,7 @@ class SigmaTest {
     int n = 10;
     assertEquals(
         new NormalizedLE(n * (n + 1) / 2.),
-        new Sigma(new Mono(k), new Bound(k, 1, n)).normalize());
+        new Sigma(new Mono(k), new Bound(k, 1, n)).normalize().simplify());
   }
 
   @Test
@@ -42,7 +42,7 @@ class SigmaTest {
         new Sigma(
             new Add(new Mono(a), mult(d, new Add(new Mono(k), new Mono(-1)))),
             new Bound(k, 1, n))
-            .normalize());
+            .normalize().simplify());
   }
 
   @Test
@@ -59,7 +59,7 @@ class SigmaTest {
                 new Q("x[i:5]"), new Constant(3),
                 new Q("x[i:6]"), new Constant(3)),
             ZERO),
-        new Sigma(le_i, boundI).normalize());
+        new Sigma(le_i, boundI).normalize().simplify());
 
     var j = new BounderZ("j");
     var x_i_j = new Q("x", Set.of(i, j));
@@ -75,7 +75,7 @@ class SigmaTest {
                 new Q("x[i:5][j:11]"), new Constant(3),
                 new Q("x[i:6][j:11]"), new Constant(3)),
             ZERO),
-        new Sigma(new Sigma(le_i_j, boundI), boundJ).normalize());
+        new Sigma(new Sigma(le_i_j, boundI), boundJ).normalize().simplify());
   }
 
   @Test
@@ -87,12 +87,12 @@ class SigmaTest {
     var boundI = new Bound(i, 4, 6);
     assertEquals(
         new NormalizedLE(Map.of(j, new Constant(9)), new Constant(30)),
-        new Sigma(le, boundI).normalize());
+        new Sigma(le, boundI).normalize().simplify());
 
     var boundJ = new Bound(j, 10, 11);
     assertEquals(
         new NormalizedLE(Map.of(), new Constant(249)),
-        new Sigma(new Sigma(le, boundI), boundJ).normalize());
+        new Sigma(new Sigma(le, boundI), boundJ).normalize().simplify());
   }
 
   enum Days implements BounderValue {
@@ -100,7 +100,7 @@ class SigmaTest {
 
     @Override
     public InstantiableE toArithmeticValue() throws ArithmeticConversionException {
-      throw new RuntimeException("TODO");
+      throw new ArithmeticConversionException("has no arith value");
     }
   }
 
@@ -117,7 +117,7 @@ class SigmaTest {
                 new Z("hours[w:saturday]"), ONE,
                 new Z("hours[w:sunday]"), ONE),
             ZERO),
-        new Sigma(hours_weekend_le, weekend_bound).normalize());
+        new Sigma(hours_weekend_le, weekend_bound).normalize().simplify());
 
     var add_day_to_z = new Add(new Mono(weekend), hours_weekend_le);
     var e = assertThrows(

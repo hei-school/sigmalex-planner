@@ -26,6 +26,6 @@ class MultTest {
             new Mono(0.2),
             new Mono(2, x), new Mono(3, y), new Mono(-0.5, y), new Mono(1, x),
             new Mono(0.9))
-        ).normalize());
+        ).normalize().simplify());
   }
 }

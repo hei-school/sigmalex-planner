@@ -23,7 +23,7 @@ class AddIETest {
                 x, new Constant(3),
                 y, new Constant(2.5)),
             ZERO),
-        new Add(new Mono(3, x), new Mono(2.5, y)).normalize());
+        new Add(new Mono(3, x), new Mono(2.5, y)).normalize().simplify());
   }
 
   @Test
@@ -33,6 +33,6 @@ class AddIETest {
 
     var e = assertThrows(
         DuplicateVariableName.class,
-        () -> new Add(new Mono(3, x), new Mono(2.5, y)).normalize());
+        () -> new Add(new Mono(3, x), new Mono(2.5, y)).normalize().simplify());
   }
 }

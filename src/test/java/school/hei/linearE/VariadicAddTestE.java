@@ -16,10 +16,10 @@ class VariadicAddTestE {
   public void add_constants() {
     assertEquals(
         new NormalizedLE(4),
-        vadd(new Mono(1), new Mono(3)).normalize());
+        vadd(new Mono(1), new Mono(3)).normalize().simplify());
     assertEquals(
         new NormalizedLE(2.6),
-        vadd(new Mono(0.3), new Mono(1), new Mono(1.3)).normalize());
+        vadd(new Mono(0.3), new Mono(1), new Mono(1.3)).normalize().simplify());
   }
 
   @Test
@@ -36,6 +36,6 @@ class VariadicAddTestE {
             new Mono(0.2),
             new Mono(2, x), new Mono(3, y), new Mono(-0.5, y), new Mono(1, x),
             new Mono(0.9))
-            .normalize());
+            .normalize().simplify());
   }
 }

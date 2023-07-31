@@ -16,7 +16,7 @@ public abstract class Solver {
 
   public Solution solve(LP lp) {
     System.out.print("Disjunctive polytopes normalization... ");
-    var normalizedLp = lp.normalize();
+    var normalizedLp = lp.normify();
     System.out.println("done.");
 
     totalMilp = normalizedLp.size();
