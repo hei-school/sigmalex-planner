@@ -8,12 +8,13 @@ import school.hei.linearE.instantiableE.Variable;
 import java.util.HashMap;
 import java.util.Set;
 
+import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearE.instantiableE.InstantiableEFactory.multie;
 
 public record Mult(InstantiableE e, LinearE le) implements LinearE {
 
   public Mult(double c, Variable v) {
-    this(new Constant(c), new Mono(v));
+    this(new Constant(c), mono(v));
   }
 
   @Override

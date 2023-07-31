@@ -14,6 +14,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearE.LEFactory.vadd;
 import static school.hei.linearE.LEFactory.vsigma;
 
@@ -22,7 +23,7 @@ class VariadicSigmaTest {
   public void nested_sigma_as_variadic() {
     var i = new BounderZ("i");
     var j = new BounderZ("j");
-    var le = new Add(new Mono(2, i), new Mono(3, j));
+    var le = new Add(mono(2, i), mono(3, j));
 
     var boundI = new Bound(i, 4, 6);
     var boundJ = new Bound(j, 10, 11);
@@ -36,7 +37,7 @@ class VariadicSigmaTest {
     var i = new BounderZ("i");
     var j = new BounderZ("j");
     var x_i_j = new Q("x", j, i);
-    var le_i_j = vadd(new Mono(i), new Mono(j), new Mono(3, x_i_j));
+    var le_i_j = vadd(mono(i), mono(j), mono(3, x_i_j));
 
     var boundI = new Bound(i, 4, 6);
     var boundJ = new Bound(j, 10, 11);
@@ -66,7 +67,7 @@ class VariadicSigmaTest {
     var y = new Q("x"); // oopsie
     assertThrows(
         DuplicateVariableNameException.class,
-        () -> new Add(new Mono(3, x), new Mono(2.5, y)).normalize().simplify());
+        () -> new Add(mono(3, x), mono(2.5, y)).normalize().simplify());
 
     var i = new BounderZ("i");
     var j = new BounderZ("j");
@@ -86,7 +87,7 @@ class VariadicSigmaTest {
         // In following lines, we cannot do that as the obtained LE still makes sense:
         // it could be that for the user wanted to
         // refer to the same Z variable through two different ways.
-        new Add(new Mono(3, x), new Mono(2.5, exactly_x))
+        new Add(mono(3, x), mono(2.5, exactly_x))
             .normalize().simplify();
     assertNotNull(normified);
   }

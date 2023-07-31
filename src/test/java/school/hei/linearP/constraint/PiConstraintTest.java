@@ -1,7 +1,6 @@
 package school.hei.linearP.constraint;
 
 import org.junit.jupiter.api.Test;
-import school.hei.linearE.Mono;
 import school.hei.linearE.NormalizedLE;
 import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.BounderZ;
@@ -14,6 +13,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearE.LEFactory.vadd;
 import static school.hei.linearE.LEFactory.vsigma;
 import static school.hei.linearP.constraint.Constraint.geq;
@@ -28,7 +28,7 @@ class PiConstraintTest {
     var j = new BounderZ("j");
     var k = new BounderZ("k");
     var x_i_j_k = new Q("x", j, i, k);
-    var le_i_j = vadd(new Mono(i), new Mono(j), new Mono(3, x_i_j_k));
+    var le_i_j = vadd(mono(i), mono(j), mono(3, x_i_j_k));
 
     var sigmaBoundI = new Bound(i, 4, 6);
     var sigmaBoundJ = new Bound(j, 10, 11);

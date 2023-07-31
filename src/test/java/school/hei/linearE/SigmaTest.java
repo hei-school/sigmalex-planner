@@ -15,6 +15,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearE.LEFactory.mult;
 import static school.hei.linearE.SigmaTest.Days.saturday;
 import static school.hei.linearE.SigmaTest.Days.sunday;
@@ -28,7 +29,7 @@ class SigmaTest {
     int n = 10;
     assertEquals(
         new NormalizedLE(n * (n + 1) / 2.),
-        new Sigma(new Mono(k), new Bound(k, 1, n)).normalize().simplify());
+        new Sigma(mono(k), new Bound(k, 1, n)).normalize().simplify());
   }
 
   @Test
@@ -40,7 +41,7 @@ class SigmaTest {
     assertEquals(
         new NormalizedLE(n / 2. * (2 * a + (n - 1) * d)),
         new Sigma(
-            new Add(new Mono(a), mult(d, new Add(new Mono(k), new Mono(-1)))),
+            new Add(mono(a), mult(d, new Add(mono(k), mono(-1)))),
             new Bound(k, 1, n))
             .normalize().simplify());
   }
@@ -49,7 +50,7 @@ class SigmaTest {
   public void bounded_vars() {
     var i = new BounderZ("i");
     var x_i = new Q("x", Set.of(i));
-    var le_i = new Mono(3, x_i);
+    var le_i = mono(3, x_i);
 
     var boundI = new Bound(i, 4, 6);
     assertEquals(
@@ -63,7 +64,7 @@ class SigmaTest {
 
     var j = new BounderZ("j");
     var x_i_j = new Q("x", Set.of(i, j));
-    var le_i_j = new Mono(3, x_i_j);
+    var le_i_j = mono(3, x_i_j);
     var boundJ = new Bound(j, 10, 11);
     assertEquals(
         new NormalizedLE(
@@ -82,7 +83,7 @@ class SigmaTest {
   public void nested_sigma() {
     var i = new BounderZ("i");
     var j = new BounderZ("j");
-    var le = new Add(new Mono(2, i), new Mono(3, j));
+    var le = new Add(mono(2, i), mono(3, j));
 
     var boundI = new Bound(i, 4, 6);
     assertEquals(
@@ -101,7 +102,7 @@ class SigmaTest {
     var weekend_bound = new Bound(weekend, saturday, sunday);
 
     var hours_weekend = new Z("hours", weekend);
-    var hours_weekend_le = new Mono(hours_weekend);
+    var hours_weekend_le = mono(hours_weekend);
     assertEquals(
         new NormalizedLE(
             Map.of(
@@ -110,7 +111,7 @@ class SigmaTest {
             ZERO),
         new Sigma(hours_weekend_le, weekend_bound).normalize().simplify());
 
-    var add_day_to_z = new Add(new Mono(weekend), hours_weekend_le);
+    var add_day_to_z = new Add(mono(weekend), hours_weekend_le);
     var e = assertThrows(
         RuntimeException.class,
         () -> new Sigma(add_day_to_z, weekend_bound).normalize());

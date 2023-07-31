@@ -8,6 +8,7 @@ import school.hei.linearE.instantiableE.Z;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearE.LEFactory.vadd;
 
 class VariadicAddTestE {
@@ -16,10 +17,10 @@ class VariadicAddTestE {
   public void add_constants() {
     assertEquals(
         new NormalizedLE(4),
-        vadd(new Mono(1), new Mono(3)).normalize().simplify());
+        vadd(mono(1), mono(3)).normalize().simplify());
     assertEquals(
         new NormalizedLE(2.6),
-        vadd(new Mono(0.3), new Mono(1), new Mono(1.3)).normalize().simplify());
+        vadd(mono(0.3), mono(1), mono(1.3)).normalize().simplify());
   }
 
   @Test
@@ -33,9 +34,9 @@ class VariadicAddTestE {
                 y, new Constant(2.5)),
             new Constant(1.1)),
         vadd(
-            new Mono(0.2),
-            new Mono(2, x), new Mono(3, y), new Mono(-0.5, y), new Mono(1, x),
-            new Mono(0.9))
+            mono(0.2),
+            mono(2, x), mono(3, y), mono(-0.5, y), mono(1, x),
+            mono(0.9))
             .normalize().simplify());
   }
 }

@@ -3,7 +3,6 @@ package school.hei.linearP.solver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import school.hei.linearE.Add;
-import school.hei.linearE.Mono;
 import school.hei.linearE.Mult;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Z;
@@ -16,6 +15,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearE.LEFactory.sub;
 import static school.hei.linearP.OptimizationType.max;
 import static school.hei.linearP.OptimizationType.min;
@@ -113,7 +113,7 @@ class ORToolsTest {
         y,
         geq(x, 0),
         geq(y, 0),
-        le(null, new Add(new Mult(-1, x), y), new Mono(1)), // instead of Leq
+        le(null, new Add(new Mult(-1, x), y), mono(1)), // instead of Leq
         leq(new Add(new Mult(3, x), 2), 12),
         leq(new Add(new Mult(2, x), new Mult(3, y)), 12));
 
@@ -142,7 +142,7 @@ class ORToolsTest {
         geq(y, 0),
         le( // instead of Leq
             null,
-            new Add(new Mult(-1, x), y), new Mono(1),
+            new Add(new Mult(-1, x), y), mono(1),
             hugeEpsilon),
         leq(new Add(new Mult(3, x), 2), 12),
         leq(new Add(new Mult(2, x), new Mult(3, y)), 12));

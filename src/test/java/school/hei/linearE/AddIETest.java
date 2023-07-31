@@ -8,6 +8,7 @@ import school.hei.linearE.instantiableE.Z;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
 
 class AddIETest {
@@ -21,6 +22,6 @@ class AddIETest {
                 x, new Constant(3),
                 y, new Constant(2.5)),
             ZERO),
-        new Add(new Mono(3, x), new Mono(2.5, y)).normalize().simplify());
+        new Add(mono(3, x), mono(2.5, y)).normalize().simplify());
   }
 }

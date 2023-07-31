@@ -1,7 +1,6 @@
 package school.hei.linearP;
 
 import school.hei.linearE.LinearE;
-import school.hei.linearE.Mono;
 import school.hei.linearE.instantiableE.Variable;
 import school.hei.linearP.constraint.Constraint;
 import school.hei.linearP.constraint.NormalizedConstraint;
@@ -9,6 +8,7 @@ import school.hei.linearP.constraint.NormalizedConstraint;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
+import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearP.constraint.Constraint.vand;
 
 public record LP(
@@ -39,7 +39,7 @@ public record LP(
   public LP(OptimizationType optimizationType,
             Variable v,
             Constraint... constraints) {
-    this(null, optimizationType, new Mono(v), Set.of(constraints));
+    this(null, optimizationType, mono(v), Set.of(constraints));
   }
 
   public Set<NormalizedLP> normify() {

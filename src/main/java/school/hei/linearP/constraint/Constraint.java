@@ -1,13 +1,13 @@
 package school.hei.linearP.constraint;
 
 import school.hei.linearE.LinearE;
-import school.hei.linearE.Mono;
 import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.Variable;
 import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
 
 import java.util.Set;
 
+import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearP.constraint.Le.DEFAULT_EPSILON;
 
 public sealed abstract class Constraint
@@ -30,15 +30,15 @@ public sealed abstract class Constraint
   }
 
   public static Leq leq(LinearE le, double c) {
-    return leq(null, le, new Mono(c));
+    return leq(null, le, mono(c));
   }
 
   public static Leq leq(Variable v, double c) {
-    return leq(null, new Mono(v), new Mono(c));
+    return leq(null, mono(v), mono(c));
   }
 
   public static Leq leq(double c, Variable v) {
-    return leq(null, new Mono(c), new Mono(v));
+    return leq(null, mono(c), mono(v));
   }
 
   public static Le le(String name, LinearE le1, LinearE le2, double epsilon) {
@@ -58,15 +58,15 @@ public sealed abstract class Constraint
   }
 
   public static Leq geq(Variable v, double c) {
-    return geq(new Mono(v), new Mono(c));
+    return geq(mono(v), mono(c));
   }
 
   public static Leq geq(double c1, double c2) {
-    return geq(new Mono(c1), new Mono(c2));
+    return geq(mono(c1), mono(c2));
   }
 
   public static Leq geq(LinearE le, double c) {
-    return geq(le, new Mono(c));
+    return geq(le, mono(c));
   }
 
   public static And and(Constraint constraint1, Constraint constraint2) {
@@ -86,15 +86,15 @@ public sealed abstract class Constraint
   }
 
   public static And eq(Variable v1, Variable v2) {
-    return eq(new Mono(v1), new Mono(v2));
+    return eq(mono(v1), mono(v2));
   }
 
   public static And eq(Variable v, LinearE le) {
-    return eq(new Mono(v), le);
+    return eq(mono(v), le);
   }
 
   public static And eq(Variable v, double c) {
-    return eq(new Mono(v), new Mono(c));
+    return eq(mono(v), mono(c));
   }
 
   public static Constraint vand(String name, Constraint... constraints) {

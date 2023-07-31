@@ -2,7 +2,6 @@ package school.hei.linearP;
 
 import org.junit.jupiter.api.Test;
 import school.hei.linearE.Add;
-import school.hei.linearE.Mono;
 import school.hei.linearE.NormalizedLE;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Q;
@@ -12,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearE.LEFactory.sub;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
 import static school.hei.linearP.OptimizationType.max;
@@ -44,9 +44,8 @@ class LPTest {
         new LP(
             lpName,
             min,
-            new Add(new Mono(x), new Mono(7)),
-            Set.of(
-                leq(new Mono(x), new Mono(y))))
+            new Add(mono(x), mono(7)),
+            Set.of(leq(mono(x), mono(y))))
             .normify());
   }
 
@@ -71,9 +70,9 @@ class LPTest {
         new LP(
             lpName,
             min,
-            new Add(new Mono(x), new Mono(7)),
+            new Add(mono(x), mono(7)),
             Set.of(
-                geq(new Mono(x), new Mono(y))))
+                geq(mono(x), mono(y))))
             .normify());
   }
 
@@ -104,9 +103,9 @@ class LPTest {
         new LP(
             lpName,
             max,
-            new Add(new Mono(x), new Mono(7)),
+            new Add(mono(x), mono(7)),
             Set.of(
-                eq(new Mono(x), sub(new Mono(y), new Mono(9)))))
+                eq(mono(x), sub(mono(y), mono(9)))))
             .normify());
   }
 
@@ -116,7 +115,7 @@ class LPTest {
     var y = new Q("y");
     var lpName = "lp_name";
 
-    var yPlus9 = sub(new Mono(y), new Mono(9));
+    var yPlus9 = sub(mono(y), mono(9));
     assertEquals(
         Set.of(new NormalizedLP(
             lpName,
@@ -138,11 +137,11 @@ class LPTest {
         new LP(
             lpName,
             max,
-            new Add(new Mono(x), new Mono(7)),
+            new Add(mono(x), mono(7)),
             Set.of(
                 vand(
-                    leq(new Mono(x), yPlus9),
-                    geq(new Mono(x), yPlus9))))
+                    leq(mono(x), yPlus9),
+                    geq(mono(x), yPlus9))))
             .normify());
   }
 }

@@ -6,15 +6,32 @@ import school.hei.linearE.instantiableE.InstantiableE;
 import school.hei.linearE.instantiableE.Variable;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public class LEFactory {
+
+  public static Mono mono(double c) {
+    return new Mono(new Constant(c), Optional.empty());
+  }
+
+  public static Mono mono(Constant c) {
+    return new Mono(c, Optional.empty());
+  }
+
+  public static Mono mono(double c, Variable v) {
+    return new Mono(new Constant(c), Optional.of(v));
+  }
+
+  public static Mono mono(Variable v) {
+    return mono(1, v);
+  }
 
   public static Mult mult(double c, LinearE le) {
     return new Mult(new Constant(c), le);
   }
 
   public static Mult mult(InstantiableE e, Variable v) {
-    return new Mult(e, new Mono(v));
+    return new Mult(e, mono(v));
   }
 
   public static Add sub(LinearE le1, LinearE le2) {
@@ -22,26 +39,26 @@ public class LEFactory {
   }
 
   public static Add sub(double c, LinearE le) {
-    return sub(new Mono(c), le);
+    return sub(mono(c), le);
   }
 
   public static Add sub(LinearE le, double c) {
-    return sub(le, new Mono(c));
+    return sub(le, mono(c));
   }
 
   public static Add sub(LinearE le, Variable v) {
-    return sub(le, new Mono(v));
+    return sub(le, mono(v));
   }
 
   public static LinearE vadd(LinearE... leList) {
     return Arrays.stream(leList)
         .reduce(Add::new)
-        .orElse(new Mono(0.));
+        .orElse(mono(0.));
   }
 
   public static LinearE vadd(Variable... vList) {
     return vadd(Arrays.stream(vList)
-        .map(Mono::new)
+        .map(LEFactory::mono)
         .toArray(Mono[]::new));
   }
 
@@ -54,6 +71,6 @@ public class LEFactory {
   }
 
   public static LinearE vsigma(Variable le, Bound... bounds) {
-    return vsigma(new Mono(le), bounds);
+    return vsigma(mono(le), bounds);
   }
 }

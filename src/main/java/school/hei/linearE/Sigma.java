@@ -6,12 +6,14 @@ import school.hei.linearE.instantiableE.Variable;
 
 import java.util.Set;
 
+import static school.hei.linearE.LEFactory.mono;
+
 public record Sigma(LinearE le, Bound bound) implements LinearE {
 
   @Override
   public NormalizedLE normalize() {
     var normalizedLeToSigma = le.normalize();
-    LinearE summed = new Mono(0);
+    LinearE summed = mono(0);
 
     var bounderValues = bound.values();
     for (BounderValue bounderValue : bounderValues) {
