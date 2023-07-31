@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import school.hei.linearE.LinearE;
 import school.hei.linearE.instantiableE.AddIE;
 import school.hei.linearE.instantiableE.Bound;
-import school.hei.linearE.instantiableE.Bounder;
 import school.hei.linearE.instantiableE.BounderZ;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.MultIE;
@@ -33,25 +32,20 @@ import static school.hei.linearP.constraint.Constraint.geq;
 import static school.hei.linearP.constraint.Constraint.leq;
 import static school.hei.linearP.constraint.Constraint.pic;
 import static school.hei.linearP.constraint.Constraint.vand;
-import static school.hei.linearP.constraint.True.TRUE;
 
 public class HEITest {
 
-  record LPContext(LinearE objective,
-                   Map<String, Bounder> bounders,
-                   Map<String, Bound> bounds,
-                   Constraint constraint) {
-
+  record LPContext(LinearE objective, Constraint constraint) {
   }
 
   @Test
-  public void ask_the_great_sigmalex_to_plan_hei() {
+  public void ask_sigmalex_the_great_to_plan_hei() {
     var c = new BounderZ("c");
     var g = new BounderZ("g");
     var d = new BounderZ("d");
     var s = new BounderZ("s");
     var r = new BounderZ("r");
-    Map<String, Bounder> bounders = Map.of("c", c, "g", g, "d", d, "s", s, "r", r);
+    Map<String, BounderZ> bounders = Map.of("c", c, "g", g, "d", d, "s", s, "r", r);
 
     var cBound = new Bound(c, Course.values());
     var gBound = new Bound(g, Group.values());
@@ -63,26 +57,11 @@ public class HEITest {
     var rBound = new Bound(r, Room.values());
     var bounds = Map.of("c", cBound, "g", gBound, "d", dBound, "s", sBound, "r", rBound);
 
-
-    var o_c_d_g_s_r = new Z("occupation", c, d, g, s, r);
-
-    var cost_d_s = new Q("cost", d, s);
-    var cost_c_d_g_s_r = new Q("cost", c, d, g, s, r);
-    var cost_domains = vand(
-        pic(geq(cost_d_s, 0), dBound, sBound),
-        pic(geq(cost_c_d_g_s_r, 0), dBound, sBound, rBound));
-
-    var global_cost = vsigma(cost_c_d_g_s_r, cBound, dBound, gBound, sBound, rBound);
-    var s_per_day = new Constant(Slot.values().length);
-    var cost_d_s_r_unlinked_to_o = new AddIE(new AddIE(new AddIE(new AddIE(new MultIE(d, s_per_day), s), r), g), c);
-    var assign_costs =
-        pic(eq(cost_c_d_g_s_r, mult(cost_d_s_r_unlinked_to_o, o_c_d_g_s_r)), cBound, dBound, gBound, sBound, rBound);
-
+    var cost_context = assign_costs(bounders, bounds);
     var lp = new LP(
-        min, global_cost,
-        cost_domains,
-        finish_courses_without_room_conflict(new LPContext(global_cost, bounders, bounds, TRUE)).constraint,
-        assign_costs);
+        min, cost_context.objective,
+        cost_context.constraint,
+        finish_courses_without_room_conflict(bounders, bounds));
 
     var actual_solution = new ORTools().solve(lp);
     Map<String, Double> expected_solution = new HashMap<>();
@@ -120,15 +99,42 @@ public class HEITest {
         actual_solution.optimalBoundedVariablesForUnboundedName("occupation"));
   }
 
-  private LPContext finish_courses_without_room_conflict(LPContext LPContext) {
-    var bounders = LPContext.bounders;
+  private LPContext assign_costs(Map<String, BounderZ> bounders, Map<String, Bound> bounds) {
     var c = bounders.get("c");
     var g = bounders.get("g");
     var d = bounders.get("d");
     var s = bounders.get("s");
     var r = bounders.get("r");
 
-    var bounds = LPContext.bounds;
+    var cBound = bounds.get("c");
+    var gBound = bounds.get("g");
+    var dBound = bounds.get("d");
+    var sBound = bounds.get("s");
+    var rBound = bounds.get("r");
+
+    var o_c_d_g_s_r = new Z("occupation", c, d, g, s, r);
+
+    var cost_d_s = new Q("cost", d, s);
+    var cost_c_d_g_s_r = new Q("cost", c, d, g, s, r);
+    var cost_domains = vand(
+        pic(geq(cost_d_s, 0), dBound, sBound),
+        pic(geq(cost_c_d_g_s_r, 0), dBound, sBound, rBound));
+
+    var global_cost = vsigma(cost_c_d_g_s_r, cBound, dBound, gBound, sBound, rBound);
+    var s_per_day = new Constant(Slot.values().length);
+    var cost_d_s_r_unlinked_to_o = new AddIE(new AddIE(new AddIE(new AddIE(new MultIE(d, s_per_day), s), r), g), c);
+    var assign_costs =
+        pic(eq(cost_c_d_g_s_r, mult(cost_d_s_r_unlinked_to_o, o_c_d_g_s_r)), cBound, dBound, gBound, sBound, rBound);
+    return new LPContext(global_cost, vand(cost_domains, assign_costs));
+  }
+
+  private Constraint finish_courses_without_room_conflict(Map<String, BounderZ> bounders, Map<String, Bound> bounds) {
+    var c = bounders.get("c");
+    var g = bounders.get("g");
+    var d = bounders.get("d");
+    var s = bounders.get("s");
+    var r = bounders.get("r");
+
     var cBound = bounds.get("c");
     var gBound = bounds.get("g");
     var dBound = bounds.get("d");
@@ -154,15 +160,10 @@ public class HEITest {
     var a_group_can_only_study_a_course_at_a_time =
         pic(leq(vsigma(o_c_d_g_s_r, cBound, rBound), 1), dBound, sBound, gBound);
 
-    return new LPContext(
-        LPContext.objective,
-        LPContext.bounders,
-        LPContext.bounds,
-        vand(
-            LPContext.constraint,
-            o_and_t_domains,
-            finish_courses,
-            room_is_occupied_when_a_group_studies_there,
-            a_group_can_only_study_a_course_at_a_time));
+    return vand(
+        o_and_t_domains,
+        finish_courses,
+        room_is_occupied_when_a_group_studies_there,
+        a_group_can_only_study_a_course_at_a_time);
   }
 }
