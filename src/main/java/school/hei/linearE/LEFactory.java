@@ -55,6 +55,10 @@ public class LEFactory {
     return new Mult(e, mono(v));
   }
 
+  public static Mult mult(double c, Variable v) {
+    return new Mult(new Constant(c), mono(v));
+  }
+
   public static Add sub(LinearE le1, LinearE le2) {
     return new Add(le1, new Mult(new Constant(-1), le2));
   }

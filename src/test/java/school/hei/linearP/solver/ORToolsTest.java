@@ -2,7 +2,6 @@ package school.hei.linearP.solver;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import school.hei.linearE.Mult;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Z;
 import school.hei.linearP.LP;
@@ -16,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static school.hei.linearE.LEFactory.add;
 import static school.hei.linearE.LEFactory.mono;
+import static school.hei.linearE.LEFactory.mult;
 import static school.hei.linearE.LEFactory.sub;
 import static school.hei.linearP.OptimizationType.max;
 import static school.hei.linearP.OptimizationType.min;
@@ -52,12 +52,12 @@ class ORToolsTest {
     var x = new Q("x");
     var y = new Q("y");
     var lp = new LP(
-        max, add(new Mult(143, x), new Mult(60, y)),
+        max, add(mult(143, x), mult(60, y)),
         leq(
-            add(new Mult(120, x), new Mult(200, y)),
-            sub(15_000, new Mult(10, y))),
+            add(mult(120, x), mult(200, y)),
+            sub(15_000, mult(10, y))),
         leq(
-            add(new Mult(110, x), new Mult(30, y)),
+            add(mult(110, x), mult(30, y)),
             4_000),
         leq(add(x, y), 75));
     assertEquals(
@@ -82,9 +82,9 @@ class ORToolsTest {
     var lp = new LP(
         max, y,
         geq(x, 0), geq(y, 0),
-        leq(add(new Mult(-1, x), y), 1),
-        leq(add(new Mult(3, x), 2), 12),
-        leq(add(new Mult(2, x), new Mult(3, y)), 12));
+        leq(add(mult(-1, x), y), 1),
+        leq(add(mult(3, x), 2), 12),
+        leq(add(mult(2, x), mult(3, y)), 12));
 
     assertEquals(
         new Solution(
@@ -106,9 +106,9 @@ class ORToolsTest {
     var lp = new LP(
         max, y,
         geq(x, 0), geq(y, 0),
-        le(null, add(new Mult(-1, x), y), mono(1)), // instead of Leq
-        leq(add(new Mult(3, x), 2), 12),
-        leq(add(new Mult(2, x), new Mult(3, y)), 12));
+        le(null, add(mult(-1, x), y), mono(1)), // instead of Leq
+        leq(add(mult(3, x), 2), 12),
+        leq(add(mult(2, x), mult(3, y)), 12));
 
     assertEquals(
         new Solution(
@@ -133,10 +133,10 @@ class ORToolsTest {
         geq(x, 0), geq(y, 0),
         le( // instead of Leq
             null,
-            add(new Mult(-1, x), y), mono(1),
+            add(mult(-1, x), y), mono(1),
             hugeEpsilon),
-        leq(add(new Mult(3, x), 2), 12),
-        leq(add(new Mult(2, x), new Mult(3, y)), 12));
+        leq(add(mult(3, x), 2), 12),
+        leq(add(mult(2, x), mult(3, y)), 12));
 
     assertEquals(
         new Solution(
@@ -157,9 +157,9 @@ class ORToolsTest {
     var y = new Z("y");
     var x_domain = geq(x, 0);
     var y_domain = geq(y, 0);
-    var a = leq(add(new Mult(-1, x), y), 1);
-    var b = leq(add(new Mult(3, x), 2), 12);
-    var c = leq(add(new Mult(2, x), new Mult(3, y)), 12);
+    var a = leq(add(mult(-1, x), y), 1);
+    var b = leq(add(mult(3, x), 2), 12);
+    var c = leq(add(mult(2, x), mult(3, y)), 12);
 
     var feasible1 = new LP(
         max, y,
@@ -217,9 +217,9 @@ class ORToolsTest {
        If (a) is removed: objective optimal increases from 2 to 4 */
     var x = new Z("x");
     var y = new Z("y");
-    var a = leq(add(new Mult(-1, x), y), 1);
-    var b = leq(add(new Mult(3, x), 2), 12);
-    var c = leq(add(new Mult(2, x), new Mult(3, y)), 12);
+    var a = leq(add(mult(-1, x), y), 1);
+    var b = leq(add(mult(3, x), 2), 12);
+    var c = leq(add(mult(2, x), mult(3, y)), 12);
 
     var withGreaterObjective = new LP(
         max, y,
@@ -255,10 +255,10 @@ class ORToolsTest {
     var x1 = new Q("x1");
     var x2 = new Z("x2");
     var lp = new LP(
-        min, add(new Mult(8, x1), x2),
-        geq(add(x1, new Mult(2, x2)), -14),
-        leq(sub(new Mult(-4, x1), x2), -33),
-        leq(add(new Mult(2, x1), x2), 20));
+        min, add(mult(8, x1), x2),
+        geq(add(x1, mult(2, x2)), -14),
+        leq(sub(mult(-4, x1), x2), -33),
+        leq(add(mult(2, x1), x2), 20));
 
     var solution = subject.solve(lp);
 
@@ -287,10 +287,10 @@ class ORToolsTest {
          * feasible if (a) and (b) and (c)... that we will let SigmaLex finds through a | b&c */
     var x1 = new Q("x1");
     var x2 = new Z("x2");
-    var objective = add(new Mult(8, x1), x2);
-    var a = geq(add(x1, new Mult(2, x2)), -14);
-    var b = leq(add(new Mult(2, x1), x2), 20);
-    var c = leq(sub(new Mult(-4, x1), x2), -33);
+    var objective = add(mult(8, x1), x2);
+    var a = geq(add(x1, mult(2, x2)), -14);
+    var b = leq(add(mult(2, x1), x2), 20);
+    var c = leq(sub(mult(-4, x1), x2), -33);
 
     var unfeasible1 = new LP(min, objective, a);
     assertTrue(subject.solve(unfeasible1).isEmpty());
