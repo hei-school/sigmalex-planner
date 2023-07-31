@@ -1,7 +1,6 @@
 package school.hei.linearP;
 
 import org.junit.jupiter.api.Test;
-import school.hei.linearE.Add;
 import school.hei.linearE.NormalizedLE;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Q;
@@ -11,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static school.hei.linearE.LEFactory.add;
 import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearE.LEFactory.sub;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
@@ -31,8 +31,7 @@ class LPTest {
 
     assertEquals(
         Set.of(new NormalizedLP(
-            lpName,
-            min,
+            lpName, min,
             new NormalizedLE(Map.of(x, new Constant(1)), new Constant(7)),
             Set.of(
                 new NormalizedConstraint(
@@ -42,9 +41,8 @@ class LPTest {
                             y, new Constant(-1)),
                         ZERO))))),
         new LP(
-            lpName,
-            min,
-            new Add(mono(x), mono(7)),
+            lpName, min,
+            add(mono(x), mono(7)),
             Set.of(leq(mono(x), mono(y))))
             .normify());
   }
@@ -57,8 +55,7 @@ class LPTest {
 
     assertEquals(
         Set.of(new NormalizedLP(
-            lpName,
-            min,
+            lpName, min,
             new NormalizedLE(Map.of(x, new Constant(1)), new Constant(7)),
             Set.of(
                 new NormalizedConstraint(
@@ -68,9 +65,8 @@ class LPTest {
                             y, new Constant(1)),
                         ZERO))))),
         new LP(
-            lpName,
-            min,
-            new Add(mono(x), mono(7)),
+            lpName, min,
+            add(mono(x), mono(7)),
             Set.of(
                 geq(mono(x), mono(y))))
             .normify());
@@ -84,8 +80,7 @@ class LPTest {
 
     assertEquals(
         Set.of(new NormalizedLP(
-            lpName,
-            max,
+            lpName, max,
             new NormalizedLE(Map.of(x, new Constant(1)), new Constant(7)),
             Set.of(
                 new NormalizedConstraint(
@@ -101,11 +96,9 @@ class LPTest {
                             y, new Constant(1)),
                         new Constant(-9)))))),
         new LP(
-            lpName,
-            max,
-            new Add(mono(x), mono(7)),
-            Set.of(
-                eq(mono(x), sub(mono(y), mono(9)))))
+            lpName, max,
+            add(mono(x), mono(7)),
+            Set.of(eq(mono(x), sub(mono(y), mono(9)))))
             .normify());
   }
 
@@ -118,8 +111,7 @@ class LPTest {
     var yPlus9 = sub(mono(y), mono(9));
     assertEquals(
         Set.of(new NormalizedLP(
-            lpName,
-            max,
+            lpName, max,
             new NormalizedLE(Map.of(x, new Constant(1)), new Constant(7)),
             Set.of(
                 new NormalizedConstraint(
@@ -135,9 +127,8 @@ class LPTest {
                             y, new Constant(1)),
                         new Constant(-9)))))),
         new LP(
-            lpName,
-            max,
-            new Add(mono(x), mono(7)),
+            lpName, max,
+            add(mono(x), mono(7)),
             Set.of(
                 vand(
                     leq(mono(x), yPlus9),

@@ -15,6 +15,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static school.hei.linearE.LEFactory.add;
 import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearE.LEFactory.mult;
 import static school.hei.linearE.SigmaTest.Days.saturday;
@@ -41,7 +42,7 @@ class SigmaTest {
     assertEquals(
         new NormalizedLE(n / 2. * (2 * a + (n - 1) * d)),
         new Sigma(
-            new Add(mono(a), mult(d, new Add(mono(k), mono(-1)))),
+            add(mono(a), mult(d, add(mono(k), mono(-1)))),
             new Bound(k, 1, n))
             .normalize().simplify());
   }
@@ -83,7 +84,7 @@ class SigmaTest {
   public void nested_sigma() {
     var i = new BounderZ("i");
     var j = new BounderZ("j");
-    var le = new Add(mono(2, i), mono(3, j));
+    var le = add(mono(2, i), mono(3, j));
 
     var boundI = new Bound(i, 4, 6);
     assertEquals(
@@ -111,7 +112,7 @@ class SigmaTest {
             ZERO),
         new Sigma(hours_weekend_le, weekend_bound).normalize().simplify());
 
-    var add_day_to_z = new Add(mono(weekend), hours_weekend_le);
+    var add_day_to_z = add(mono(weekend), hours_weekend_le);
     var e = assertThrows(
         RuntimeException.class,
         () -> new Sigma(add_day_to_z, weekend_bound).normalize());
