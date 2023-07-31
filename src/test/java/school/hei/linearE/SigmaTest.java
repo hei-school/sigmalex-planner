@@ -1,7 +1,6 @@
 package school.hei.linearE;
 
 import org.junit.jupiter.api.Test;
-import school.hei.linearE.instantiableE.exception.ArithmeticConversionException;
 import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.BounderValue;
 import school.hei.linearE.instantiableE.BounderZ;
@@ -9,6 +8,7 @@ import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.InstantiableE;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Z;
+import school.hei.linearE.instantiableE.exception.ArithmeticConversionException;
 
 import java.util.Map;
 import java.util.Set;
@@ -95,15 +95,6 @@ class SigmaTest {
         new Sigma(new Sigma(le, boundI), boundJ).normalize().simplify());
   }
 
-  enum Days implements BounderValue {
-    monday, tuesday, wednesday, thursday, friday, saturday, sunday;
-
-    @Override
-    public InstantiableE toArithmeticValue() throws ArithmeticConversionException {
-      throw new ArithmeticConversionException("has no arith value");
-    }
-  }
-
   @Test
   public void weekend_as_bounder() {
     var weekend = new BounderZ("w");
@@ -124,5 +115,14 @@ class SigmaTest {
         RuntimeException.class,
         () -> new Sigma(add_day_to_z, weekend_bound).normalize());
     assertEquals(ArithmeticConversionException.class, e.getCause().getClass());
+  }
+
+  enum Days implements BounderValue {
+    monday, tuesday, wednesday, thursday, friday, saturday, sunday;
+
+    @Override
+    public InstantiableE toArithmeticValue() throws ArithmeticConversionException {
+      throw new ArithmeticConversionException("has no arith value");
+    }
   }
 }

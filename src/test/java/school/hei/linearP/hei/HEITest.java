@@ -35,9 +35,6 @@ import static school.hei.linearP.constraint.Constraint.vand;
 
 public class HEITest {
 
-  record LPContext(LinearE objective, Constraint constraint) {
-  }
-
   @Test
   public void ask_sigmalex_the_wise_to_plan_hei() {
     var c = new BounderZ("c");
@@ -165,5 +162,8 @@ public class HEITest {
         finish_courses,
         room_is_occupied_when_a_group_studies_there,
         a_group_can_only_study_a_course_at_a_time);
+  }
+
+  record LPContext(LinearE objective, Constraint constraint) {
   }
 }

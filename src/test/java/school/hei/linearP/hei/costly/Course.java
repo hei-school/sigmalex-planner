@@ -4,12 +4,10 @@ import java.time.Duration;
 
 public class Course extends CostlyBounderValue {
 
+  public static final Duration DURATION = Duration.ofHours(8);
+  private static final double DEFAULT_COST_WEIGHT = 10;
   private final String name;
   private final double cost;
-
-  private static final double DEFAULT_COST_WEIGHT = 10;
-
-  public static final Duration DURATION = Duration.ofHours(8);
 
   private Course(String name, double cost) {
     this.name = name;

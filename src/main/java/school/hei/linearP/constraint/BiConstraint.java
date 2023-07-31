@@ -12,8 +12,7 @@ public abstract sealed class BiConstraint extends Constraint permits And, Or {
   protected final Constraint constraint1;
   protected final Constraint constraint2;
 
-  public BiConstraint(String name, Constraint constraint1, Constraint constraint2) {
-    super(name);
+  public BiConstraint(Constraint constraint1, Constraint constraint2) {
     this.constraint1 = constraint1;
     this.constraint2 = constraint2;
   }

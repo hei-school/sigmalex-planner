@@ -12,31 +12,9 @@ import static school.hei.linearP.constraint.Le.DEFAULT_EPSILON;
 
 public sealed abstract class Constraint
     permits BiConstraint, BiLeConstraint, False, NormalizedConstraint, Not, PiConstraint, True {
-  protected final String name;
-
-  public Constraint() {
-    this.name = null;
-  }
-
-  public Constraint(String name) {
-    this.name = name;
-  }
-
-  public abstract DisjunctivePolytopes normalize(); // disjunction is due to Or
-
-  public abstract Set<Variable> variables();
-
-  public String name() {
-    return name;
-  }
-
-
-  public static Or or(String name, Constraint constraint1, Constraint constraint2) {
-    return new Or(name, constraint1, constraint2);
-  }
 
   public static Or or(Constraint constraint1, Constraint constraint2) {
-    return or(null, constraint1, constraint2);
+    return new Or(constraint1, constraint2);
   }
 
   public static Not not(Constraint constraint) {
@@ -44,7 +22,7 @@ public sealed abstract class Constraint
   }
 
   public static Leq leq(String name, LinearE le1, LinearE le2) {
-    return new Leq(name, le1, le2);
+    return new Leq(le1, le2);
   }
 
   public static Leq leq(LinearE le1, LinearE le2) {
@@ -64,7 +42,7 @@ public sealed abstract class Constraint
   }
 
   public static Le le(String name, LinearE le1, LinearE le2, double epsilon) {
-    return new Le(name, le1, le2, epsilon);
+    return new Le(le1, le2, epsilon);
   }
 
   public static Le le(String name, LinearE le1, LinearE le2) {
@@ -75,58 +53,54 @@ public sealed abstract class Constraint
     return le(null, le1, le2, DEFAULT_EPSILON);
   }
 
-  public static Leq geq(String name, LinearE le1, LinearE le2) {
-    return new Leq(name, le2, le1);
+  public static Leq geq(LinearE le1, LinearE le2) {
+    return new Leq(le2, le1);
   }
 
   public static Leq geq(Variable v, double c) {
-    return geq(null, new Mono(v), new Mono(c));
+    return geq(new Mono(v), new Mono(c));
   }
 
   public static Leq geq(double c1, double c2) {
-    return geq(null, new Mono(c1), new Mono(c2));
+    return geq(new Mono(c1), new Mono(c2));
   }
 
   public static Leq geq(LinearE le, double c) {
-    return geq(null, le, new Mono(c));
-  }
-
-  public static And and(String name, Constraint constraint1, Constraint constraint2) {
-    return new And(name, constraint1, constraint2);
+    return geq(le, new Mono(c));
   }
 
   public static And and(Constraint constraint1, Constraint constraint2) {
-    return and(null, constraint1, constraint2);
+    return new And(constraint1, constraint2);
   }
 
   public static Or imply(Constraint constraint1, Constraint constraint2) {
-    return or(null, not(constraint1), constraint2);
+    return or(not(constraint1), constraint2);
   }
 
   public static And equiv(Constraint constraint1, Constraint constraint2) {
-    return and(null, imply(constraint1, constraint2), imply(constraint2, constraint1));
+    return and(imply(constraint1, constraint2), imply(constraint2, constraint1));
   }
 
-  public static And eq(String name, LinearE le1, LinearE le2) {
-    return and(name, leq(le1, le2), leq(le2, le1));
+  public static And eq(LinearE le1, LinearE le2) {
+    return and(leq(le1, le2), leq(le2, le1));
   }
 
   public static And eq(Variable v1, Variable v2) {
-    return eq(null, new Mono(v1), new Mono(v2));
+    return eq(new Mono(v1), new Mono(v2));
   }
 
   public static And eq(Variable v, LinearE le) {
-    return eq(null, new Mono(v), le);
+    return eq(new Mono(v), le);
   }
 
   public static And eq(Variable v, double c) {
-    return eq(null, new Mono(v), new Mono(c));
+    return eq(new Mono(v), new Mono(c));
   }
 
   public static Constraint vand(String name, Constraint... constraints) {
     Constraint nested = constraints[0];
     for (int i = 1; i < constraints.length; i++) {
-      nested = new And(name, nested, constraints[i]);
+      nested = new And(nested, constraints[i]);
     }
     return nested;
   }
@@ -135,31 +109,27 @@ public sealed abstract class Constraint
     return vand(null, constraints);
   }
 
-  public static Constraint vor(String name, Constraint... constraints) {
+  public static Constraint vor(Constraint... constraints) {
     Constraint nested = constraints[0];
     for (int i = 1; i < constraints.length; i++) {
-      nested = new Or(name, nested, constraints[i]);
+      nested = new Or(nested, constraints[i]);
     }
     return nested;
   }
 
-  public static Constraint vor(Constraint... constraints) {
-    return vor(null, constraints);
-  }
-
-  public static PiConstraint pic(String name, Constraint constraint, Bound bound) {
-    return new PiConstraint(name, constraint, bound);
-  }
-
-  public static PiConstraint pic(String name, Constraint constraint, Bound... bounds) {
-    PiConstraint nested = new PiConstraint(name, constraint, bounds[0]);
-    for (int i = 1; i < bounds.length; i++) {
-      nested = new PiConstraint(name, nested, bounds[i]);
-    }
-    return nested;
+  public static PiConstraint pic(Constraint constraint, Bound bound) {
+    return new PiConstraint(constraint, bound);
   }
 
   public static PiConstraint pic(Constraint constraint, Bound... bounds) {
-    return pic(null, constraint, bounds);
+    PiConstraint nested = new PiConstraint(constraint, bounds[0]);
+    for (int i = 1; i < bounds.length; i++) {
+      nested = new PiConstraint(nested, bounds[i]);
+    }
+    return nested;
   }
+
+  public abstract DisjunctivePolytopes normalize(); // disjunction is due to Or
+
+  public abstract Set<Variable> variables();
 }

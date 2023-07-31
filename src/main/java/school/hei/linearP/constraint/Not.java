@@ -34,7 +34,6 @@ public final class Not extends Constraint {
 
   private Constraint not(DisjunctivePolytopes disjunctivePolytopes) {
     return vand(
-        name,
         disjunctivePolytopes.polytopes().stream()
             .map(this::negCong)
             .toArray(Constraint[]::new));
@@ -42,7 +41,6 @@ public final class Not extends Constraint {
 
   private Constraint negCong(Polytope polytope) {
     return vor(
-        name,
         polytope.constraints().stream()
             .map(constraint -> new NormalizedConstraint(constraint.le().not()))
             .toArray(NormalizedConstraint[]::new));

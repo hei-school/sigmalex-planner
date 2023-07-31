@@ -2,10 +2,9 @@ package school.hei.linearP.hei.costly;
 
 public class Group extends CostlyBounderValue {
 
+  private static final double DEFAULT_COST_WEIGHT = 1;
   private final String name;
   private final double cost;
-
-  private static final double DEFAULT_COST_WEIGHT = 1;
 
   private Group(String name, double cost) {
     this.name = name;

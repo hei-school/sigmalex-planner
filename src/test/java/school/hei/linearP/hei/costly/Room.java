@@ -2,10 +2,9 @@ package school.hei.linearP.hei.costly;
 
 public class Room extends CostlyBounderValue {
 
+  private static final double DEFAULT_COST_WEIGHT = 0.1;
   private final String name;
   private final double cost;
-
-  private static final double DEFAULT_COST_WEIGHT = 0.1;
 
   private Room(String name, double cost) {
     this.name = name;

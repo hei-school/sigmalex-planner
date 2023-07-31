@@ -11,8 +11,8 @@ import static school.hei.linearP.constraint.True.TRUE;
 
 public final class And extends BiConstraint {
 
-  And(String name, Constraint constraint1, Constraint constraint2) {
-    super(name, constraint1, constraint2);
+  And(Constraint constraint1, Constraint constraint2) {
+    super(constraint1, constraint2);
   }
 
   @Override

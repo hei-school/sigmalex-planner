@@ -28,7 +28,6 @@ class LPTest {
     var x = new Q("x");
     var y = new Q("y");
     var lpName = "lp_name";
-    var cName = "constraint_name";
 
     assertEquals(
         Set.of(new NormalizedLP(
@@ -37,7 +36,6 @@ class LPTest {
             new NormalizedLE(Map.of(x, new Constant(1)), new Constant(7)),
             Set.of(
                 new NormalizedConstraint(
-                    cName,
                     new NormalizedLE(
                         Map.of(
                             x, new Constant(1),
@@ -48,7 +46,7 @@ class LPTest {
             min,
             new Add(new Mono(x), new Mono(7)),
             Set.of(
-                leq(cName, new Mono(x), new Mono(y))))
+                leq(new Mono(x), new Mono(y))))
             .normify());
   }
 
@@ -57,7 +55,6 @@ class LPTest {
     var x = new Q("x");
     var y = new Q("y");
     var lpName = "lp_name";
-    var cName = "constraint_name";
 
     assertEquals(
         Set.of(new NormalizedLP(
@@ -66,7 +63,6 @@ class LPTest {
             new NormalizedLE(Map.of(x, new Constant(1)), new Constant(7)),
             Set.of(
                 new NormalizedConstraint(
-                    cName,
                     new NormalizedLE(
                         Map.of(
                             x, new Constant(-1),
@@ -77,7 +73,7 @@ class LPTest {
             min,
             new Add(new Mono(x), new Mono(7)),
             Set.of(
-                geq(cName, new Mono(x), new Mono(y))))
+                geq(new Mono(x), new Mono(y))))
             .normify());
   }
 
@@ -86,7 +82,6 @@ class LPTest {
     var x = new Q("x");
     var y = new Q("y");
     var lpName = "lp_name";
-    var cName = "constraint_name";
 
     assertEquals(
         Set.of(new NormalizedLP(
@@ -95,14 +90,12 @@ class LPTest {
             new NormalizedLE(Map.of(x, new Constant(1)), new Constant(7)),
             Set.of(
                 new NormalizedConstraint(
-                    cName,
                     new NormalizedLE(
                         Map.of(
                             x, new Constant(1),
                             y, new Constant(-1)),
                         new Constant(9))),
                 new NormalizedConstraint(
-                    cName,
                     new NormalizedLE(
                         Map.of(
                             x, new Constant(-1),
@@ -113,7 +106,7 @@ class LPTest {
             max,
             new Add(new Mono(x), new Mono(7)),
             Set.of(
-                eq(cName, new Mono(x), sub(new Mono(y), new Mono(9)))))
+                eq(new Mono(x), sub(new Mono(y), new Mono(9)))))
             .normify());
   }
 
@@ -122,7 +115,6 @@ class LPTest {
     var x = new Q("x");
     var y = new Q("y");
     var lpName = "lp_name";
-    var cName = "constraint_name";
 
     var yPlus9 = sub(new Mono(y), new Mono(9));
     assertEquals(
@@ -132,14 +124,12 @@ class LPTest {
             new NormalizedLE(Map.of(x, new Constant(1)), new Constant(7)),
             Set.of(
                 new NormalizedConstraint(
-                    cName,
                     new NormalizedLE(
                         Map.of(
                             x, new Constant(1),
                             y, new Constant(-1)),
                         new Constant(9))),
                 new NormalizedConstraint(
-                    cName,
                     new NormalizedLE(
                         Map.of(
                             x, new Constant(-1),
@@ -151,9 +141,8 @@ class LPTest {
             new Add(new Mono(x), new Mono(7)),
             Set.of(
                 vand(
-                    cName,
-                    leq(cName, new Mono(x), yPlus9),
-                    geq(cName, new Mono(x), yPlus9))))
+                    leq(new Mono(x), yPlus9),
+                    geq(new Mono(x), yPlus9))))
             .normify());
   }
 }

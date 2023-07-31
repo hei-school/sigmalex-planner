@@ -14,8 +14,7 @@ public final class PiConstraint extends Constraint {
   private final Constraint constraint;
   private final Bound bound;
 
-  public PiConstraint(String name, Constraint constraint, Bound bound) {
-    super(name);
+  public PiConstraint(Constraint constraint, Bound bound) {
     this.constraint = constraint;
     this.bound = bound;
   }

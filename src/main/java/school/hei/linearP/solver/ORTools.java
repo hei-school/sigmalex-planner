@@ -47,7 +47,7 @@ public class ORTools extends Solver {
       var mpc = solver.makeConstraint(
           NEGATIVE_INFINITY,
           -1 * constraint.le().e().simplify(),
-          constraint.name() == null ? "" : constraint.name());
+          "");
       constraint.variables().forEach(v -> mpc.setCoefficient(lpvToMpv.get(v), constraint.weight(v)));
     });
 

@@ -4,12 +4,10 @@ import java.time.Duration;
 
 public class Slot extends CostlyBounderValue {
 
+  public static final Duration DURATION = Duration.ofHours(2);
+  private static final double DEFAULT_COST_WEIGHT = 100;
   private final String name;
   private final double cost;
-
-  private static final double DEFAULT_COST_WEIGHT = 100;
-
-  public static final Duration DURATION = Duration.ofHours(2);
 
   private Slot(String name, double cost) {
     this.name = name;

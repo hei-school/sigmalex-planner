@@ -9,11 +9,11 @@ import java.util.Set;
 
 public final class True extends Constraint {
 
-  True() {
-  }
-
   public static final NormalizedConstraint TRUE =
       new NormalizedConstraint(new NormalizedLE(0)); // 0 <= 1
+
+  True() {
+  }
 
   @Override
   public DisjunctivePolytopes normalize() {

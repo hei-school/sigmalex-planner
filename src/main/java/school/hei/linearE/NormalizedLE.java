@@ -37,6 +37,10 @@ public final class NormalizedLE implements LinearE {
     this.e = e;
   }
 
+  public NormalizedLE(double c) {
+    this(Map.of(), new Constant(c));
+  }
+
   private static void checkNoDuplicateNames(Map<Variable, InstantiableE> weightedV) {
     Set<String> distinctNames = new HashSet<>();
     var variablesNames = weightedV.keySet().stream()
@@ -48,11 +52,6 @@ public final class NormalizedLE implements LinearE {
     if (!duplicateNames.isEmpty()) {
       throw new DuplicateVariableNameException(duplicateNames);
     }
-  }
-
-
-  public NormalizedLE(double c) {
-    this(Map.of(), new Constant(c));
   }
 
   @Override

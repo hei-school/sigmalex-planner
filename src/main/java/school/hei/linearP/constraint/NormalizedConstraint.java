@@ -14,13 +14,7 @@ public final class NormalizedConstraint extends Constraint {
 
   private final NormalizedLE le; // which is <= 0
 
-  public NormalizedConstraint(String name, NormalizedLE le) {
-    super(name);
-    this.le = le;
-  }
-
   public NormalizedConstraint(NormalizedLE le) {
-    super(null);
     this.le = le;
   }
 
@@ -46,7 +40,6 @@ public final class NormalizedConstraint extends Constraint {
   public String toString() {
     return "NormalizedConstraint{" +
         "le=" + le +
-        ", name='" + name + '\'' +
         '}';
   }
 
