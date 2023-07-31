@@ -60,7 +60,7 @@ public final class NormalizedConstraint extends Constraint {
   }
 
   public double weight(Variable v) {
-    return le.weightedV().get(v).instantiate();
+    return le.simplifiedWeightedV().get(v);
   }
 
   public NormalizedConstraint substitute(Bounder k, BounderValue kValue) {

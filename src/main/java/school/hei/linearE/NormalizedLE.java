@@ -29,9 +29,9 @@ public final class NormalizedLE implements LinearE {
 
   public NormalizedLE(Map<Variable, InstantiableE> weightedV, InstantiableE e) {
     this.weightedV = new HashMap<>();
-    weightedV.forEach((v, eOfV) -> this.weightedV.put(v, eOfV.simplify()));
+    this.weightedV.putAll(weightedV);
     checkNoDuplicateNames(weightedV);
-    this.e = e.simplify();
+    this.e = e;
   }
 
   private static void checkNoDuplicateNames(Map<Variable, InstantiableE> weightedV) {
@@ -65,8 +65,18 @@ public final class NormalizedLE implements LinearE {
     return weightedV;
   }
 
+  public Map<Variable, Double> simplifiedWeightedV() {
+    var res = new HashMap<Variable, Double>();
+    weightedV.forEach((v, c) -> res.put(v, c.simplify()));
+    return res;
+  }
+
   public InstantiableE e() {
     return e;
+  }
+
+  public double simplifiedE() {
+    return e.simplify();
   }
 
   @Override
@@ -111,7 +121,11 @@ public final class NormalizedLE implements LinearE {
     var substitutedWeightedV = new HashMap<>(weightedV);
     weightedV.forEach((v, c) -> {
       var substitutedV = v.substitute(k, kValue);
-      substitutedWeightedV.put(substitutedV, c);
+      try {
+        substitutedWeightedV.put(substitutedV, c.instantiate(k, kValue));
+      } catch (ArithmeticConversionException ex) {
+        throw new RuntimeException(ex);
+      }
       if (!substitutedV.equals(v)) {
         substitutedWeightedV.remove(v);
       }
@@ -128,6 +142,10 @@ public final class NormalizedLE implements LinearE {
           .removeIf(variable -> variable.name().equals(k.variable().boundedName()));
     }
 
-    return new NormalizedLE(substitutedWeightedV, newE);
+    try {
+      return new NormalizedLE(substitutedWeightedV, newE.instantiate(k, kValue));
+    } catch (ArithmeticConversionException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 }

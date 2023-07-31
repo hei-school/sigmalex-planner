@@ -10,13 +10,14 @@ public record Constant(double c) implements InstantiableE, BounderValue {
   }
 
   @Override
-  public InstantiableE simplify() {
-    return this;
+  public double simplify() {
+    return c;
   }
 
   @Override
-  public double instantiate() {
-    return c;
+  public InstantiableE instantiate(Bounder bounder, BounderValue bounderValue)
+      throws ArithmeticConversionException {
+    return this;
   }
 
   @Override

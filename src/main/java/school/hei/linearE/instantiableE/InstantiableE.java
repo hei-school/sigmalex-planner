@@ -1,9 +1,7 @@
 package school.hei.linearE.instantiableE;
 
 public sealed interface InstantiableE permits AddIE, Constant, InstantiableV, MultIE {
-  InstantiableE simplify();
+  double simplify();
 
-  default double instantiate() {
-    throw new RuntimeException("TODO");
-  }
+  InstantiableE instantiate(Bounder bounder, BounderValue bounderValue) throws ArithmeticConversionException;
 }

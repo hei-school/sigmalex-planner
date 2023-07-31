@@ -14,7 +14,16 @@ public final class BounderZ extends InstantiableV implements Bounder {
   }
 
   @Override
-  public InstantiableE simplify() {
+  public double simplify() {
+    throw new UnsupportedOperationException("Earlier instantiation should have prevented current simplification ");
+  }
+
+  @Override
+  public InstantiableE instantiate(Bounder bounder, BounderValue bounderValue)
+      throws ArithmeticConversionException {
+    if (this.equals(bounder)) {
+      return bounderValue.toArithmeticValue();
+    }
     return this;
   }
 

@@ -1,6 +1,8 @@
 package school.hei.linearE;
 
 import school.hei.linearE.instantiableE.Bound;
+import school.hei.linearE.instantiableE.Constant;
+import school.hei.linearE.instantiableE.InstantiableE;
 import school.hei.linearE.instantiableE.Variable;
 
 import java.util.Arrays;
@@ -8,11 +10,15 @@ import java.util.Arrays;
 public class LEFactory {
 
   public static Mult mult(double c, LinearE le) {
-    return new Mult(c, le);
+    return new Mult(new Constant(c), le);
+  }
+
+  public static Mult mult(InstantiableE e, Variable v) {
+    return new Mult(e, new Mono(v));
   }
 
   public static Add sub(LinearE le1, LinearE le2) {
-    return new Add(le1, new Mult(-1, le2));
+    return new Add(le1, new Mult(new Constant(-1), le2));
   }
 
   public static Add sub(double c, LinearE le) {

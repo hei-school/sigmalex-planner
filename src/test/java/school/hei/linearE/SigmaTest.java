@@ -4,9 +4,10 @@ import org.junit.jupiter.api.Test;
 import school.hei.linearE.instantiableE.ArithmeticConversionException;
 import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.BounderValue;
-import school.hei.linearE.instantiableE.Constant;
-import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.BounderZ;
+import school.hei.linearE.instantiableE.Constant;
+import school.hei.linearE.instantiableE.InstantiableE;
+import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Z;
 
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static school.hei.linearE.LEFactory.mult;
 import static school.hei.linearE.SigmaTest.Days.saturday;
 import static school.hei.linearE.SigmaTest.Days.sunday;
 import static school.hei.linearE.instantiableE.Constant.ONE;
@@ -38,7 +40,7 @@ class SigmaTest {
     assertEquals(
         new NormalizedLE(n / 2. * (2 * a + (n - 1) * d)),
         new Sigma(
-            new Add(new Mono(a), new Mult(d, new Add(new Mono(k), new Mono(-1)))),
+            new Add(new Mono(a), mult(d, new Add(new Mono(k), new Mono(-1)))),
             new Bound(k, 1, n))
             .normalize());
   }
@@ -95,6 +97,11 @@ class SigmaTest {
 
   enum Days implements BounderValue {
     monday, tuesday, wednesday, thursday, friday, saturday, sunday;
+
+    @Override
+    public InstantiableE toArithmeticValue() throws ArithmeticConversionException {
+      throw new RuntimeException("TODO");
+    }
   }
 
   @Test

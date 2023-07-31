@@ -1,193 +1,168 @@
 package school.hei.linearP.hei;
 
 import org.junit.jupiter.api.Test;
+import school.hei.linearE.LinearE;
+import school.hei.linearE.instantiableE.AddIE;
 import school.hei.linearE.instantiableE.Bound;
-import school.hei.linearE.instantiableE.BounderValue;
+import school.hei.linearE.instantiableE.Bounder;
 import school.hei.linearE.instantiableE.BounderZ;
 import school.hei.linearE.instantiableE.Constant;
-import school.hei.linearE.instantiableE.InstantiableE;
+import school.hei.linearE.instantiableE.MultIE;
+import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Z;
 import school.hei.linearP.LP;
 import school.hei.linearP.constraint.Constraint;
+import school.hei.linearP.hei.costly.Course;
+import school.hei.linearP.hei.costly.Date;
+import school.hei.linearP.hei.costly.Group;
+import school.hei.linearP.hei.costly.Room;
+import school.hei.linearP.hei.costly.Slot;
 import school.hei.linearP.solver.ORTools;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.time.Month.JULY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static school.hei.linearE.LEFactory.mult;
-import static school.hei.linearE.LEFactory.vadd;
 import static school.hei.linearE.LEFactory.vsigma;
 import static school.hei.linearP.OptimizationType.min;
 import static school.hei.linearP.constraint.Constraint.and;
 import static school.hei.linearP.constraint.Constraint.eq;
-import static school.hei.linearP.constraint.Constraint.equiv;
 import static school.hei.linearP.constraint.Constraint.geq;
 import static school.hei.linearP.constraint.Constraint.leq;
 import static school.hei.linearP.constraint.Constraint.pic;
 import static school.hei.linearP.constraint.Constraint.vand;
+import static school.hei.linearP.constraint.True.TRUE;
 
 public class HEITest {
 
-  enum Day implements BounderValue {
-    mon(1), tue(2), wed(3);
+  record LPContext(LinearE objective,
+                   Map<String, Bounder> bounders,
+                   Map<String, Bound> bounds,
+                   Constraint constraint) {
 
-    private final int priority;
-
-    Day(int priority) {
-      this.priority = priority;
-    }
-
-    @Override
-    public InstantiableE toArithmeticValue() {
-      return new Constant(priority);
-    }
-  }
-
-  enum Hour implements BounderValue {
-    from8_to10(1), from10_to12(2), from13_to15(3);
-
-    static final Duration t = Duration.ofHours(2);
-
-    private final int priority;
-
-    Hour(int priority) {
-      this.priority = priority;
-    }
-
-    @Override
-    public InstantiableE toArithmeticValue() {
-      return new Constant(priority);
-    }
-  }
-
-  enum Course implements BounderValue {
-    th1, prog2;
-
-    static final Duration t = Duration.ofHours(8);
-  }
-
-  enum Group implements BounderValue {
-    h1, h2;
-  }
-
-  enum Room implements BounderValue {
-    a(1), b(2);
-
-    private final int priority;
-
-    Room(int priority) {
-      this.priority = priority;
-    }
-
-    @Override
-    public InstantiableE toArithmeticValue() {
-      return new Constant(priority);
-    }
   }
 
   @Test
-  public void finish_courses_without_room_conflict() {
+  public void ask_the_great_sigmalex_to_plan_hei() {
+    var c = new BounderZ("c");
+    var g = new BounderZ("g");
     var d = new BounderZ("d");
-    var h = new BounderZ("h");
+    var s = new BounderZ("s");
     var r = new BounderZ("r");
+    Map<String, Bounder> bounders = Map.of("c", c, "g", g, "d", d, "s", s, "r", r);
 
-    var dBound = new Bound(d, Day.values());
-    var hBound = new Bound(h, Hour.values());
+    var cBound = new Bound(c, Course.values());
+    var gBound = new Bound(g, Group.values());
+    var dBound = new Bound(d, new Date[]{
+        new Date(2023, JULY, 20),
+        new Date(2023, JULY, 21),
+        new Date(2023, JULY, 22)});
+    var sBound = new Bound(s, Slot.values());
     var rBound = new Bound(r, Room.values());
+    var bounds = Map.of("c", cBound, "g", gBound, "d", dBound, "s", sBound, "r", rBound);
 
-    var o_d_h_r = new Z("o", d, h, r);
 
-    var p_d_h = new Z("p", d, h);
-    var p_d_h_r = new Z("p", d, h, r);
-    var p_domains = vand(
-        pic(geq(p_d_h, 0), dBound, hBound),
-        pic(geq(p_d_h_r, 0), dBound, hBound, rBound));
+    var o_c_d_g_s_r = new Z("occupation", c, d, g, s, r);
 
-    var global_priority = vsigma(p_d_h, dBound, hBound);
-    var prioritize_early_days_and_hours = vand(
-        pic(eq(p_d_h, vsigma(p_d_h_r, rBound)), dBound, hBound),
-        pic(equiv(eq(p_d_h_r, vadd(d, h, r)), eq(o_d_h_r, 1)), dBound, hBound, rBound));
+    var cost_d_s = new Q("cost", d, s);
+    var cost_c_d_g_s_r = new Q("cost", c, d, g, s, r);
+    var cost_domains = vand(
+        pic(geq(cost_d_s, 0), dBound, sBound),
+        pic(geq(cost_c_d_g_s_r, 0), dBound, sBound, rBound));
+
+    var global_cost = vsigma(cost_c_d_g_s_r, cBound, dBound, gBound, sBound, rBound);
+    var s_per_day = new Constant(Slot.values().length);
+    var cost_d_s_r_unlinked_to_o = new AddIE(new AddIE(new AddIE(new AddIE(new MultIE(d, s_per_day), s), r), g), c);
+    var assign_costs =
+        pic(eq(cost_c_d_g_s_r, mult(cost_d_s_r_unlinked_to_o, o_c_d_g_s_r)), cBound, dBound, gBound, sBound, rBound);
 
     var lp = new LP(
-        min, global_priority,
-        p_domains,
-        finish_courses(),
-        prioritize_early_days_and_hours);
+        min, global_cost,
+        cost_domains,
+        finish_courses_without_room_conflict(new LPContext(global_cost, bounders, bounds, TRUE)).constraint,
+        assign_costs);
 
     var actual_solution = new ORTools().solve(lp);
     Map<String, Double> expected_solution = new HashMap<>();
-
     //-------------------------------- MONDAY ---------------------------------------//
-    expected_solution.put("occupation[c:th1][d:mon][g:h1][h:from8_to10][r:a]", 1.);
-    expected_solution.put("occupation[c:prog2][d:mon][g:h2][h:from8_to10][r:b]", 1.);
+    expected_solution.put("occupation[c:prog2][d:jul20][g:g1][r:a][s:f8t10]", 1.);
+    expected_solution.put("occupation[c:th1][d:jul20][g:g2][r:b][s:f8t10]", 1.);
 
-    expected_solution.put("occupation[c:th1][d:mon][g:h1][h:from10_to12][r:a]", 1.);
-    expected_solution.put("occupation[c:prog2][d:mon][g:h2][h:from10_to12][r:b]", 1.);
+    expected_solution.put("occupation[c:prog2][d:jul20][g:g2][r:a][s:f10t12]", 1.);
+    expected_solution.put("occupation[c:prog2][d:jul20][g:g1][r:b][s:f10t12]", 1.);
 
-    expected_solution.put("occupation[c:th1][d:mon][g:h2][h:from13_to15][r:a]", 1.);
-    expected_solution.put("occupation[c:prog2][d:mon][g:h1][h:from13_to15][r:b]", 1.);
+    expected_solution.put("occupation[c:prog2][d:jul20][g:g2][r:a][s:f13t15]", 1.);
+    expected_solution.put("occupation[c:th1][d:jul20][g:g1][r:b][s:f13t15]", 1.);
 
     //-------------------------------- TUESDAY ---------------------------------------//
-    expected_solution.put("occupation[c:th1][d:tue][g:h2][h:from8_to10][r:a]", 1.);
-    expected_solution.put("occupation[c:prog2][d:tue][g:h1][h:from8_to10][r:b]", 1.);
+    expected_solution.put("occupation[c:th1][d:jul21][g:g1][r:a][s:f8t10]", 1.);
+    expected_solution.put("occupation[c:prog2][d:jul21][g:g2][r:b][s:f8t10]", 1.);
 
-    expected_solution.put("occupation[c:prog2][d:tue][g:h2][h:from10_to12][r:a]", 1.);
+    expected_solution.put("occupation[c:th1][d:jul21][g:g2][r:a][s:f10t12]", 1.);
+    expected_solution.put("occupation[c:prog2][d:jul21][g:g1][r:b][s:f10t12]", 1.);
 
-    expected_solution.put("occupation[c:th1][d:tue][g:h1][h:from13_to15][r:a]", 1.);
-    expected_solution.put("occupation[c:prog2][d:tue][g:h2][h:from13_to15][r:b]", 1.);
+    expected_solution.put("occupation[c:prog2][d:jul21][g:g1][r:a][s:f13t15]", 1.);
+    expected_solution.put("occupation[c:prog2][d:jul21][g:g2][r:b][s:f13t15]", 1.);
 
     //-------------------------------- WEDNESDAY -------------------------------------//
-    expected_solution.put("occupation[c:prog2][d:wed][g:h1][h:from8_to10][r:a]", 1.);
-    expected_solution.put("occupation[c:th1][d:wed][g:h2][h:from8_to10][r:b]", 1.);
+    expected_solution.put("occupation[c:th1][d:jul22][g:g1][r:a][s:f8t10]", 1.);
+    expected_solution.put("occupation[c:th1][d:jul22][g:g2][r:b][s:f8t10]", 1.);
 
-    expected_solution.put("occupation[c:th1][d:wed][g:h1][h:from10_to12][r:a]", 1.);
-    expected_solution.put("occupation[c:th1][d:wed][g:h2][h:from10_to12][r:b]", 1.);
+    expected_solution.put("occupation[c:th1][d:jul22][g:g2][r:a][s:f10t12]", 1.);
+    expected_solution.put("occupation[c:th1][d:jul22][g:g1][r:b][s:f10t12]", 1.);
 
-    expected_solution.put("occupation[c:prog2][d:wed][g:h1][h:from13_to15][r:b]", 1.);
     //------------------------------------------ -------------------------------------//
+    assertEquals(9645266.399999999, actual_solution.optimalObjective());
     assertEquals(
         expected_solution,
         actual_solution.optimalBoundedVariablesForUnboundedName("occupation"));
   }
 
-  private Constraint finish_courses() {
-    var c = new BounderZ("c");
-    var g = new BounderZ("g");
-    var d = new BounderZ("d");
-    var h = new BounderZ("h");
-    var r = new BounderZ("r");
+  private LPContext finish_courses_without_room_conflict(LPContext LPContext) {
+    var bounders = LPContext.bounders;
+    var c = bounders.get("c");
+    var g = bounders.get("g");
+    var d = bounders.get("d");
+    var s = bounders.get("s");
+    var r = bounders.get("r");
 
-    var cBound = new Bound(c, Course.values());
-    var gBound = new Bound(g, Group.values());
-    var dBound = new Bound(d, Day.values());
-    var hBound = new Bound(h, Hour.values());
-    var rBound = new Bound(r, Room.values());
+    var bounds = LPContext.bounds;
+    var cBound = bounds.get("c");
+    var gBound = bounds.get("g");
+    var dBound = bounds.get("d");
+    var sBound = bounds.get("s");
+    var rBound = bounds.get("r");
 
-    var o_c_d_g_h_r = new Z("occupation", c, d, g, h, r);
-    var o_d_g_h_r = new Z("o", d, g, h, r);
-    var o_d_h_r = new Z("o", d, h, r);
+    var o_c_d_g_s_r = new Z("occupation", c, d, g, s, r);
+    var o_d_g_s_r = new Z("o", d, g, s, r);
+    var o_d_s_r = new Z("o", d, s, r);
     var t_c_g = new Z("t", c, g); // time
     var o_and_t_domains = vand(
         pic(geq(t_c_g, 0), cBound, gBound),
-        pic(and(leq(0, o_c_d_g_h_r), leq(o_c_d_g_h_r, 1)), cBound, dBound, gBound, hBound, rBound),
-        pic(and(leq(0, o_d_g_h_r), leq(o_d_g_h_r, 1)), dBound, gBound, hBound, rBound),
-        pic(and(leq(0, o_d_h_r), leq(o_d_h_r, 1)), dBound, hBound, rBound));
-    var ht = Hour.t.toHours();
-    var ct = Course.t.toHours();
+        pic(and(leq(0, o_c_d_g_s_r), leq(o_c_d_g_s_r, 1)), cBound, dBound, gBound, sBound, rBound),
+        pic(and(leq(0, o_d_g_s_r), leq(o_d_g_s_r, 1)), dBound, gBound, sBound, rBound),
+        pic(and(leq(0, o_d_s_r), leq(o_d_s_r, 1)), dBound, sBound, rBound));
+    var st = Slot.DURATION.toHours();
+    var ct = Course.DURATION.toHours();
     var finish_courses = vand(
-        pic(eq(t_c_g, mult(ht, vsigma(o_c_d_g_h_r, dBound, hBound, rBound))), cBound, gBound),
+        pic(eq(t_c_g, mult(st, vsigma(o_c_d_g_s_r, dBound, sBound, rBound))), cBound, gBound),
         pic(eq(t_c_g, ct), cBound, gBound));
     var room_is_occupied_when_a_group_studies_there =
-        pic(eq(o_d_h_r, vsigma(o_c_d_g_h_r, cBound, gBound)), dBound, hBound, rBound);
+        pic(eq(o_d_s_r, vsigma(o_c_d_g_s_r, cBound, gBound)), dBound, sBound, rBound);
     var a_group_can_only_study_a_course_at_a_time =
-        pic(leq(vsigma(o_c_d_g_h_r, cBound, rBound), 1), dBound, hBound, gBound);
+        pic(leq(vsigma(o_c_d_g_s_r, cBound, rBound), 1), dBound, sBound, gBound);
 
-    return vand(
-        o_and_t_domains,
-        finish_courses,
-        room_is_occupied_when_a_group_studies_there,
-        a_group_can_only_study_a_course_at_a_time);
+    return new LPContext(
+        LPContext.objective,
+        LPContext.bounders,
+        LPContext.bounds,
+        vand(
+            LPContext.constraint,
+            o_and_t_domains,
+            finish_courses,
+            room_is_occupied_when_a_group_studies_there,
+            a_group_can_only_study_a_course_at_a_time));
   }
 }

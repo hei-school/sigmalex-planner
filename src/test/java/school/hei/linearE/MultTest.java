@@ -8,6 +8,7 @@ import school.hei.linearE.instantiableE.Z;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static school.hei.linearE.LEFactory.mult;
 import static school.hei.linearE.LEFactory.vadd;
 
 class MultTest {
@@ -21,7 +22,7 @@ class MultTest {
                 x, new Constant(6),
                 y, new Constant(5)),
             new Constant(2.2)),
-        new Mult(2, vadd(
+        mult(2, vadd(
             new Mono(0.2),
             new Mono(2, x), new Mono(3, y), new Mono(-0.5, y), new Mono(1, x),
             new Mono(0.9))
