@@ -1,6 +1,5 @@
 package school.hei.linearP.hei;
 
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import school.hei.linearE.LinearE;
 import school.hei.linearE.instantiableE.AddIE;
@@ -40,7 +39,7 @@ public class HEITest {
   }
 
   @Test
-  public void ask_sigmalex_the_great_to_plan_hei() {
+  public void ask_sigmalex_the_wise_to_plan_hei() {
     var c = new BounderZ("c");
     var g = new BounderZ("g");
     var d = new BounderZ("d");
