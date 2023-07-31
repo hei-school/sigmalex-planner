@@ -12,7 +12,7 @@ public final class Z extends NonInstantiableV implements Bounder {
   }
 
   public Z(String name, Bounder... bounders) {
-    this(name, Arrays.stream(bounders).collect(toSet()));
+    super(name, bounders);
   }
 
   private Z(String name, Map<Bounder, BounderValue> bounderSubstitutions) {

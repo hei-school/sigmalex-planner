@@ -1,7 +1,7 @@
 package school.hei.linearE;
 
 import org.junit.jupiter.api.Test;
-import school.hei.linearE.instantiableE.ArithmeticConversionException;
+import school.hei.linearE.instantiableE.exception.ArithmeticConversionException;
 import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.BounderValue;
 import school.hei.linearE.instantiableE.BounderZ;

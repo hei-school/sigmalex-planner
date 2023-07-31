@@ -1,7 +1,7 @@
 package school.hei.linearE;
 
 import org.junit.jupiter.api.Test;
-import school.hei.linearE.NormalizedLE.DuplicateVariableName;
+import school.hei.linearE.exception.DuplicateVariableNameException;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Z;
@@ -31,8 +31,8 @@ class AddIETest {
     var x = new Z("x");
     var y = new Q("x");
 
-    var e = assertThrows(
-        DuplicateVariableName.class,
+    assertThrows(
+        DuplicateVariableNameException.class,
         () -> new Add(new Mono(3, x), new Mono(2.5, y)).normalize().simplify());
   }
 }

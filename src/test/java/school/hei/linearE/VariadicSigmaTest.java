@@ -1,11 +1,12 @@
 package school.hei.linearE;
 
 import org.junit.jupiter.api.Test;
-import school.hei.linearE.NormalizedLE.DuplicateVariableName;
 import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.BounderZ;
 import school.hei.linearE.instantiableE.Constant;
+import school.hei.linearE.instantiableE.exception.NoDuplicateBounderException;
 import school.hei.linearE.instantiableE.Q;
+import school.hei.linearE.instantiableE.Z;
 
 import java.util.Map;
 
@@ -51,17 +52,9 @@ class VariadicSigmaTest {
   }
 
   @Test
-  public void duplicate_names_prohibited() {
+  public void duplicate_bounders_prohibited() {
     var i = new BounderZ("i");
-    var j = new BounderZ("j");
-    var x_i_j = new Q("x", i, i);
-    var x_j_i = new Q("x", i, j);
-    var le_i_j = vadd(new Mono(i), new Mono(x_j_i), new Mono(3, x_i_j));
-
-    var boundI = new Bound(i, 4, 6);
-    var boundJ = new Bound(j, 10, 11);
-    var e = assertThrows(
-        DuplicateVariableName.class,
-        () -> vsigma(le_i_j, boundI, boundJ).normalize());
+    assertThrows(NoDuplicateBounderException.class, () -> new Q("x", i, i));
+    assertThrows(NoDuplicateBounderException.class, () -> new Z("x", i, i));
   }
 }

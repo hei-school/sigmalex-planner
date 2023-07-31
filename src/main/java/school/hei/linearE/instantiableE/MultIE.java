@@ -1,5 +1,7 @@
 package school.hei.linearE.instantiableE;
 
+import school.hei.linearE.instantiableE.exception.ArithmeticConversionException;
+
 public record MultIE(InstantiableE e1, InstantiableE e2) implements InstantiableE {
   @Override
   public double simplify() {

@@ -1,13 +1,14 @@
 package school.hei.linearE;
 
+import school.hei.linearE.exception.DuplicateVariableNameException;
 import school.hei.linearE.instantiableE.AddIE;
-import school.hei.linearE.instantiableE.ArithmeticConversionException;
 import school.hei.linearE.instantiableE.Bounder;
 import school.hei.linearE.instantiableE.BounderValue;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.InstantiableE;
 import school.hei.linearE.instantiableE.MultIE;
 import school.hei.linearE.instantiableE.Variable;
+import school.hei.linearE.instantiableE.exception.ArithmeticConversionException;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,9 +46,10 @@ public final class NormalizedLE implements LinearE {
         .filter(name -> !distinctNames.add(name))
         .collect(toSet());
     if (!duplicateNames.isEmpty()) {
-      throw new DuplicateVariableName(duplicateNames);
+      throw new DuplicateVariableNameException(duplicateNames);
     }
   }
+
 
   public NormalizedLE(double c) {
     this(Map.of(), new Constant(c));
@@ -97,12 +99,6 @@ public final class NormalizedLE implements LinearE {
         "weightedV=" + weightedV +
         ", e=" + e +
         '}';
-  }
-
-  public static class DuplicateVariableName extends RuntimeException {
-    public DuplicateVariableName(Set<String> duplicateNames) {
-      super(duplicateNames.toString());
-    }
   }
 
   public NormalizedLE not() {

@@ -8,6 +8,10 @@ public abstract sealed class NonInstantiableV extends Variable permits Q, Z {
     super(name, bounders);
   }
 
+  public NonInstantiableV(String name, Bounder... bounders) {
+    super(name, bounders);
+  }
+
   protected NonInstantiableV(String name, Map<Bounder, BounderValue> bounderSubstitutions) {
     super(name, bounderSubstitutions);
   }

@@ -1,5 +1,7 @@
 package school.hei.linearE.instantiableE;
 
+import school.hei.linearE.instantiableE.exception.ArithmeticConversionException;
+
 import java.util.Map;
 import java.util.Set;
 

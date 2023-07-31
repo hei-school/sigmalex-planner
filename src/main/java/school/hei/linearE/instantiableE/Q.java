@@ -1,10 +1,7 @@
 package school.hei.linearE.instantiableE;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
-
-import static java.util.stream.Collectors.toSet;
 
 public final class Q extends NonInstantiableV implements Bounder {
   public Q(String name, Set<Bounder> bounders) {
@@ -12,7 +9,7 @@ public final class Q extends NonInstantiableV implements Bounder {
   }
 
   public Q(String name, Bounder... bounders) {
-    this(name, Arrays.stream(bounders).collect(toSet()));
+    super(name, bounders);
   }
 
   private Q(String name, Map<Bounder, BounderValue> bounderSubstitutions) {

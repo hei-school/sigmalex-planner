@@ -1,15 +1,18 @@
 package school.hei.linearE.instantiableE;
 
+import school.hei.linearE.instantiableE.exception.BounderCannotBeRedefinedException;
+import school.hei.linearE.instantiableE.exception.NoDuplicateBounderException;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toSet;
 
 public abstract sealed class Variable permits InstantiableV, NonInstantiableV {
 
@@ -28,7 +31,18 @@ public abstract sealed class Variable permits InstantiableV, NonInstantiableV {
   }
 
   public Variable(String name, Bounder... bounders) {
-    this(name, Arrays.stream(bounders).collect(Collectors.toSet()));
+    this(name, noDuplicate(bounders));
+  }
+
+  private static Set<Bounder> noDuplicate(Bounder[] bounders) {
+    for (int i = 0; i < bounders.length; i++) {
+      for (int j = i + 1; j < bounders.length; j++) {
+        if (bounders[i].variable().name.equals(bounders[j].variable().name)) {
+          throw new NoDuplicateBounderException(bounders[i]);
+        }
+      }
+    }
+    return Arrays.stream(bounders).collect(toSet());
   }
 
   public String name() {

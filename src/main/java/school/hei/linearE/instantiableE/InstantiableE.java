@@ -1,5 +1,7 @@
 package school.hei.linearE.instantiableE;
 
+import school.hei.linearE.instantiableE.exception.ArithmeticConversionException;
+
 public sealed interface InstantiableE permits AddIE, Constant, InstantiableV, MultIE {
   double simplify();
 
