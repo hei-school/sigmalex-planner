@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
-import static school.hei.linearE.instantiableE.InstantiableEFactory.multie;
+import static school.hei.linearE.instantiableE.IEFactory.multie;
 import static school.hei.linearP.constraint.Le.DEFAULT_EPSILON;
 
 /**

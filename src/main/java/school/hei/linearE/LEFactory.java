@@ -75,14 +75,14 @@ public class LEFactory {
     return sub(le, mono(v));
   }
 
-  public static LinearE vadd(LinearE... leList) {
-    return Arrays.stream(leList)
+  public static LinearE vadd(LinearE... leArray) {
+    return Arrays.stream(leArray)
         .reduce(Add::new)
         .orElse(mono(0.));
   }
 
-  public static LinearE vadd(Variable... vList) {
-    return vadd(Arrays.stream(vList)
+  public static LinearE vadd(Variable... variables) {
+    return vadd(Arrays.stream(variables)
         .map(LEFactory::mono)
         .toArray(Mono[]::new));
   }

@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toSet;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
-import static school.hei.linearE.instantiableE.InstantiableEFactory.addie;
+import static school.hei.linearE.instantiableE.IEFactory.addie;
 
 public record Add(LinearE le1, LinearE le2) implements LinearE {
 

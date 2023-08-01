@@ -7,7 +7,7 @@ import school.hei.linearE.instantiableE.Variable;
 import java.util.HashMap;
 import java.util.Set;
 
-import static school.hei.linearE.instantiableE.InstantiableEFactory.multie;
+import static school.hei.linearE.instantiableE.IEFactory.multie;
 
 public record Mult(InstantiableE e, LinearE le) implements LinearE {
 

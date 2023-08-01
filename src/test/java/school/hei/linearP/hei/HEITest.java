@@ -2,11 +2,9 @@ package school.hei.linearP.hei;
 
 import org.junit.jupiter.api.Test;
 import school.hei.linearE.LinearE;
-import school.hei.linearE.instantiableE.AddIE;
 import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.BounderZ;
 import school.hei.linearE.instantiableE.Constant;
-import school.hei.linearE.instantiableE.MultIE;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Z;
 import school.hei.linearP.LP;
@@ -25,6 +23,8 @@ import static java.time.Month.JULY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static school.hei.linearE.LEFactory.mult;
 import static school.hei.linearE.LEFactory.vsigma;
+import static school.hei.linearE.instantiableE.IEFactory.addie;
+import static school.hei.linearE.instantiableE.IEFactory.multie;
 import static school.hei.linearP.OptimizationType.min;
 import static school.hei.linearP.constraint.Constraint.and;
 import static school.hei.linearP.constraint.Constraint.eq;
@@ -119,7 +119,7 @@ public class HEITest {
 
     var global_cost = vsigma(cost_c_d_g_s_r, cBound, dBound, gBound, sBound, rBound);
     var s_per_day = new Constant(Slot.values().length);
-    var cost_d_s_r_unlinked_to_o = new AddIE(new AddIE(new AddIE(new AddIE(new MultIE(d, s_per_day), s), r), g), c);
+    var cost_d_s_r_unlinked_to_o = addie(multie(d, s_per_day), s, r, g, c);
     var assign_costs =
         pic(eq(cost_c_d_g_s_r, mult(cost_d_s_r_unlinked_to_o, o_c_d_g_s_r)), cBound, dBound, gBound, sBound, rBound);
     return new LPContext(global_cost, vand(cost_domains, assign_costs));
