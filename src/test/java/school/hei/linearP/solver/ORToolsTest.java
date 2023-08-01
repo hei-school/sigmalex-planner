@@ -27,7 +27,6 @@ import static school.hei.linearP.constraint.Constraint.le;
 import static school.hei.linearP.constraint.Constraint.leq;
 import static school.hei.linearP.constraint.Constraint.not;
 import static school.hei.linearP.constraint.Constraint.or;
-import static school.hei.linearP.constraint.Constraint.vor;
 import static school.hei.linearP.constraint.False.FALSE;
 import static school.hei.linearP.constraint.True.TRUE;
 
@@ -105,7 +104,7 @@ class ORToolsTest {
     var lp = new LP(
         max, y,
         geq(x, 0), geq(y, 0),
-        le(null, add(mult(-1, x), y), mono(1)), // instead of Leq
+        le(add(mult(-1, x), y), mono(1)), // instead of Leq
         leq(add(mult(3, x), 2), 12),
         leq(add(mult(2, x), mult(3, y)), 12));
 
@@ -131,7 +130,6 @@ class ORToolsTest {
         max, y,
         geq(x, 0), geq(y, 0),
         le( // instead of Leq
-            null,
             add(mult(-1, x), y), mono(1),
             hugeEpsilon),
         leq(add(mult(3, x), 2), 12),
@@ -198,8 +196,8 @@ class ORToolsTest {
         not(FALSE), or(TRUE, not(FALSE)),
         not(or(not(and(eq(x, x), eq(x, x))), not(eq(x, x)))), // fancy x=x...
         not(and(not(or(eq(x, x), eq(x, x))), not(eq(x, x)))), // ...still
-        not(vor(not(and(eq(x, x), eq(x, x))))), // ...as variadic
-        not(and(not(vor(eq(x, x), eq(x, x)))))); // ...still!
+        not(or(not(and(eq(x, x), eq(x, x))))), // ...as variadic
+        not(and(not(or(eq(x, x), eq(x, x)))))); // ...still!
     assertEquals(
         subject.solve(a_and_b_and_c),
         subject.solve(a_and_b_and_c_but_in_a_fancy_way));

@@ -13,10 +13,6 @@ import static school.hei.linearP.constraint.Le.DEFAULT_EPSILON;
 public sealed abstract class Constraint
     permits BiConstraint, BiLeConstraint, False, NormalizedConstraint, Not, PiConstraint, True {
 
-  public static Or or(Constraint constraint1, Constraint constraint2) {
-    return new Or(constraint1, constraint2);
-  }
-
   public static Not not(Constraint constraint) {
     return new Not(constraint);
   }
@@ -41,16 +37,12 @@ public sealed abstract class Constraint
     return leq(null, mono(c), mono(v));
   }
 
-  public static Le le(String name, LinearE le1, LinearE le2, double epsilon) {
+  public static Le le(LinearE le1, LinearE le2, double epsilon) {
     return new Le(le1, le2, epsilon);
   }
 
-  public static Le le(String name, LinearE le1, LinearE le2) {
-    return le(name, le1, le2, DEFAULT_EPSILON);
-  }
-
   public static Le le(LinearE le1, LinearE le2) {
-    return le(null, le1, le2, DEFAULT_EPSILON);
+    return new Le(le1, le2, DEFAULT_EPSILON);
   }
 
   public static Leq geq(LinearE le1, LinearE le2) {
@@ -69,7 +61,7 @@ public sealed abstract class Constraint
     return geq(le, mono(c));
   }
 
-  public static Or imply(Constraint constraint1, Constraint constraint2) {
+  public static Constraint imply(Constraint constraint1, Constraint constraint2) {
     return or(not(constraint1), constraint2);
   }
 
@@ -101,7 +93,7 @@ public sealed abstract class Constraint
     return nested;
   }
 
-  public static Constraint vor(Constraint... constraints) {
+  public static Constraint or(Constraint... constraints) {
     Constraint nested = constraints[0];
     for (int i = 1; i < constraints.length; i++) {
       nested = new Or(nested, constraints[i]);

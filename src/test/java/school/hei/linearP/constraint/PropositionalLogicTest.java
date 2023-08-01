@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static school.hei.linearP.constraint.Constraint.and;
 import static school.hei.linearP.constraint.Constraint.geq;
 import static school.hei.linearP.constraint.Constraint.or;
-import static school.hei.linearP.constraint.Constraint.vor;
 import static school.hei.linearP.constraint.False.FALSE;
 import static school.hei.linearP.constraint.True.TRUE;
 
@@ -60,11 +59,11 @@ public class PropositionalLogicTest {
 
     // a * (c+d) = a*c + a*d
     assertEquals(
-        vor(and(a, c), and(a, d)).normalize(),
+        or(and(a, c), and(a, d)).normalize(),
         and(a, or(c, d)).normalize());
     // (a+b) * (c+d) = a*c + a*d + b*c + b*d
     assertEquals(
-        vor(and(a, c), and(a, d), and(b, c), and(b, d)).normalize(),
+        or(and(a, c), and(a, d), and(b, c), and(b, d)).normalize(),
         and(or(a, b), or(c, d)).normalize());
   }
 }

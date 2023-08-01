@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
-import static school.hei.linearP.constraint.Constraint.vor;
+import static school.hei.linearP.constraint.Constraint.or;
 
 public record DisjunctivePolytopes(Set<Polytope> polytopes) {
 
@@ -28,7 +28,7 @@ public record DisjunctivePolytopes(Set<Polytope> polytopes) {
   }
 
   public Constraint toDnf() {
-    return vor(polytopes.stream()
+    return or(polytopes.stream()
         .map(Polytope::toCnf)
         .toArray(Constraint[]::new));
   }

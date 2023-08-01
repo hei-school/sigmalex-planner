@@ -40,7 +40,7 @@ public final class Not extends Constraint {
   }
 
   private Constraint negCong(Polytope polytope) {
-    return vor(
+    return or(
         polytope.constraints().stream()
             .map(constraint -> new NormalizedConstraint(constraint.le().not()))
             .toArray(NormalizedConstraint[]::new));
