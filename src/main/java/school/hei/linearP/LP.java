@@ -9,7 +9,7 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
 import static school.hei.linearE.LEFactory.mono;
-import static school.hei.linearP.constraint.Constraint.vand;
+import static school.hei.linearP.constraint.Constraint.and;
 
 public record LP(
     String name,
@@ -43,8 +43,7 @@ public record LP(
   }
 
   public Set<NormalizedLP> normify() {
-    var disjunctivePolytopes = vand(
-        name, constraints.toArray(new Constraint[0]))
+    var disjunctivePolytopes = and(constraints.toArray(new Constraint[0]))
         .normalize();
     return disjunctivePolytopes.polytopes().stream()
         .map(polytope -> new NormalizedLP(

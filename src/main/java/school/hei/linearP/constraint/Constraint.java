@@ -69,44 +69,36 @@ public sealed abstract class Constraint
     return geq(le, mono(c));
   }
 
-  public static And and(Constraint constraint1, Constraint constraint2) {
-    return new And(constraint1, constraint2);
-  }
-
   public static Or imply(Constraint constraint1, Constraint constraint2) {
     return or(not(constraint1), constraint2);
   }
 
-  public static And equiv(Constraint constraint1, Constraint constraint2) {
+  public static Constraint equiv(Constraint constraint1, Constraint constraint2) {
     return and(imply(constraint1, constraint2), imply(constraint2, constraint1));
   }
 
-  public static And eq(LinearE le1, LinearE le2) {
+  public static Constraint eq(LinearE le1, LinearE le2) {
     return and(leq(le1, le2), leq(le2, le1));
   }
 
-  public static And eq(Variable v1, Variable v2) {
+  public static Constraint eq(Variable v1, Variable v2) {
     return eq(mono(v1), mono(v2));
   }
 
-  public static And eq(Variable v, LinearE le) {
+  public static Constraint eq(Variable v, LinearE le) {
     return eq(mono(v), le);
   }
 
-  public static And eq(Variable v, double c) {
+  public static Constraint eq(Variable v, double c) {
     return eq(mono(v), mono(c));
   }
 
-  public static Constraint vand(String name, Constraint... constraints) {
+  public static Constraint and(Constraint... constraints) {
     Constraint nested = constraints[0];
     for (int i = 1; i < constraints.length; i++) {
       nested = new And(nested, constraints[i]);
     }
     return nested;
-  }
-
-  public static Constraint vand(Constraint... constraints) {
-    return vand(null, constraints);
   }
 
   public static Constraint vor(Constraint... constraints) {

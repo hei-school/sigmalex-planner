@@ -19,7 +19,7 @@ import static school.hei.linearP.OptimizationType.min;
 import static school.hei.linearP.constraint.Constraint.eq;
 import static school.hei.linearP.constraint.Constraint.geq;
 import static school.hei.linearP.constraint.Constraint.leq;
-import static school.hei.linearP.constraint.Constraint.vand;
+import static school.hei.linearP.constraint.Constraint.and;
 
 class LPTest {
 
@@ -130,7 +130,7 @@ class LPTest {
             lpName, max,
             add(mono(x), mono(7)),
             Set.of(
-                vand(
+                and(
                     leq(mono(x), yPlus9),
                     geq(mono(x), yPlus9))))
             .normify());

@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static school.hei.linearE.instantiableE.Constant.ONE;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
 import static school.hei.linearP.constraint.Constraint.leq;
-import static school.hei.linearP.constraint.Constraint.vand;
+import static school.hei.linearP.constraint.Constraint.and;
 
 class VariadicAndTest {
   @Test
@@ -24,6 +24,6 @@ class VariadicAndTest {
         DisjunctivePolytopes.of(Polytope.of(
             new NormalizedConstraint(new NormalizedLE(Map.of(x, ONE), ZERO)),
             new NormalizedConstraint(new NormalizedLE(Map.of(y, ONE), ZERO)))),
-        vand(leq(x, 0), leq(y, 0)).normalize().simplify());
+        and(leq(x, 0), leq(y, 0)).normalize().simplify());
   }
 }

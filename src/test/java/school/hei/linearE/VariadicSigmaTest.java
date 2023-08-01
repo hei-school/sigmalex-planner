@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static school.hei.linearE.LEFactory.add;
 import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearE.LEFactory.vadd;
-import static school.hei.linearE.LEFactory.vsigma;
+import static school.hei.linearE.LEFactory.sigma;
 
 class VariadicSigmaTest {
   @Test
@@ -30,7 +30,7 @@ class VariadicSigmaTest {
     var boundJ = new Bound(j, 10, 11);
     assertEquals(
         new Sigma(new Sigma(le, boundI), boundJ).normalize(),
-        vsigma(le, boundI, boundJ).normalize());
+        sigma(le, boundI, boundJ).normalize());
   }
 
   @Test
@@ -52,7 +52,7 @@ class VariadicSigmaTest {
                 new Q("x[i:5][j:11]"), new Constant(3),
                 new Q("x[i:6][j:11]"), new Constant(3)),
             new Constant(93)),
-        vsigma(le_i_j, boundJ, boundI).normalize().simplify());
+        sigma(le_i_j, boundJ, boundI).normalize().simplify());
   }
 
   @Test
@@ -79,7 +79,7 @@ class VariadicSigmaTest {
     var boundJ = new Bound(j, 10, 11);
     assertThrows(
         DuplicateVariableNameException.class,
-        () -> vsigma(le_i_j, boundI, boundJ).normalize());
+        () -> sigma(le_i_j, boundI, boundJ).normalize());
 
     var exactly_x = new Z("x");
     var normified =

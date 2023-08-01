@@ -87,7 +87,7 @@ public class LEFactory {
         .toArray(Mono[]::new));
   }
 
-  public static LinearE vsigma(LinearE le, Bound... bounds) {
+  public static LinearE sigma(LinearE le, Bound... bounds) {
     Sigma compoundSigma = new Sigma(le, bounds[0]);
     for (int i = 1; i < bounds.length; i++) {
       compoundSigma = new Sigma(compoundSigma, bounds[i]);
@@ -95,7 +95,7 @@ public class LEFactory {
     return compoundSigma;
   }
 
-  public static LinearE vsigma(Variable le, Bound... bounds) {
-    return vsigma(mono(le), bounds);
+  public static LinearE sigma(Variable le, Bound... bounds) {
+    return sigma(mono(le), bounds);
   }
 }

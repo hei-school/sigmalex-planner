@@ -33,7 +33,7 @@ public final class Not extends Constraint {
   }
 
   private Constraint not(DisjunctivePolytopes disjunctivePolytopes) {
-    return vand(
+    return and(
         disjunctivePolytopes.polytopes().stream()
             .map(this::negCong)
             .toArray(Constraint[]::new));

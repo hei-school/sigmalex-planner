@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
-import static school.hei.linearP.constraint.Constraint.vand;
+import static school.hei.linearP.constraint.Constraint.and;
 
 public record Polytope(Set<NormalizedConstraint> constraints) {
 
@@ -19,7 +19,7 @@ public record Polytope(Set<NormalizedConstraint> constraints) {
   }
 
   public Constraint toCnf() {
-    return vand(constraints.toArray(Constraint[]::new));
+    return and(constraints.toArray(Constraint[]::new));
   }
 
   public Polytope substitute(Bounder bounder, BounderValue bounderValue) {

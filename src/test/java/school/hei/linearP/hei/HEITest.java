@@ -22,7 +22,7 @@ import java.util.Map;
 import static java.time.Month.JULY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static school.hei.linearE.LEFactory.mult;
-import static school.hei.linearE.LEFactory.vsigma;
+import static school.hei.linearE.LEFactory.sigma;
 import static school.hei.linearE.instantiableE.IEFactory.addie;
 import static school.hei.linearE.instantiableE.IEFactory.multie;
 import static school.hei.linearP.OptimizationType.min;
@@ -31,7 +31,6 @@ import static school.hei.linearP.constraint.Constraint.eq;
 import static school.hei.linearP.constraint.Constraint.geq;
 import static school.hei.linearP.constraint.Constraint.leq;
 import static school.hei.linearP.constraint.Constraint.pic;
-import static school.hei.linearP.constraint.Constraint.vand;
 
 public class HEITest {
 
@@ -113,16 +112,16 @@ public class HEITest {
 
     var cost_d_s = new Q("cost", d, s);
     var cost_c_d_g_s_r = new Q("cost", c, d, g, s, r);
-    var cost_domains = vand(
+    var cost_domains = and(
         pic(geq(cost_d_s, 0), dBound, sBound),
         pic(geq(cost_c_d_g_s_r, 0), dBound, sBound, rBound));
 
-    var global_cost = vsigma(cost_c_d_g_s_r, cBound, dBound, gBound, sBound, rBound);
+    var global_cost = sigma(cost_c_d_g_s_r, cBound, dBound, gBound, sBound, rBound);
     var s_per_day = new Constant(Slot.values().length);
     var cost_d_s_r_unlinked_to_o = addie(multie(d, s_per_day), s, r, g, c);
     var assign_costs =
         pic(eq(cost_c_d_g_s_r, mult(cost_d_s_r_unlinked_to_o, o_c_d_g_s_r)), cBound, dBound, gBound, sBound, rBound);
-    return new LPContext(global_cost, vand(cost_domains, assign_costs));
+    return new LPContext(global_cost, and(cost_domains, assign_costs));
   }
 
   private Constraint finish_courses_without_room_conflict(Map<String, BounderZ> bounders, Map<String, Bound> bounds) {
@@ -142,22 +141,22 @@ public class HEITest {
     var o_d_g_s_r = new Z("o", d, g, s, r);
     var o_d_s_r = new Z("o", d, s, r);
     var t_c_g = new Z("t", c, g); // time
-    var o_and_t_domains = vand(
+    var o_and_t_domains = and(
         pic(geq(t_c_g, 0), cBound, gBound),
         pic(and(leq(0, o_c_d_g_s_r), leq(o_c_d_g_s_r, 1)), cBound, dBound, gBound, sBound, rBound),
         pic(and(leq(0, o_d_g_s_r), leq(o_d_g_s_r, 1)), dBound, gBound, sBound, rBound),
         pic(and(leq(0, o_d_s_r), leq(o_d_s_r, 1)), dBound, sBound, rBound));
     var st = Slot.DURATION.toHours();
     var ct = Course.DURATION.toHours();
-    var finish_courses = vand(
-        pic(eq(t_c_g, mult(st, vsigma(o_c_d_g_s_r, dBound, sBound, rBound))), cBound, gBound),
+    var finish_courses = and(
+        pic(eq(t_c_g, mult(st, sigma(o_c_d_g_s_r, dBound, sBound, rBound))), cBound, gBound),
         pic(eq(t_c_g, ct), cBound, gBound));
     var room_is_occupied_when_a_group_studies_there =
-        pic(eq(o_d_s_r, vsigma(o_c_d_g_s_r, cBound, gBound)), dBound, sBound, rBound);
+        pic(eq(o_d_s_r, sigma(o_c_d_g_s_r, cBound, gBound)), dBound, sBound, rBound);
     var a_group_can_only_study_a_course_at_a_time =
-        pic(leq(vsigma(o_c_d_g_s_r, cBound, rBound), 1), dBound, sBound, gBound);
+        pic(leq(sigma(o_c_d_g_s_r, cBound, rBound), 1), dBound, sBound, gBound);
 
-    return vand(
+    return and(
         o_and_t_domains,
         finish_courses,
         room_is_occupied_when_a_group_studies_there,

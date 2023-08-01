@@ -25,7 +25,7 @@ public final class PiConstraint extends Constraint {
         .map(bounderValue -> constraint.normalize()
             .substitute(bound.bounder(), bounderValue)
             .toDnf())
-        .reduce(TRUE, Constraint::vand)
+        .reduce(TRUE, Constraint::and)
         .normalize();
   }
 
