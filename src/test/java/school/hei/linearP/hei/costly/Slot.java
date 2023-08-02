@@ -5,7 +5,7 @@ import java.time.Duration;
 public class Slot extends CostlyBounderValue {
 
   public static final Duration DURATION = Duration.ofHours(2);
-  private static final double DEFAULT_COST_WEIGHT = 100;
+  private static final double DEFAULT_COST_WEIGHT = 10;
   private final String name;
   private final double cost;
 
@@ -15,7 +15,7 @@ public class Slot extends CostlyBounderValue {
   }
 
   public static Slot from8To10() {
-    return new Slot("f8t10", 1);
+    return new Slot("f08t10", 1);
   }
 
   public static Slot from10To12() {
@@ -23,7 +23,7 @@ public class Slot extends CostlyBounderValue {
   }
 
   public static Slot from13To15() {
-    return new Slot("f13t15", 3);
+    return new Slot("f13t15", 100);
   }
 
   public static Slot[] values() {

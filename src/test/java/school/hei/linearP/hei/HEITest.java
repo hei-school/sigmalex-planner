@@ -18,8 +18,10 @@ import school.hei.linearP.solver.ORTools;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static java.time.Month.JULY;
+import static java.util.stream.Collectors.joining;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static school.hei.linearE.LEFactory.mult;
 import static school.hei.linearE.LEFactory.sigma;
@@ -48,54 +50,81 @@ public class HEITest {
     var dBound = new Bound(d, new Date[]{
         new Date(2023, JULY, 20),
         new Date(2023, JULY, 21),
-        new Date(2023, JULY, 22)});
+        new Date(2023, JULY, 22),
+        new Date(2023, JULY, 23),
+        new Date(2023, JULY, 24),
+        new Date(2023, JULY, 24)});
     var sBound = new Bound(s, Slot.values());
     var rBound = new Bound(r, Room.values());
     var bounds = Map.of("c", cBound, "g", gBound, "d", dBound, "s", sBound, "r", rBound);
 
-    var cost_context = assign_costs(bounders, bounds);
+    var prioritize_early_days_and_slots_context = prioritize_early_days_and_slots(bounders, bounds);
     var lp = new LP(
-        min, cost_context.objective,
-        cost_context.constraint,
+        min, prioritize_early_days_and_slots_context.objective,
+        prioritize_early_days_and_slots_context.constraint,
         finish_courses_without_room_conflict(bounders, bounds));
 
     var actual_solution = new ORTools().solve(lp);
     Map<String, Double> expected_solution = new HashMap<>();
-    //-------------------------------- JUL 20 ---------------------------------------//
-    expected_solution.put("occupation[c:th1][d:jul20][g:g2][r:b][s:f8t10]", 1.);
-    expected_solution.put("occupation[c:prog2][d:jul20][g:g1][r:a][s:f8t10]", 1.);
-
-    expected_solution.put("occupation[c:th1][d:jul20][g:g2][r:a][s:f10t12]", 1.);
-    expected_solution.put("occupation[c:th1][d:jul20][g:g1][r:b][s:f10t12]", 1.);
-
-    expected_solution.put("occupation[c:th1][d:jul20][g:g1][r:b][s:f13t15]", 1.);
-    expected_solution.put("occupation[c:prog2][d:jul20][g:g2][r:a][s:f13t15]", 1.);
-
-    //-------------------------------- JUL 21 ---------------------------------------//
-    expected_solution.put("occupation[c:th1][d:jul21][g:g2][r:a][s:f8t10]", 1.);
-    expected_solution.put("occupation[c:prog2][d:jul21][g:g1][r:b][s:f8t10]", 1.);
-
-    expected_solution.put("occupation[c:prog2][d:jul21][g:g1][r:a][s:f10t12]", 1.);
-    expected_solution.put("occupation[c:prog2][d:jul21][g:g2][r:b][s:f10t12]", 1.);
-
-    expected_solution.put("occupation[c:prog2][d:jul21][g:g1][r:a][s:f13t15]", 1.);
-    expected_solution.put("occupation[c:prog2][d:jul21][g:g2][r:b][s:f13t15]", 1.);
-
-    //-------------------------------- JUL 22 -------------------------------------//
-    expected_solution.put("occupation[c:th1][d:jul22][g:g1][r:a][s:f8t10]", 1.);
-    expected_solution.put("occupation[c:th1][d:jul22][g:g2][r:b][s:f8t10]", 1.);
-
-    expected_solution.put("occupation[c:th1][d:jul22][g:g1][r:b][s:f10t12]", 1.);
-    expected_solution.put("occupation[c:prog2][d:jul22][g:g2][r:a][s:f10t12]", 1.);
-
-    //------------------------------------------ -------------------------------------//
-    assertEquals(9645266.399999999, actual_solution.optimalObjective());
+    assertEquals(9646179.999999998, actual_solution.optimalObjective());
+    var x = toHEIPlanning(expected_solution);
     assertEquals(
-        expected_solution,
-        actual_solution.optimalBoundedVariablesForUnboundedName("occupation"));
+        """
+            occupation[c:prog2][d:jul20][g:g2][r:a][s:f08t10]=1.0
+            occupation[c:prog2][d:jul20][g:g1][r:b][s:f08t10]=1.0
+            occupation[c:prog2][d:jul20][g:g1][r:a][s:f10t12]=1.0
+            occupation[c:prog2][d:jul20][g:g2][r:b][s:f10t12]=1.0
+            occupation[c:prog2][d:jul20][g:g1][r:a][s:f13t15]=1.0
+            occupation[c:prog2][d:jul20][g:g2][r:b][s:f13t15]=1.0
+            occupation[c:th1][d:jul21][g:g2][r:a][s:f08t10]=1.0
+            occupation[c:prog2][d:jul21][g:g1][r:b][s:f08t10]=1.0
+            occupation[c:th1][d:jul21][g:g1][r:a][s:f10t12]=1.0
+            occupation[c:th1][d:jul21][g:g2][r:b][s:f10t12]=1.0
+            occupation[c:th1][d:jul21][g:g1][r:a][s:f13t15]=1.0
+            occupation[c:th1][d:jul21][g:g2][r:b][s:f13t15]=1.0
+            occupation[c:th1][d:jul22][g:g1][r:a][s:f08t10]=1.0
+            occupation[c:th1][d:jul22][g:g2][r:b][s:f08t10]=1.0
+            occupation[c:th1][d:jul22][g:g1][r:a][s:f10t12]=1.0
+            occupation[c:prog2][d:jul22][g:g2][r:b][s:f10t12]=1.0""",
+        toHEIPlanning(actual_solution.optimalBoundedVariablesForUnboundedName("occupation")));
   }
 
-  private LPContext assign_costs(Map<String, BounderZ> bounders, Map<String, Bound> bounds) {
+  private String toHEIPlanning(Map<String, Double> occupations) {
+    return occupations.entrySet().stream()
+        .sorted(this::compareOccupationEntry)
+        .map(Map.Entry::toString)
+        .collect(joining("\n"));
+  }
+
+  private static final Pattern OCCUPATION_VAR_PATTERN = Pattern.compile(
+      "occupation\\[c:(.*)\\]\\[d:(.*)\\]\\[g:(.*)\\]\\[r:(.*)\\]\\[s:(.*)\\]");
+
+  private int compareOccupationEntry(Map.Entry<String, Double> entry1, Map.Entry<String, Double> entry2) {
+    var name1 = entry1.getKey();
+    var matcher1 = OCCUPATION_VAR_PATTERN.matcher(name1);
+    if (!matcher1.find()) {
+      throw new RuntimeException("Variable name does not follow expected pattern: " + name1);
+    }
+
+    var name2 = entry2.getKey();
+    var matcher2 = OCCUPATION_VAR_PATTERN.matcher(name2);
+    if (!matcher2.find()) {
+      throw new RuntimeException("Variable name does not follow expected pattern: " + name2);
+    }
+
+    var compareDates = matcher1.group(2).compareTo(matcher2.group(2));
+    if (compareDates != 0) {
+      return compareDates;
+    }
+    var compareSlots = matcher1.group(5).compareTo(matcher2.group(5));
+    if (compareSlots != 0) {
+      return compareSlots;
+    }
+    var compareRooms = matcher1.group(4).compareTo(matcher2.group(4));
+    return compareRooms;
+  }
+
+  private LPContext prioritize_early_days_and_slots(Map<String, BounderZ> bounders, Map<String, Bound> bounds) {
     var c = bounders.get("c");
     var g = bounders.get("g");
     var d = bounders.get("d");
@@ -118,9 +147,9 @@ public class HEITest {
 
     var global_cost = sigma(cost_c_d_g_s_r, cBound, dBound, gBound, sBound, rBound);
     var s_per_day = new Constant(Slot.values().length);
-    var cost_d_s_r_unlinked_to_o = addie(multie(d, s_per_day), s, r, g, c);
+    var cost_d_s_unlinked_to_o = addie(multie(d, s_per_day), s);
     var assign_costs =
-        pic(eq(cost_c_d_g_s_r, mult(cost_d_s_r_unlinked_to_o, o_c_d_g_s_r)), cBound, dBound, gBound, sBound, rBound);
+        pic(eq(cost_c_d_g_s_r, mult(cost_d_s_unlinked_to_o, o_c_d_g_s_r)), cBound, dBound, gBound, sBound, rBound);
     return new LPContext(global_cost, and(cost_domains, assign_costs));
   }
 
