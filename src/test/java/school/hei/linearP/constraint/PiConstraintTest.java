@@ -14,8 +14,8 @@ import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static school.hei.linearE.LEFactory.mono;
-import static school.hei.linearE.LEFactory.vadd;
 import static school.hei.linearE.LEFactory.sigma;
+import static school.hei.linearE.LEFactory.vadd;
 import static school.hei.linearP.constraint.Constraint.geq;
 import static school.hei.linearP.constraint.Constraint.leq;
 import static school.hei.linearP.constraint.Constraint.pic;

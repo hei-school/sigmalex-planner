@@ -16,8 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static school.hei.linearE.LEFactory.add;
 import static school.hei.linearE.LEFactory.mono;
-import static school.hei.linearE.LEFactory.vadd;
 import static school.hei.linearE.LEFactory.sigma;
+import static school.hei.linearE.LEFactory.vadd;
 
 class VariadicSigmaTest {
   @Test

@@ -16,7 +16,6 @@ import school.hei.linearP.hei.costly.Room;
 import school.hei.linearP.hei.costly.Slot;
 import school.hei.linearP.solver.ORTools;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -36,6 +35,9 @@ import static school.hei.linearP.constraint.Constraint.pic;
 
 public class HEITest {
 
+  private static final Pattern OCCUPATION_VAR_PATTERN = Pattern.compile(
+      "occupation\\[c:(.*)\\]\\[d:(.*)\\]\\[g:(.*)\\]\\[r:(.*)\\]\\[s:(.*)\\]");
+
   @Test
   public void ask_sigmalex_the_wise_to_plan_hei() {
     var c = new BounderZ("c");
@@ -53,39 +55,41 @@ public class HEITest {
         new Date(2023, JULY, 22),
         new Date(2023, JULY, 23),
         new Date(2023, JULY, 24),
-        new Date(2023, JULY, 24)});
+        new Date(2023, JULY, 25)});
     var sBound = new Bound(s, Slot.values());
     var rBound = new Bound(r, Room.values());
     var bounds = Map.of("c", cBound, "g", gBound, "d", dBound, "s", sBound, "r", rBound);
 
     var prioritize_early_days_and_slots_context = prioritize_early_days_and_slots(bounders, bounds);
+    var days_off = new Date[]{
+        new Date(2023, JULY, 21),
+        new Date(2023, JULY, 22)};
     var lp = new LP(
         min, prioritize_early_days_and_slots_context.objective,
         prioritize_early_days_and_slots_context.constraint,
+        exclude_days_off(days_off, bounders, bounds),
         finish_courses_without_room_conflict(bounders, bounds));
 
     var actual_solution = new ORTools().solve(lp);
-    Map<String, Double> expected_solution = new HashMap<>();
-    assertEquals(9646179.999999998, actual_solution.optimalObjective());
-    var x = toHEIPlanning(expected_solution);
+    assertEquals(9706180, actual_solution.optimalObjective());
     assertEquals(
         """
-            occupation[c:prog2][d:jul20][g:g2][r:a][s:f08t10]=1.0
-            occupation[c:prog2][d:jul20][g:g1][r:b][s:f08t10]=1.0
+            occupation[c:th1][d:jul20][g:g1][r:a][s:f08t10]=1.0
+            occupation[c:th1][d:jul20][g:g2][r:b][s:f08t10]=1.0
             occupation[c:prog2][d:jul20][g:g1][r:a][s:f10t12]=1.0
-            occupation[c:prog2][d:jul20][g:g2][r:b][s:f10t12]=1.0
-            occupation[c:prog2][d:jul20][g:g1][r:a][s:f13t15]=1.0
-            occupation[c:prog2][d:jul20][g:g2][r:b][s:f13t15]=1.0
-            occupation[c:th1][d:jul21][g:g2][r:a][s:f08t10]=1.0
-            occupation[c:prog2][d:jul21][g:g1][r:b][s:f08t10]=1.0
-            occupation[c:th1][d:jul21][g:g1][r:a][s:f10t12]=1.0
-            occupation[c:th1][d:jul21][g:g2][r:b][s:f10t12]=1.0
-            occupation[c:th1][d:jul21][g:g1][r:a][s:f13t15]=1.0
-            occupation[c:th1][d:jul21][g:g2][r:b][s:f13t15]=1.0
-            occupation[c:th1][d:jul22][g:g1][r:a][s:f08t10]=1.0
-            occupation[c:th1][d:jul22][g:g2][r:b][s:f08t10]=1.0
-            occupation[c:th1][d:jul22][g:g1][r:a][s:f10t12]=1.0
-            occupation[c:prog2][d:jul22][g:g2][r:b][s:f10t12]=1.0""",
+            occupation[c:th1][d:jul20][g:g2][r:b][s:f10t12]=1.0
+            occupation[c:th1][d:jul20][g:g2][r:a][s:f13t15]=1.0
+            occupation[c:prog2][d:jul20][g:g1][r:b][s:f13t15]=1.0
+            occupation[c:th1][d:jul23][g:g1][r:a][s:f08t10]=1.0
+            occupation[c:prog2][d:jul23][g:g2][r:b][s:f08t10]=1.0
+            occupation[c:th1][d:jul23][g:g2][r:a][s:f10t12]=1.0
+            occupation[c:th1][d:jul23][g:g1][r:b][s:f10t12]=1.0
+            occupation[c:prog2][d:jul23][g:g2][r:a][s:f13t15]=1.0
+            occupation[c:prog2][d:jul23][g:g1][r:b][s:f13t15]=1.0
+            occupation[c:th1][d:jul24][g:g1][r:a][s:f08t10]=1.0
+            occupation[c:prog2][d:jul24][g:g2][r:b][s:f08t10]=1.0
+            occupation[c:prog2][d:jul24][g:g1][r:a][s:f10t12]=1.0
+            occupation[c:prog2][d:jul24][g:g2][r:b][s:f10t12]=1.0""",
         toHEIPlanning(actual_solution.optimalBoundedVariablesForUnboundedName("occupation")));
   }
 
@@ -95,9 +99,6 @@ public class HEITest {
         .map(Map.Entry::toString)
         .collect(joining("\n"));
   }
-
-  private static final Pattern OCCUPATION_VAR_PATTERN = Pattern.compile(
-      "occupation\\[c:(.*)\\]\\[d:(.*)\\]\\[g:(.*)\\]\\[r:(.*)\\]\\[s:(.*)\\]");
 
   private int compareOccupationEntry(Map.Entry<String, Double> entry1, Map.Entry<String, Double> entry2) {
     var name1 = entry1.getKey();
@@ -124,6 +125,23 @@ public class HEITest {
     return compareRooms;
   }
 
+  private Constraint exclude_days_off(Date[] off, Map<String, BounderZ> bounders, Map<String, Bound> bounds) {
+    var c = bounders.get("c");
+    var g = bounders.get("g");
+    var d = bounders.get("d");
+    var s = bounders.get("s");
+    var r = bounders.get("r");
+
+    var cBound = bounds.get("c");
+    var gBound = bounds.get("g");
+    var dBound = new Bound(d, off);
+    var sBound = bounds.get("s");
+    var rBound = bounds.get("r");
+
+    var o_c_d_g_s_r = new Z("occupation", c, d, g, s, r);
+    return pic(eq(o_c_d_g_s_r, 0), cBound, dBound, sBound, gBound, rBound);
+  }
+
   private LPContext prioritize_early_days_and_slots(Map<String, BounderZ> bounders, Map<String, Bound> bounds) {
     var c = bounders.get("c");
     var g = bounders.get("g");
@@ -145,12 +163,12 @@ public class HEITest {
         pic(geq(cost_d_s, 0), dBound, sBound),
         pic(geq(cost_c_d_g_s_r, 0), dBound, sBound, rBound));
 
-    var global_cost = sigma(cost_c_d_g_s_r, cBound, dBound, gBound, sBound, rBound);
+    var cost = sigma(cost_c_d_g_s_r, cBound, dBound, gBound, sBound, rBound);
     var s_per_day = new Constant(Slot.values().length);
     var cost_d_s_unlinked_to_o = addie(multie(d, s_per_day), s);
     var assign_costs =
         pic(eq(cost_c_d_g_s_r, mult(cost_d_s_unlinked_to_o, o_c_d_g_s_r)), cBound, dBound, gBound, sBound, rBound);
-    return new LPContext(global_cost, and(cost_domains, assign_costs));
+    return new LPContext(cost, and(cost_domains, assign_costs));
   }
 
   private Constraint finish_courses_without_room_conflict(Map<String, BounderZ> bounders, Map<String, Bound> bounds) {

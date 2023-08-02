@@ -11,8 +11,8 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static school.hei.linearE.instantiableE.Constant.ONE;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
-import static school.hei.linearP.constraint.Constraint.leq;
 import static school.hei.linearP.constraint.Constraint.and;
+import static school.hei.linearP.constraint.Constraint.leq;
 
 class VariadicAndTest {
   @Test

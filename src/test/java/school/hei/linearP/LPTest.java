@@ -16,10 +16,10 @@ import static school.hei.linearE.LEFactory.sub;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
 import static school.hei.linearP.OptimizationType.max;
 import static school.hei.linearP.OptimizationType.min;
+import static school.hei.linearP.constraint.Constraint.and;
 import static school.hei.linearP.constraint.Constraint.eq;
 import static school.hei.linearP.constraint.Constraint.geq;
 import static school.hei.linearP.constraint.Constraint.leq;
-import static school.hei.linearP.constraint.Constraint.and;
 
 class LPTest {
 
