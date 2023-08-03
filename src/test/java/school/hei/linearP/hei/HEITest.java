@@ -72,25 +72,25 @@ public class HEITest {
         finish_courses_without_room_conflict(bounders, bounds));
 
     var actual_solution = new ORTools().solve(lp);
-    assertEquals(9744240, actual_solution.optimalObjective());
+    assertEquals(1.2992240000000002E7, actual_solution.optimalObjective());
     assertEquals(
         """
-            occupation[c:prog2][d:jul20][g:g1][r:a][s:f08t10]=1.0
-            occupation[c:th1][d:jul20][g:g2][r:b][s:f08t10]=1.0
-            occupation[c:th1][d:jul20][g:g1][r:a][s:f10t12]=1.0
-            occupation[c:prog2][d:jul20][g:g2][r:b][s:f10t12]=1.0
-            occupation[c:prog2][d:jul23][g:g1][r:a][s:f08t10]=1.0
+            occupation[c:prog2][d:jul20][g:g2][r:a][s:f08t10]=1.0
+            occupation[c:th1][d:jul20][g:g1][r:b][s:f08t10]=1.0
+            occupation[c:th1][d:jul20][g:g2][r:a][s:f10t12]=1.0
+            occupation[c:prog2][d:jul20][g:g1][r:b][s:f10t12]=1.0
+            occupation[c:th1][d:jul23][g:g1][r:a][s:f08t10]=1.0
             occupation[c:th1][d:jul23][g:g2][r:b][s:f08t10]=1.0
-            occupation[c:prog2][d:jul23][g:g2][r:a][s:f10t12]=1.0
-            occupation[c:th1][d:jul23][g:g1][r:b][s:f10t12]=1.0
-            occupation[c:prog2][d:jul24][g:g1][r:a][s:f08t10]=1.0
+            occupation[c:prog2][d:jul23][g:g1][r:a][s:f10t12]=1.0
+            occupation[c:prog2][d:jul23][g:g2][r:b][s:f10t12]=1.0
+            occupation[c:th1][d:jul24][g:g1][r:a][s:f08t10]=1.0
             occupation[c:th1][d:jul24][g:g2][r:b][s:f08t10]=1.0
             occupation[c:prog2][d:jul24][g:g2][r:a][s:f10t12]=1.0
-            occupation[c:th1][d:jul24][g:g1][r:b][s:f10t12]=1.0
+            occupation[c:prog2][d:jul24][g:g1][r:b][s:f10t12]=1.0
             occupation[c:prog2][d:jul25][g:g2][r:a][s:f08t10]=1.0
-            occupation[c:prog2][d:jul25][g:g1][r:b][s:f08t10]=1.0
+            occupation[c:th1][d:jul25][g:g1][r:b][s:f08t10]=1.0
             occupation[c:th1][d:jul25][g:g2][r:a][s:f10t12]=1.0
-            occupation[c:th1][d:jul25][g:g1][r:b][s:f10t12]=1.0""",
+            occupation[c:prog2][d:jul25][g:g1][r:b][s:f10t12]=1.0""",
         toHEIPlanning(actual_solution.optimalBoundedVariablesForUnboundedName("occupation")));
   }
 

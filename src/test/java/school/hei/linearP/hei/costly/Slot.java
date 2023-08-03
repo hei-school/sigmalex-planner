@@ -26,8 +26,12 @@ public class Slot extends CostlyBounderValue {
     return new Slot("f13t15", 100);
   }
 
+  public static Slot from15To17() {
+    return new Slot("f13t15", 200);
+  }
+
   public static Slot[] values() {
-    return new Slot[]{from8To10(), from10To12(), from13To15()};
+    return new Slot[]{from8To10(), from10To12(), from13To15(), from15To17()};
   }
 
   @Override
