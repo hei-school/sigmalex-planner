@@ -1,6 +1,6 @@
 package school.hei.linearP.hei.costly;
 
-public class Room extends CostlyBounderValue {
+public class Room extends CostlyBounderValue<Room> {
 
   private static final double DEFAULT_COST_WEIGHT = 0.1;
   private final String name;
@@ -32,5 +32,10 @@ public class Room extends CostlyBounderValue {
   @Override
   public String toString() {
     return name;
+  }
+
+  @Override
+  public Room costly() {
+    return this;
   }
 }

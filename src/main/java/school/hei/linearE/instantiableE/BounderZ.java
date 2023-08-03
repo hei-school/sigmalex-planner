@@ -4,15 +4,27 @@ import school.hei.linearE.instantiableE.exception.ArithmeticConversionException;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
-public final class BounderZ extends InstantiableV implements Bounder {
+public final class BounderZ<Costly> extends InstantiableV<Costly> implements Bounder<Costly> {
+
+  private final Function<Costly, InstantiableE<Costly>> instantiator;
 
   public BounderZ(String name) {
     super(name, Set.of());
+    instantiator = bounderValue -> null;
   }
 
-  private BounderZ(String name, Map<Bounder, BounderValue> bounderSubstitutions) {
+  private BounderZ(
+      String name,
+      Map<Bounder<Costly>, BounderValue<Costly>> bounderSubstitutions,
+      Function<Costly, InstantiableE<Costly>> instantiator) {
     super(name, bounderSubstitutions);
+    this.instantiator = instantiator;
+  }
+
+  private BounderZ(String name, Map<Bounder<Costly>, BounderValue<Costly>> bounderSubstitutions) {
+    this(name, bounderSubstitutions, bounderValue -> null);
   }
 
   @Override
@@ -21,22 +33,33 @@ public final class BounderZ extends InstantiableV implements Bounder {
   }
 
   @Override
-  public InstantiableE instantiate(Bounder bounder, BounderValue bounderValue)
+  public InstantiableE<Costly> instantiate(Bounder<Costly> bounder, BounderValue<Costly> bounderValue)
       throws ArithmeticConversionException {
     if (this.equals(bounder)) {
-      return bounderValue.toArithmeticValue();
+      return bounderValue.toQ(bounderValue.costly(), bounder.instantiator());
     }
     return this;
   }
 
   @Override
-  public Variable variable() {
+  public Variable<Costly> variable() {
     return this;
   }
 
   @Override
-  public Variable toNew(Map<Bounder, BounderValue> bounderSubstitutions) {
-    return new BounderZ(name, bounderSubstitutions);
+  public Function<Costly, InstantiableE<Costly>> instantiator() {
+    return instantiator;
+  }
+
+
+  @Override
+  public BounderZ<Costly> wi(Function<Costly, InstantiableE<Costly>> instantiator) {
+    return new BounderZ<>(name, bounderSubstitutions, instantiator);
+  }
+
+  @Override
+  public Variable<Costly> toNew(Map<Bounder<Costly>, BounderValue<Costly>> bounderSubstitutions) {
+    return new BounderZ<>(name, bounderSubstitutions);
   }
 
   @Override

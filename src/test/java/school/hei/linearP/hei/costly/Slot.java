@@ -2,7 +2,7 @@ package school.hei.linearP.hei.costly;
 
 import java.time.Duration;
 
-public class Slot extends CostlyBounderValue {
+public class Slot extends CostlyBounderValue<Slot> {
 
   public static final Duration DURATION = Duration.ofHours(2);
   private static final double DEFAULT_COST_WEIGHT = 10;
@@ -23,11 +23,11 @@ public class Slot extends CostlyBounderValue {
   }
 
   public static Slot from13To15() {
-    return new Slot("f13t15", 100);
+    return new Slot("f13t15", 10);
   }
 
   public static Slot from15To17() {
-    return new Slot("f13t15", 200);
+    return new Slot("f15t17", 20);
   }
 
   public static Slot[] values() {
@@ -42,5 +42,10 @@ public class Slot extends CostlyBounderValue {
   @Override
   public String toString() {
     return name;
+  }
+
+  @Override
+  public Slot costly() {
+    return this;
   }
 }

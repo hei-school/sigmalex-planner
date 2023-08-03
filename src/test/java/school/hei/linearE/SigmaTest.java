@@ -12,14 +12,13 @@ import school.hei.linearE.instantiableE.exception.ArithmeticConversionException;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static school.hei.linearE.LEFactory.add;
 import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearE.LEFactory.mult;
-import static school.hei.linearE.SigmaTest.Days.saturday;
-import static school.hei.linearE.SigmaTest.Days.sunday;
 import static school.hei.linearE.instantiableE.Constant.ONE;
 import static school.hei.linearE.instantiableE.Constant.ZERO;
 
@@ -100,7 +99,7 @@ class SigmaTest {
   @Test
   public void weekend_as_bounder() {
     var weekend = new BounderZ("w");
-    var weekend_bound = new Bound(weekend, saturday, sunday);
+    var weekend_bound = new Bound(weekend, NonInstantiableDays.saturday, NonInstantiableDays.sunday);
 
     var hours_weekend = new Z("hours", weekend);
     var hours_weekend_le = mono(hours_weekend);
@@ -119,12 +118,58 @@ class SigmaTest {
     assertEquals(ArithmeticConversionException.class, e.getCause().getClass());
   }
 
-  enum Days implements BounderValue {
+  @Test
+  public void weekend_as_bounder_with_dynamic_instantiation() {
+    var weekend = new BounderZ<InstantiableDays>("w");
+    var weekend_bound_with_dynamic_instantiation = new Bound(
+        weekend.wi(day -> new Constant(day.order)),
+        InstantiableDays.saturday, InstantiableDays.sunday);
+
+    var hours_weekend = new Z("hours", weekend);
+    var hours_weekend_le = mono(hours_weekend);
+    var add_day_to_z = add(mono(weekend), hours_weekend_le);
+    assertEquals(
+        new NormalizedLE(
+            Map.of(
+                new Z("hours[w:saturday]"), ONE,
+                new Z("hours[w:sunday]"), ONE),
+            new Constant(13)),
+        new Sigma(add_day_to_z, weekend_bound_with_dynamic_instantiation).normalize().simplify());
+  }
+
+  enum NonInstantiableDays implements BounderValue<Void> {
     monday, tuesday, wednesday, thursday, friday, saturday, sunday;
 
     @Override
-    public InstantiableE toArithmeticValue() throws ArithmeticConversionException {
-      throw new ArithmeticConversionException("has no arith value");
+    public Void costly() {
+      return null;
+    }
+
+    @Override
+    public InstantiableE<Void> toQ(Void v, Function<Void, InstantiableE<Void>> instantiator) throws ArithmeticConversionException {
+      throw new ArithmeticConversionException("Days is not supposed to be instantiated");
+    }
+  }
+
+  enum InstantiableDays implements BounderValue<InstantiableDays> {
+    saturday(6), sunday(7);
+
+    private final int order;
+
+    InstantiableDays(int order) {
+      this.order = order;
+    }
+
+    @Override
+    public InstantiableDays costly() {
+      return this;
+    }
+
+    @Override
+    public InstantiableE<InstantiableDays> toQ(
+        InstantiableDays costly, Function<InstantiableDays, InstantiableE<InstantiableDays>> instantiator)
+        throws ArithmeticConversionException {
+      return instantiator.apply(costly);
     }
   }
 }

@@ -6,7 +6,7 @@ import java.time.Month;
 import static java.time.Month.JANUARY;
 import static java.time.temporal.ChronoUnit.DAYS;
 
-public class Date extends CostlyBounderValue {
+public class Date extends CostlyBounderValue<Date> {
 
   private static final LocalDate DEFAULT_REFERENCE_DATE = LocalDate.of(2023, JANUARY, 1);
   private static final double DEFAULT_COST_WEIGHT = 1_000;
@@ -24,5 +24,10 @@ public class Date extends CostlyBounderValue {
   @Override
   public String toString() {
     return (localDate.getMonth().toString().substring(0, 3) + localDate.getDayOfMonth()).toLowerCase();
+  }
+
+  @Override
+  public Date costly() {
+    return this;
   }
 }

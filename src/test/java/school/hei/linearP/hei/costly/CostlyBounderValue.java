@@ -5,10 +5,12 @@ import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.InstantiableE;
 import school.hei.linearE.instantiableE.exception.ArithmeticConversionException;
 
-public abstract class CostlyBounderValue implements Costly, BounderValue {
+import java.util.function.Function;
+
+public abstract class CostlyBounderValue<T> implements Costly, BounderValue<T> {
 
   @Override
-  public InstantiableE toArithmeticValue() throws ArithmeticConversionException {
-    return new Constant(cost());
+  public InstantiableE<T> toQ(T t, Function<T, InstantiableE<T>> instantiator) throws ArithmeticConversionException {
+    return new Constant<>(cost());
   }
 }

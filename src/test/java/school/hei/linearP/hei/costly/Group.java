@@ -1,6 +1,6 @@
 package school.hei.linearP.hei.costly;
 
-public class Group extends CostlyBounderValue {
+public class Group extends CostlyBounderValue<Group> {
 
   private static final double DEFAULT_COST_WEIGHT = 1;
   private final String name;
@@ -32,5 +32,10 @@ public class Group extends CostlyBounderValue {
   @Override
   public String toString() {
     return name;
+  }
+
+  @Override
+  public Group costly() {
+    return this;
   }
 }

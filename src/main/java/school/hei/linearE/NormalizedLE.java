@@ -128,7 +128,7 @@ public final class NormalizedLE implements LinearE {
     var newE = e;
     if (weightedV.containsKey(k)) {
       try {
-        newE = new AddIE(newE, new MultIE(kValue.toArithmeticValue(), weightedV.get(k)));
+        newE = new AddIE(newE, new MultIE(kValue.toQ(kValue.costly(), k.instantiator()), weightedV.get(k)));
       } catch (ArithmeticConversionException e) {
         throw new RuntimeException(e);
       }

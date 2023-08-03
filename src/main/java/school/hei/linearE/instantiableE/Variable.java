@@ -14,27 +14,27 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toSet;
 
-public abstract sealed class Variable permits InstantiableV, NonInstantiableV {
+public abstract sealed class Variable<Costly> permits InstantiableV, NonInstantiableV {
 
   protected final String name;
-  protected final Map<Bounder, BounderValue> bounderSubstitutions;
+  protected final Map<Bounder<Costly>, BounderValue<Costly>> bounderSubstitutions;
 
-  public Variable(String name, Map<Bounder, BounderValue> bounderSubstitutions) {
+  public Variable(String name, Map<Bounder<Costly>, BounderValue<Costly>> bounderSubstitutions) {
     this.name = name;
     this.bounderSubstitutions = bounderSubstitutions;
   }
 
-  public Variable(String name, Set<Bounder> bounders) {
+  public Variable(String name, Set<Bounder<Costly>> bounders) {
     this.name = name;
     this.bounderSubstitutions = new HashMap<>();
     bounders.forEach(bounder -> this.bounderSubstitutions.put(bounder, null));
   }
 
-  public Variable(String name, Bounder... bounders) {
+  public Variable(String name, Bounder<Costly>... bounders) {
     this(name, noDuplicate(bounders));
   }
 
-  private static Set<Bounder> noDuplicate(Bounder[] bounders) {
+  private static <Costly> Set<Bounder<Costly>> noDuplicate(Bounder<Costly>... bounders) {
     for (int i = 0; i < bounders.length; i++) {
       for (int j = i + 1; j < bounders.length; j++) {
         if (bounders[i].variable().name.equals(bounders[j].variable().name)) {
@@ -50,7 +50,7 @@ public abstract sealed class Variable permits InstantiableV, NonInstantiableV {
   }
 
   public String boundedName() {
-    List<Bounder> sortedBounders = bounderSubstitutions.keySet().stream()
+    List<Bounder<Costly>> sortedBounders = bounderSubstitutions.keySet().stream()
         .sorted(comparing(bounder -> bounder.variable().boundedName()))
         .toList();
     return name + sortedBounders.stream()
@@ -60,7 +60,7 @@ public abstract sealed class Variable permits InstantiableV, NonInstantiableV {
         .collect(joining());
   }
 
-  public Variable substitute(Bounder bounder, BounderValue bounderValue) {
+  public Variable<Costly> substitute(Bounder<Costly> bounder, BounderValue<Costly> bounderValue) {
     if (!bounderSubstitutions.containsKey(bounder)) {
       return this;
     }
@@ -68,22 +68,22 @@ public abstract sealed class Variable permits InstantiableV, NonInstantiableV {
       throw new BounderCannotBeRedefinedException(bounder);
     }
 
-    Map<Bounder, BounderValue> newBounderSubstitutions = new HashMap<>(bounderSubstitutions);
+    Map<Bounder<Costly>, BounderValue<Costly>> newBounderSubstitutions = new HashMap<>(bounderSubstitutions);
     newBounderSubstitutions.put(bounder, bounderValue);
     return toNew(newBounderSubstitutions);
   }
 
-  public boolean isBounderAlreadySubstituted(Bounder k) {
+  public boolean isBounderAlreadySubstituted(Bounder<Costly> k) {
     return bounderSubstitutions.containsKey(k) && bounderSubstitutions.get(k) != null;
   }
 
-  public abstract Variable toNew(Map<Bounder, BounderValue> bounderSubstitutions);
+  public abstract Variable<Costly> toNew(Map<Bounder<Costly>, BounderValue<Costly>> bounderSubstitutions);
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    Variable variable = (Variable) o;
+    Variable<Costly> variable = (Variable<Costly>) o;
     return Objects.equals(boundedName(), variable.boundedName());
   }
 
