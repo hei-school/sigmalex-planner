@@ -10,6 +10,6 @@ public interface BounderValue<Costly> {
 
   default InstantiableE<Costly> toQ(Costly costly, Function<Costly, InstantiableE<Costly>> instantiator)
       throws ArithmeticConversionException {
-    throw new RuntimeException("has no Q value, or not implemented");
+    return instantiator.apply(costly);
   }
 }

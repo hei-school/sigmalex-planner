@@ -1,12 +1,14 @@
 package school.hei.linearP.hei.costly;
 
+import school.hei.linearE.instantiableE.BounderValue;
+
 import java.time.LocalDate;
 import java.time.Month;
 
 import static java.time.Month.JANUARY;
 import static java.time.temporal.ChronoUnit.DAYS;
 
-public class Date extends CostlyBounderValue<Date> {
+public class Date implements BounderValue<Date> {
 
   private static final LocalDate DEFAULT_REFERENCE_DATE = LocalDate.of(2023, JANUARY, 1);
   private static final double DEFAULT_COST_WEIGHT = 1_000;
@@ -16,10 +18,6 @@ public class Date extends CostlyBounderValue<Date> {
     this.localDate = LocalDate.of(year, month, day);
   }
 
-  @Override
-  public double cost() {
-    return DEFAULT_COST_WEIGHT * DAYS.between(DEFAULT_REFERENCE_DATE, localDate);
-  }
 
   @Override
   public String toString() {
@@ -29,5 +27,9 @@ public class Date extends CostlyBounderValue<Date> {
   @Override
   public Date costly() {
     return this;
+  }
+
+  public double cost() {
+    return DEFAULT_COST_WEIGHT * DAYS.between(DEFAULT_REFERENCE_DATE, localDate);
   }
 }

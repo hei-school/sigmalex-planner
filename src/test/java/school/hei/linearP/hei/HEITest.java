@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import school.hei.linearE.LinearE;
 import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.BounderZ;
-import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Z;
 import school.hei.linearP.LP;
@@ -16,6 +15,7 @@ import school.hei.linearP.hei.costly.Room;
 import school.hei.linearP.hei.costly.Slot;
 import school.hei.linearP.solver.ORTools;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -40,33 +40,50 @@ public class HEITest {
 
   @Test
   public void ask_sigmalex_the_wise_to_plan_hei() {
-    var c = new BounderZ<Course>("c");
-    var g = new BounderZ<Group>("g");
-    var d = new BounderZ<Date>("d");
-    var s = new BounderZ<Slot>("s");
-    var r = new BounderZ<Room>("r");
-
-    var cBound = new Bound<>(c, Course.values());
-    var gBound = new Bound<>(g, Group.values());
-    var dBound = new Bound<>(d, new Date[]{
+    var g1 = new Group("g1");
+    var g2 = new Group("g2");
+    var groups = new Group[]{g1, g2};
+    var th1 = new Course("th1", Duration.ofHours(6));
+    var prog2 = new Course("prog2", Duration.ofHours(8));
+    var sem1 = new Course("sem1", Duration.ofHours(2));
+    var courses = new Course[]{th1, prog2, sem1};
+    var ra = new Room("a");
+    var rb = new Room("b");
+    var rooms = new Room[]{ra, rb};
+    var dates_all = new Date[]{
         new Date(2023, JULY, 20),
         new Date(2023, JULY, 21),
         new Date(2023, JULY, 22),
         new Date(2023, JULY, 23),
         new Date(2023, JULY, 24),
-        new Date(2023, JULY, 25)});
-    var sBound = new Bound<>(s, Slot.values());
-    var rBound = new Bound<>(r, Room.values());
-
-    var prioritize_early_days_and_slots_context = prioritize_early_days_and_slots(
-        c, g, d, s, r, cBound, gBound, dBound, sBound, rBound);
-    var days_off = new Date[]{
+        new Date(2023, JULY, 25)};
+    var dates_off = new Date[]{ // to be enriched later on with slots_off
         new Date(2023, JULY, 21),
         new Date(2023, JULY, 22)};
+    Slot.DURATION = Duration.ofHours(2);
+    Slot.SLOTS_IN_A_DAY = 4;
+    var f08t10 = new Slot("f08t10", 1);
+    var f10t12 = new Slot("f10t12", 2);
+    var f13t15 = new Slot("f13t15", 10);
+    var f15t17 = new Slot("f15t17", 20);
+    var slots = new Slot[]{f08t10, f10t12, f13t15, f15t17};
+
+    var c = new BounderZ<Course>("c");
+    var g = new BounderZ<Group>("g");
+    var d = new BounderZ<Date>("d");
+    var s = new BounderZ<Slot>("s");
+    var r = new BounderZ<Room>("r");
+    var cBound = new Bound<>(c, courses);
+    var gBound = new Bound<>(g, groups);
+    var dBound = new Bound<>(d, dates_all);
+    var sBound = new Bound<>(s, slots);
+    var rBound = new Bound<>(r, rooms);
+    var prioritize_early_days_and_slots_context =
+        prioritize_early_days_and_slots(c, g, d, s, r, cBound, gBound, dBound, sBound, rBound);
     var lp = new LP(
         min, prioritize_early_days_and_slots_context.objective,
         prioritize_early_days_and_slots_context.constraint,
-        exclude_days_off(days_off, c, g, d, s, r, cBound, gBound, sBound, rBound),
+        exclude_days_off(dates_off, c, g, d, s, r, cBound, gBound, sBound, rBound),
         only_one_slot_max_per_course_per_day(c, g, d, s, r, cBound, gBound, dBound, sBound, rBound),
         finish_courses_without_room_conflict(c, g, d, s, r, cBound, gBound, dBound, sBound, rBound));
 
@@ -152,10 +169,10 @@ public class HEITest {
         pic(geq(cost_c_d_g_s_r, 0), dBound, sBound, rBound));
 
     var cost = sigma(cost_c_d_g_s_r, cBound, dBound, gBound, sBound, rBound);
-    var s_per_day = new Constant<>(Slot.values().length);
-    var cost_d_s_unlinked_to_o = addie(multie(d, s_per_day), s);
+    var cost_d_s_unlinked_to_o = addie(multie(d, Slot.SLOTS_IN_A_DAY), s);
     var assign_costs =
-        pic(eq(cost_c_d_g_s_r, mult(cost_d_s_unlinked_to_o, o_c_d_g_s_r)), cBound, dBound, gBound, sBound, rBound);
+        pic(eq(cost_c_d_g_s_r, mult(cost_d_s_unlinked_to_o, o_c_d_g_s_r)),
+            cBound, dBound.wi(Date::cost), gBound, sBound.wi(Slot::cost), rBound);
     return new LPContext(cost, and(cost_domains, assign_costs));
   }
 
