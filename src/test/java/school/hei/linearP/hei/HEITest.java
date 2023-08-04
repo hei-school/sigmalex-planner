@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 import static java.time.Month.JULY;
 import static java.util.stream.Collectors.joining;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearE.LEFactory.mult;
 import static school.hei.linearE.LEFactory.sigma;
 import static school.hei.linearE.instantiableE.IEFactory.addie;
@@ -188,7 +189,7 @@ public class HEITest {
     var cost_d_s_unlinked_to_o = addie(multie(d, Slot.SLOTS_IN_A_DAY), s);
     var assign_costs =
         pic(eq(cost_ac_d_s_r, mult(cost_d_s_unlinked_to_o, o_ac_d_s_r)),
-            acBound, dBound.wi(Date::cost), sBound.wi(Slot::cost), rBound);
+            acBound, dBound.wiq(Date::cost), sBound.wiq(Slot::cost), rBound);
     return new LPContext(cost, and(cost_domains, assign_costs));
   }
 
@@ -200,11 +201,14 @@ public class HEITest {
     var o_domains = and(
         pic(and(leq(0, o_ac_d_s_r), leq(o_ac_d_s_r, 1)), acBound, dBound, sBound, rBound),
         pic(and(leq(0, o_d_s_r), leq(o_d_s_r, 1)), dBound, sBound, rBound));
+    var t_ac_d_s_r = new Z<>("t", ac, d, s, r);
 
     var sh = Slot.DURATION.toHours();
     var finish_courses_hours =
-        pic(eq(ac, mult(sh, sigma(o_ac_d_s_r, dBound, sBound, rBound))), acBound.wi(AwardedCourse::durationInHours));
-
+        pic(eq(ac, mult(sh, sigma(o_ac_d_s_r, dBound, sBound, rBound))), acBound.wiq(AwardedCourse::durationInHours));
+    var teacher_must_be_available = and(
+        eq(t_ac_d_s_r, o_ac_d_s_r),
+        pic(leq(sigma(t_ac_d_s_r, rBound), mono(ac)), acBound/*TODO: add context to ::wi*/, dBound, sBound));
     var room_is_occupied_when_a_group_studies_there =
         pic(eq(o_d_s_r, sigma(o_ac_d_s_r, acBound)), dBound, sBound, rBound);
     var a_group_can_only_study_a_course_at_a_time =

@@ -1,6 +1,7 @@
 package school.hei.linearE.instantiableE;
 
 import school.hei.linearE.instantiableE.exception.ArithmeticConversionException;
+import school.hei.linearE.instantiableE.exception.MissingInstantiationException;
 
 import java.util.Map;
 import java.util.Set;
@@ -29,7 +30,7 @@ public final class BounderZ<Costly> extends InstantiableV<Costly> implements Bou
 
   @Override
   public double simplify() {
-    throw new UnsupportedOperationException("Earlier instantiation should have prevented current simplification ");
+    throw new MissingInstantiationException("Earlier instantiation should have prevented current simplification");
   }
 
   @Override

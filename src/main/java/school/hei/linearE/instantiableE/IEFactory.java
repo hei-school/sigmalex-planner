@@ -23,6 +23,10 @@ public class IEFactory {
     return new MultIE(new Constant(c), e);
   }
 
+  public static MultIE multie(double c1, double c2) {
+    return new MultIE(new Constant(c1), new Constant(c2));
+  }
+
   public static MultIE multie(InstantiableE e, double c) {
     return new MultIE(e, new Constant(c));
   }
