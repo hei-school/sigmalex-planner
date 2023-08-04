@@ -17,24 +17,24 @@ import static java.util.stream.Collectors.toSet;
 public abstract sealed class Variable<Costly> permits InstantiableV, NonInstantiableV {
 
   protected final String name;
-  protected final Map<Bounder<Costly>, BounderValue<Costly>> bounderSubstitutions;
+  protected final Map<Bounder<? extends Costly>, BounderValue<Costly>> bounderSubstitutions;
 
-  public Variable(String name, Map<Bounder<Costly>, BounderValue<Costly>> bounderSubstitutions) {
+  public Variable(String name, Map<Bounder<? extends Costly>, BounderValue<Costly>> bounderSubstitutions) {
     this.name = name;
     this.bounderSubstitutions = bounderSubstitutions;
   }
 
-  public Variable(String name, Set<Bounder<Costly>> bounders) {
+  public Variable(String name, Set<Bounder<? extends Costly>> bounders) {
     this.name = name;
     this.bounderSubstitutions = new HashMap<>();
     bounders.forEach(bounder -> this.bounderSubstitutions.put(bounder, null));
   }
 
-  public Variable(String name, Bounder<Costly>... bounders) {
+  public Variable(String name, Bounder<? extends Costly>... bounders) {
     this(name, noDuplicate(bounders));
   }
 
-  private static <Costly> Set<Bounder<Costly>> noDuplicate(Bounder<Costly>... bounders) {
+  private static <Costly> Set<Bounder<? extends Costly>> noDuplicate(Bounder<? extends Costly>... bounders) {
     for (int i = 0; i < bounders.length; i++) {
       for (int j = i + 1; j < bounders.length; j++) {
         if (bounders[i].variable().name.equals(bounders[j].variable().name)) {
@@ -50,7 +50,7 @@ public abstract sealed class Variable<Costly> permits InstantiableV, NonInstanti
   }
 
   public String boundedName() {
-    List<Bounder<Costly>> sortedBounders = bounderSubstitutions.keySet().stream()
+    List<Bounder<? extends Costly>> sortedBounders = bounderSubstitutions.keySet().stream()
         .sorted(comparing(bounder -> bounder.variable().boundedName()))
         .toList();
     return name + sortedBounders.stream()
@@ -68,7 +68,7 @@ public abstract sealed class Variable<Costly> permits InstantiableV, NonInstanti
       throw new BounderCannotBeRedefinedException(bounder);
     }
 
-    Map<Bounder<Costly>, BounderValue<Costly>> newBounderSubstitutions = new HashMap<>(bounderSubstitutions);
+    Map<Bounder<? extends Costly>, BounderValue<Costly>> newBounderSubstitutions = new HashMap<>(bounderSubstitutions);
     newBounderSubstitutions.put(bounder, bounderValue);
     return toNew(newBounderSubstitutions);
   }
@@ -77,7 +77,7 @@ public abstract sealed class Variable<Costly> permits InstantiableV, NonInstanti
     return bounderSubstitutions.containsKey(k) && bounderSubstitutions.get(k) != null;
   }
 
-  public abstract Variable<Costly> toNew(Map<Bounder<Costly>, BounderValue<Costly>> bounderSubstitutions);
+  public abstract Variable<Costly> toNew(Map<Bounder<? extends Costly>, BounderValue<Costly>> bounderSubstitutions);
 
   @Override
   public boolean equals(Object o) {

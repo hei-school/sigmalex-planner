@@ -17,13 +17,13 @@ public final class BounderZ<Costly> extends InstantiableV<Costly> implements Bou
 
   private BounderZ(
       String name,
-      Map<Bounder<Costly>, BounderValue<Costly>> bounderSubstitutions,
+      Map<Bounder<? extends Costly>, BounderValue<Costly>> bounderSubstitutions,
       Function<Costly, InstantiableE<Costly>> instantiator) {
     super(name, bounderSubstitutions);
     this.instantiator = instantiator;
   }
 
-  private BounderZ(String name, Map<Bounder<Costly>, BounderValue<Costly>> bounderSubstitutions) {
+  private BounderZ(String name, Map<Bounder<? extends Costly>, BounderValue<Costly>> bounderSubstitutions) {
     this(name, bounderSubstitutions, bounderValue -> null);
   }
 
@@ -58,7 +58,7 @@ public final class BounderZ<Costly> extends InstantiableV<Costly> implements Bou
   }
 
   @Override
-  public Variable<Costly> toNew(Map<Bounder<Costly>, BounderValue<Costly>> bounderSubstitutions) {
+  public Variable<Costly> toNew(Map<Bounder<? extends Costly>, BounderValue<Costly>> bounderSubstitutions) {
     return new BounderZ<>(name, bounderSubstitutions);
   }
 

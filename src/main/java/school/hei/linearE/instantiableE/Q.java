@@ -5,15 +5,16 @@ import java.util.Set;
 import java.util.function.Function;
 
 public final class Q<Costly> extends NonInstantiableV<Costly> implements Bounder<Costly> {
-  public Q(String name, Set<Bounder<Costly>> bounders) {
+  public Q(String name, Set<Bounder<? extends Costly>> bounders) {
     super(name, bounders);
   }
 
-  public Q(String name, Bounder<Costly>... bounders) {
+  @SafeVarargs
+  public Q(String name, Bounder<? extends Costly>... bounders) {
     super(name, bounders);
   }
 
-  private Q(String name, Map<Bounder<Costly>, BounderValue<Costly>> bounderSubstitutions) {
+  private Q(String name, Map<Bounder<? extends Costly>, BounderValue<Costly>> bounderSubstitutions) {
     super(name, bounderSubstitutions);
   }
 
@@ -22,7 +23,7 @@ public final class Q<Costly> extends NonInstantiableV<Costly> implements Bounder
   }
 
   @Override
-  public Variable<Costly> toNew(Map<Bounder<Costly>, BounderValue<Costly>> bounderSubstitutions) {
+  public Variable<Costly> toNew(Map<Bounder<? extends Costly>, BounderValue<Costly>> bounderSubstitutions) {
     return new Q(name, bounderSubstitutions);
   }
 

@@ -127,7 +127,7 @@ public class HEITest {
   private Constraint only_one_slot_max_per_course_per_day(
       BounderZ<Course> c, BounderZ<Group> g, BounderZ<Date> d, BounderZ<Slot> s, BounderZ<Room> r,
       Bound<Course> cBound, Bound<Group> gBound, Bound<Date> dBound, Bound<Slot> sBound, Bound<Room> rBound) {
-    var o_c_d_g_s_r = new Z("occupation", c, d, g, s, r);
+    var o_c_d_g_s_r = new Z<>("occupation", c, d, g, s, r);
     return pic(leq(sigma(o_c_d_g_s_r, sBound, rBound), 1), cBound, dBound, gBound);
   }
 
@@ -136,17 +136,17 @@ public class HEITest {
       BounderZ<Course> c, BounderZ<Group> g, BounderZ<Date> d, BounderZ<Slot> s, BounderZ<Room> r,
       Bound<Course> cBound, Bound<Group> gBound, Bound<Slot> sBound, Bound<Room> rBound) {
     var dBound = new Bound<>(d, off);
-    var o_c_d_g_s_r = new Z("occupation", c, d, g, s, r);
+    var o_c_d_g_s_r = new Z<>("occupation", c, d, g, s, r);
     return pic(eq(o_c_d_g_s_r, 0), cBound, dBound, sBound, gBound, rBound);
   }
 
   private LPContext prioritize_early_days_and_slots(
       BounderZ<Course> c, BounderZ<Group> g, BounderZ<Date> d, BounderZ<Slot> s, BounderZ<Room> r,
       Bound<Course> cBound, Bound<Group> gBound, Bound<Date> dBound, Bound<Slot> sBound, Bound<Room> rBound) {
-    var o_c_d_g_s_r = new Z("occupation", c, d, g, s, r);
+    var o_c_d_g_s_r = new Z<>("occupation", c, d, g, s, r);
 
-    var cost_d_s = new Q("cost", d, s);
-    var cost_c_d_g_s_r = new Q("cost", c, d, g, s, r);
+    var cost_d_s = new Q<>("cost", d, s);
+    var cost_c_d_g_s_r = new Q<>("cost", c, d, g, s, r);
     var cost_domains = and(
         pic(geq(cost_d_s, 0), dBound, sBound),
         pic(geq(cost_c_d_g_s_r, 0), dBound, sBound, rBound));
@@ -162,10 +162,10 @@ public class HEITest {
   private Constraint finish_courses_without_room_conflict(
       BounderZ<Course> c, BounderZ<Group> g, BounderZ<Date> d, BounderZ<Slot> s, BounderZ<Room> r,
       Bound<Course> cBound, Bound<Group> gBound, Bound<Date> dBound, Bound<Slot> sBound, Bound<Room> rBound) {
-    var o_c_d_g_s_r = new Z("occupation", c, d, g, s, r);
-    var o_d_g_s_r = new Z("o", d, g, s, r);
-    var o_d_s_r = new Z("o", d, s, r);
-    var t_c_g = new Z("t", c, g); // time
+    var o_c_d_g_s_r = new Z<>("occupation", c, d, g, s, r);
+    var o_d_g_s_r = new Z<>("o", d, g, s, r);
+    var o_d_s_r = new Z<>("o", d, s, r);
+    var t_c_g = new Z<>("t", c, g); // time
     var o_and_t_domains = and(
         pic(geq(t_c_g, 0), cBound, gBound),
         pic(and(leq(0, o_c_d_g_s_r), leq(o_c_d_g_s_r, 1)), cBound, dBound, gBound, sBound, rBound),
