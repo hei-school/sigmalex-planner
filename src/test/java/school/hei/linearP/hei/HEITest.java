@@ -88,21 +88,21 @@ public class HEITest {
         finish_courses_without_room_conflict(c, g, d, s, r, cBound, gBound, dBound, sBound, rBound));
 
     var actual_solution = new ORTools().solve(lp);
-    assertEquals(1.2952400000000002E7, actual_solution.optimalObjective());
+    assertEquals(1.29524E7, actual_solution.optimalObjective());
     assertEquals(
         """
             occupation[c:sem1][d:jul20][g:g2][r:a][s:f08t10]=1.0
-            occupation[c:sem1][d:jul20][g:g1][r:b][s:f08t10]=1.0
-            occupation[c:prog2][d:jul20][g:g1][r:a][s:f10t12]=1.0
+            occupation[c:th1][d:jul20][g:g1][r:b][s:f08t10]=1.0
+            occupation[c:sem1][d:jul20][g:g1][r:a][s:f10t12]=1.0
             occupation[c:prog2][d:jul20][g:g2][r:b][s:f10t12]=1.0
-            occupation[c:th1][d:jul20][g:g2][r:a][s:f13t15]=1.0
-            occupation[c:th1][d:jul20][g:g1][r:b][s:f13t15]=1.0
-            occupation[c:th1][d:jul23][g:g2][r:a][s:f08t10]=1.0
-            occupation[c:prog2][d:jul23][g:g1][r:b][s:f08t10]=1.0
-            occupation[c:th1][d:jul23][g:g1][r:a][s:f10t12]=1.0
-            occupation[c:prog2][d:jul23][g:g2][r:b][s:f10t12]=1.0
-            occupation[c:th1][d:jul24][g:g1][r:a][s:f08t10]=1.0
-            occupation[c:th1][d:jul24][g:g2][r:b][s:f08t10]=1.0
+            occupation[c:prog2][d:jul20][g:g1][r:a][s:f13t15]=1.0
+            occupation[c:th1][d:jul20][g:g2][r:b][s:f13t15]=1.0
+            occupation[c:th1][d:jul23][g:g1][r:a][s:f08t10]=1.0
+            occupation[c:th1][d:jul23][g:g2][r:b][s:f08t10]=1.0
+            occupation[c:prog2][d:jul23][g:g2][r:a][s:f10t12]=1.0
+            occupation[c:prog2][d:jul23][g:g1][r:b][s:f10t12]=1.0
+            occupation[c:th1][d:jul24][g:g2][r:a][s:f08t10]=1.0
+            occupation[c:th1][d:jul24][g:g1][r:b][s:f08t10]=1.0
             occupation[c:prog2][d:jul24][g:g1][r:a][s:f10t12]=1.0
             occupation[c:prog2][d:jul24][g:g2][r:b][s:f10t12]=1.0
             occupation[c:prog2][d:jul25][g:g2][r:a][s:f08t10]=1.0
@@ -182,23 +182,20 @@ public class HEITest {
     var o_c_d_g_s_r = new Z<>("occupation", c, d, g, s, r);
     var o_d_g_s_r = new Z<>("o", d, g, s, r);
     var o_d_s_r = new Z<>("o", d, s, r);
-    var t_c_g = new Z<>("t", c, g); // time
-    var o_and_t_domains = and(
-        pic(geq(t_c_g, 0), cBound, gBound),
+    var o_domains = and(
         pic(and(leq(0, o_c_d_g_s_r), leq(o_c_d_g_s_r, 1)), cBound, dBound, gBound, sBound, rBound),
         pic(and(leq(0, o_d_g_s_r), leq(o_d_g_s_r, 1)), dBound, gBound, sBound, rBound),
         pic(and(leq(0, o_d_s_r), leq(o_d_s_r, 1)), dBound, sBound, rBound));
-    var st = Slot.DURATION.toHours();
-    var finish_courses = and(
-        pic(eq(t_c_g, mult(st, sigma(o_c_d_g_s_r, dBound, sBound, rBound))), cBound, gBound),
-        pic(eq(t_c_g, c), cBound.wi(Course::durationInHours), gBound));
+    var sh = Slot.DURATION.toHours();
+    var finish_courses =
+        pic(eq(c, mult(sh, sigma(o_c_d_g_s_r, dBound, sBound, rBound))), cBound.wi(Course::durationInHours), gBound);
     var room_is_occupied_when_a_group_studies_there =
         pic(eq(o_d_s_r, sigma(o_c_d_g_s_r, cBound, gBound)), dBound, sBound, rBound);
     var a_group_can_only_study_a_course_at_a_time =
         pic(leq(sigma(o_c_d_g_s_r, cBound, rBound), 1), dBound, sBound, gBound);
 
     return and(
-        o_and_t_domains,
+        o_domains,
         finish_courses,
         room_is_occupied_when_a_group_studies_there,
         a_group_can_only_study_a_course_at_a_time);
