@@ -3,6 +3,7 @@ package school.hei.linearP.constraint;
 import school.hei.linearE.NormalizedLE;
 import school.hei.linearE.instantiableE.Bounder;
 import school.hei.linearE.instantiableE.BounderValue;
+import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearE.instantiableE.Variable;
 import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
 import school.hei.linearP.constraint.polytope.Polytope;
@@ -19,7 +20,7 @@ public final class NormalizedConstraint extends Constraint {
   }
 
   @Override
-  public DisjunctivePolytopes normalize() {
+  public DisjunctivePolytopes normalize(SubstitutionContext substitutionContext) {
     return DisjunctivePolytopes.of(Polytope.of(this));
   }
 
@@ -56,8 +57,8 @@ public final class NormalizedConstraint extends Constraint {
     return le.simplify().weightedV().get(v).simplify();
   }
 
-  public NormalizedConstraint substitute(Bounder k, BounderValue kValue) {
-    return new NormalizedConstraint(le.substitute(k, kValue));
+  public NormalizedConstraint substitute(Bounder k, BounderValue kValue, SubstitutionContext substitutionContext) {
+    return new NormalizedConstraint(le.substitute(k, kValue, substitutionContext));
   }
 
   public NormalizedConstraint simplify() {

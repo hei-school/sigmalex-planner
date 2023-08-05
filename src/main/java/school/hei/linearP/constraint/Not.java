@@ -1,5 +1,6 @@
 package school.hei.linearP.constraint;
 
+import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearE.instantiableE.Variable;
 import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
 import school.hei.linearP.constraint.polytope.Polytope;
@@ -18,18 +19,18 @@ public final class Not extends Constraint {
   }
 
   @Override
-  public DisjunctivePolytopes normalize() {
+  public DisjunctivePolytopes normalize(SubstitutionContext substitutionContext) {
     return (switch (constraint) {
       case False f -> TRUE;
       case True t -> FALSE;
       case Not not -> not.constraint;
-      case NormalizedConstraint norm -> not(norm.normalize());
+      case NormalizedConstraint norm -> not(norm.normalize(substitutionContext));
       case And and -> or(not(and.constraint1), not(and.constraint2));
       case Or or -> and(not(or.constraint1), not(or.constraint2));
       case Leq leq -> le(leq.le2, leq.le1);
-      case Le le -> not(le.normalize());
+      case Le le -> not(le.normalize(substitutionContext));
       case PiConstraint pi -> not(pi.normalize());
-    }).normalize();
+    }).normalize(substitutionContext);
   }
 
   private Constraint not(DisjunctivePolytopes disjunctivePolytopes) {

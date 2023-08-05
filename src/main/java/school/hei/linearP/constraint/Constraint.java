@@ -2,13 +2,23 @@ package school.hei.linearP.constraint;
 
 import school.hei.linearE.LinearE;
 import school.hei.linearE.instantiableE.Bound;
+import school.hei.linearE.instantiableE.BoundedValue;
+import school.hei.linearE.instantiableE.Bounder;
+import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearE.instantiableE.Variable;
 import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
+import school.hei.set.CartesianProduct;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import static java.util.stream.Collectors.toSet;
 import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearP.constraint.Le.DEFAULT_EPSILON;
+import static school.hei.linearP.constraint.True.TRUE;
 
 public sealed abstract class Constraint
     permits BiConstraint, BiLeConstraint, False, NormalizedConstraint, Not, PiConstraint, True {
@@ -101,19 +111,54 @@ public sealed abstract class Constraint
     return nested;
   }
 
-  public static PiConstraint pic(Constraint constraint, Bound bound) {
-    return new PiConstraint(constraint, bound);
-  }
-
-  public static PiConstraint pic(Constraint constraint, Bound... bounds) {
-    PiConstraint nested = new PiConstraint(constraint, bounds[0]);
-    for (int i = 1; i < bounds.length; i++) {
-      nested = new PiConstraint(nested, bounds[i]);
+  private static Constraint pic(Constraint constraint, Set<SubstitutionContext> substitutionContexts) {
+    Constraint res = TRUE;
+    for (var substitutionContext : substitutionContexts) {
+      res = new And(res, normalizedSubstitution(constraint, substitutionContext));
     }
-    return nested;
+    return res;
   }
 
-  public abstract DisjunctivePolytopes normalize(); // disjunction is due to Or
+  private static Constraint normalizedSubstitution(
+      Constraint constraint, SubstitutionContext<?> substitutionContext) {
+    var normalized = constraint.normalize(substitutionContext);
+    for (Bounder bounder : substitutionContext.substitutions().keySet()) {
+      normalized = normalized.substitute(bounder, substitutionContext.get(bounder), substitutionContext);
+    }
+    return normalized.toDnf();
+  }
+
+
+  public static Constraint pic(Constraint constraint, Bound... bounds) {
+    var bounderAndValuesArray = Arrays.stream(bounds)
+        .map(bound -> Arrays.stream(bound.values())
+            .map(bounderValue -> new BoundedValue(bound.bounder(), bounderValue))
+            .collect(toSet()))
+        .toArray(Set[]::new);
+    var cp = CartesianProduct.cartesianProduct(bounderAndValuesArray);
+
+    var substitutionContexts = new HashSet<SubstitutionContext>();
+    for (var bounderAndValues : cp) {
+      if (bounderAndValues instanceof BoundedValue) {
+        substitutionContexts.add(new SubstitutionContext(
+            Map.of(((BoundedValue) bounderAndValues).bounder(), ((BoundedValue) bounderAndValues).bounderValue())));
+        continue;
+      }
+      var substitutionContextMap = new HashMap<>();
+      Set<BoundedValue> bounderAndValuesAsSet = (Set) bounderAndValues;
+      bounderAndValuesAsSet.forEach(boundedValue ->
+          substitutionContextMap.put(boundedValue.bounder(), boundedValue.bounderValue()));
+      substitutionContexts.add(new SubstitutionContext(substitutionContextMap));
+    }
+
+    return pic(constraint, substitutionContexts);
+  }
+
+  public abstract DisjunctivePolytopes normalize(SubstitutionContext substitutionContext); // disjunction is due to Or
+
+  public DisjunctivePolytopes normalize() {
+    return normalize(new SubstitutionContext(new HashMap<>()));
+  }
 
   public abstract Set<Variable> variables();
 }

@@ -1,8 +1,6 @@
 package school.hei.linearE.instantiableE;
 
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 
 public final class Q<Costly> extends NonInstantiableV<Costly> implements Bounder<Costly> {
   public Q(String name, Set<Bounder<? extends Costly>> bounders) {
@@ -14,8 +12,8 @@ public final class Q<Costly> extends NonInstantiableV<Costly> implements Bounder
     super(name, bounders);
   }
 
-  private Q(String name, Map<Bounder<? extends Costly>, BounderValue<Costly>> bounderSubstitutions) {
-    super(name, bounderSubstitutions);
+  private Q(String name, SubstitutionContext<Costly> substitutionContext) {
+    super(name, substitutionContext);
   }
 
   public Q(String name) {
@@ -23,8 +21,8 @@ public final class Q<Costly> extends NonInstantiableV<Costly> implements Bounder
   }
 
   @Override
-  public Variable<Costly> toNew(Map<Bounder<? extends Costly>, BounderValue<Costly>> bounderSubstitutions) {
-    return new Q(name, bounderSubstitutions);
+  public Variable<Costly> toNew(SubstitutionContext<Costly> substitutionContext) {
+    return new Q(name, substitutionContext);
   }
 
   @Override
@@ -40,12 +38,12 @@ public final class Q<Costly> extends NonInstantiableV<Costly> implements Bounder
   }
 
   @Override
-  public Function<Costly, InstantiableE<Costly>> instantiator() {
+  public Instantiator<Costly> instantiator() {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public Bounder<Costly> wi(Function<Costly, InstantiableE<Costly>> instantiator) {
+  public Bounder<Costly> wi(Instantiator<Costly> instantiator) {
     throw new UnsupportedOperationException();
   }
 }

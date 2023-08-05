@@ -1,6 +1,7 @@
 package school.hei.linearP.constraint;
 
 import school.hei.linearE.LinearE;
+import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
 
 import static school.hei.linearE.LEFactory.add;
@@ -16,7 +17,7 @@ public final class Le extends BiLeConstraint {
   }
 
   @Override
-  public DisjunctivePolytopes normalize() {
+  public DisjunctivePolytopes normalize(SubstitutionContext substitutionContext) {
     return new Leq(add(le1, epsilon), le2).normalize();
   }
 }

@@ -1,5 +1,6 @@
 package school.hei.linearP.constraint;
 
+import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
 import school.hei.linearP.constraint.polytope.Polytope;
 
@@ -16,12 +17,12 @@ public final class And extends BiConstraint {
   }
 
   @Override
-  public DisjunctivePolytopes normalize() {
+  public DisjunctivePolytopes normalize(SubstitutionContext substitutionContext) {
     if (constraint1.equals(TRUE)) {
-      return constraint2.normalize();
+      return constraint2.normalize(substitutionContext);
     }
     if (constraint2.equals(TRUE)) {
-      return constraint1.normalize();
+      return constraint1.normalize(substitutionContext);
     }
     if (constraint1.equals(FALSE) || constraint2.equals(FALSE)) {
       return FALSE.normalize();
@@ -29,8 +30,8 @@ public final class And extends BiConstraint {
 
     DisjunctivePolytopes res = DisjunctivePolytopes.of();
     // Illustration: ({a}|{b}) & ({c}|{d}) is normalized to: {a&c} | {a&d} | {b&c} | {b&d}
-    for (Polytope polytopeFromConstraint1 : constraint1.normalize().polytopes()) {
-      for (Polytope polytopeConstraint2 : constraint2.normalize().polytopes()) {
+    for (Polytope polytopeFromConstraint1 : constraint1.normalize(substitutionContext).polytopes()) {
+      for (Polytope polytopeConstraint2 : constraint2.normalize(substitutionContext).polytopes()) {
         res.add(new Polytope(Stream.concat(
                 polytopeFromConstraint1.constraints().stream(),
                 polytopeConstraint2.constraints().stream())

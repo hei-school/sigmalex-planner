@@ -9,10 +9,15 @@ public record Bound<Costly>(Bounder<Costly> bounder, BounderValue<Costly>... val
   }
 
   public Bound<Costly> wi(Function<Costly, InstantiableE<Costly>> instantiator) {
+    return new Bound<>(bounder.wi((costly, ctx) -> instantiator.apply(costly)), values);
+  }
+
+  public Bound<Costly> wi(Instantiator<Costly> instantiator) {
     return new Bound<>(bounder.wi(instantiator), values);
   }
 
+
   public Bound<Costly> wiq(Function<Costly, Double> instantiator) {
-    return new Bound<>(bounder.wi(costly -> new Constant<>(instantiator.apply(costly))), values);
+    return new Bound<>(bounder.wi((costly, ctx) -> new Constant<>(instantiator.apply(costly))), values);
   }
 }

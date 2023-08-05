@@ -1,5 +1,6 @@
 package school.hei.linearP.constraint;
 
+import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
 
 import java.util.stream.Stream;
@@ -15,20 +16,20 @@ public final class Or extends BiConstraint {
   }
 
   @Override
-  public DisjunctivePolytopes normalize() {
+  public DisjunctivePolytopes normalize(SubstitutionContext substitutionContext) {
     if (constraint1.equals(FALSE)) {
-      return constraint2.normalize();
+      return constraint2.normalize(substitutionContext);
     }
     if (constraint2.equals(FALSE)) {
-      return constraint1.normalize();
+      return constraint1.normalize(substitutionContext);
     }
     if (constraint1.equals(TRUE) || constraint2.equals(TRUE)) {
-      return TRUE.normalize();
+      return TRUE.normalize(substitutionContext);
     }
 
     return new DisjunctivePolytopes(Stream.concat(
-            constraint1.normalize().polytopes().stream(),
-            constraint2.normalize().polytopes().stream())
+            constraint1.normalize(substitutionContext).polytopes().stream(),
+            constraint2.normalize(substitutionContext).polytopes().stream())
         .collect(toSet()));
   }
 }

@@ -4,11 +4,13 @@ import org.junit.jupiter.api.Test;
 import school.hei.linearE.LinearE;
 import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.BounderZ;
+import school.hei.linearE.instantiableE.Instantiator;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Z;
 import school.hei.linearP.LP;
 import school.hei.linearP.constraint.Constraint;
 import school.hei.linearP.hei.costly.AwardedCourse;
+import school.hei.linearP.hei.costly.Costly;
 import school.hei.linearP.hei.costly.Course;
 import school.hei.linearP.hei.costly.Date;
 import school.hei.linearP.hei.costly.Group;
@@ -24,9 +26,10 @@ import java.util.regex.Pattern;
 import static java.time.Month.JULY;
 import static java.util.stream.Collectors.joining;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearE.LEFactory.mult;
 import static school.hei.linearE.LEFactory.sigma;
+import static school.hei.linearE.instantiableE.Constant.ONE;
+import static school.hei.linearE.instantiableE.Constant.ZERO;
 import static school.hei.linearE.instantiableE.IEFactory.addie;
 import static school.hei.linearE.instantiableE.IEFactory.multie;
 import static school.hei.linearP.OptimizationType.min;
@@ -48,14 +51,20 @@ public class HEITest {
     var t1 = new Teacher(
         "t1",
         new Date(2023, JULY, 20),
+        new Date(2023, JULY, 21),
+        new Date(2023, JULY, 22),
+        new Date(2023, JULY, 23),
         new Date(2023, JULY, 24),
         new Date(2023, JULY, 25));
     var t2 = new Teacher(
         "t2",
         new Date(2023, JULY, 20),
+        new Date(2023, JULY, 21),
         new Date(2023, JULY, 22),
         new Date(2023, JULY, 23),
-        new Date(2023, JULY, 24));
+        new Date(2023, JULY, 24),
+        new Date(2023, JULY, 25));
+    var teachers = new Teacher[]{t1, t2};
     var th1 = new Course("th1", Duration.ofHours(6));
     var prog2 = new Course("prog2", Duration.ofHours(8));
     var sem1 = new Course("sem1", Duration.ofHours(2));
@@ -66,7 +75,6 @@ public class HEITest {
     var ac_g1_sem1_t2 = new AwardedCourse(sem1, g1, t2);
     var awarded_courses = new AwardedCourse[]{
         ac_g1_th1_t1, ac_g2_th1_t1, ac_g1_prog2_t2, ac_g2_prog2_t2, ac_g1_sem1_t2};
-
     var ra = new Room("a");
     var rb = new Room("b");
     var rooms = new Room[]{ra, rb};
@@ -92,10 +100,12 @@ public class HEITest {
     var d = new BounderZ<Date>("d");
     var s = new BounderZ<Slot>("s");
     var r = new BounderZ<Room>("r");
+    var t = new BounderZ<Teacher>("t");
     var cBound = new Bound<>(ac, awarded_courses);
     var dBound = new Bound<>(d, dates_all);
     var sBound = new Bound<>(s, slots);
     var rBound = new Bound<>(r, rooms);
+    var tBound = new Bound<>(t, teachers);
     var prioritize_early_days_and_slots_context =
         prioritize_early_days_and_slots(ac, d, s, r, cBound, dBound, sBound, rBound);
     var lp = new LP(
@@ -201,23 +211,28 @@ public class HEITest {
     var o_domains = and(
         pic(and(leq(0, o_ac_d_s_r), leq(o_ac_d_s_r, 1)), acBound, dBound, sBound, rBound),
         pic(and(leq(0, o_d_s_r), leq(o_d_s_r, 1)), dBound, sBound, rBound));
-    var t_ac_d_s_r = new Z<>("t", ac, d, s, r);
 
     var sh = Slot.DURATION.toHours();
     var finish_courses_hours =
         pic(eq(ac, mult(sh, sigma(o_ac_d_s_r, dBound, sBound, rBound))), acBound.wiq(AwardedCourse::durationInHours));
-    var teacher_must_be_available = and(
-        eq(t_ac_d_s_r, o_ac_d_s_r),
-        pic(leq(sigma(t_ac_d_s_r, rBound), mono(ac)), acBound/*TODO: add context to ::wi*/, dBound, sBound));
-    var room_is_occupied_when_a_group_studies_there =
-        pic(eq(o_d_s_r, sigma(o_ac_d_s_r, acBound)), dBound, sBound, rBound);
+
+    var ta = new BounderZ<Costly>("ta"); // teacher availability
+    var taBound = new Bound<>(ta, new Costly());
+    Instantiator<Costly> instantiator = (costly, ctx) -> {
+      var lambda_ac = (AwardedCourse) (ctx.get(ac).costly());
+      var lambda_t = lambda_ac.teacher();
+      var lambda_d = (Date) (ctx.get(d).costly());
+      return lambda_t.isAvailableOn(lambda_d) ? ONE : ZERO;
+    };
+    var room_is_occupied_when_a_group_studies_there_with_a_teacher =
+        pic(eq(o_d_s_r, sigma(mult(ta, o_ac_d_s_r), acBound, taBound.wi(instantiator)/*TODO*/)), dBound, sBound, rBound);
     var a_group_can_only_study_a_course_at_a_time =
         pic(leq(sigma(o_ac_d_s_r, acBound, rBound), 1), dBound, sBound);
 
     return and(
         o_domains,
         finish_courses_hours,
-        room_is_occupied_when_a_group_studies_there,
+        room_is_occupied_when_a_group_studies_there_with_a_teacher,
         a_group_can_only_study_a_course_at_a_time);
   }
 

@@ -1,6 +1,5 @@
 package school.hei.linearE.instantiableE;
 
-import java.util.Map;
 import java.util.Set;
 
 public abstract sealed class InstantiableV<Costly>
@@ -9,7 +8,7 @@ public abstract sealed class InstantiableV<Costly>
     super(name, bounders);
   }
 
-  protected InstantiableV(String name, Map<Bounder<? extends Costly>, BounderValue<Costly>> bounderSubstitutions) {
-    super(name, bounderSubstitutions);
+  protected InstantiableV(String name, SubstitutionContext<Costly> substitutionContext) {
+    super(name, substitutionContext);
   }
 }

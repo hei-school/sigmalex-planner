@@ -4,6 +4,7 @@ import school.hei.linearE.instantiableE.BounderValue;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Objects;
 
 import static java.time.Month.JANUARY;
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -31,5 +32,18 @@ public class Date implements BounderValue<Date> {
 
   public double cost() {
     return DEFAULT_COST_WEIGHT * DAYS.between(DEFAULT_REFERENCE_DATE, localDate);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Date date = (Date) o;
+    return Objects.equals(localDate, date.localDate);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(localDate);
   }
 }

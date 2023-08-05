@@ -5,17 +5,29 @@ import school.hei.linearE.NormalizedLE;
 import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.BounderZ;
 import school.hei.linearE.instantiableE.Constant;
+import school.hei.linearE.instantiableE.Instantiator;
 import school.hei.linearE.instantiableE.Q;
+import school.hei.linearE.instantiableE.Z;
 import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
 import school.hei.linearP.constraint.polytope.Polytope;
+import school.hei.linearP.hei.costly.AwardedCourse;
+import school.hei.linearP.hei.costly.Course;
+import school.hei.linearP.hei.costly.Date;
+import school.hei.linearP.hei.costly.Group;
+import school.hei.linearP.hei.costly.Teacher;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.function.Function;
 
+import static java.time.Month.JULY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static school.hei.linearE.LEFactory.mono;
 import static school.hei.linearE.LEFactory.sigma;
 import static school.hei.linearE.LEFactory.vadd;
+import static school.hei.linearE.instantiableE.Constant.ONE;
+import static school.hei.linearE.instantiableE.Constant.ZERO;
+import static school.hei.linearP.constraint.Constraint.eq;
 import static school.hei.linearP.constraint.Constraint.geq;
 import static school.hei.linearP.constraint.Constraint.leq;
 import static school.hei.linearP.constraint.Constraint.pic;
@@ -71,5 +83,36 @@ class PiConstraintTest {
             getExpectedNormalizedConstraint.apply("x[i:5][j:11]"),
             getExpectedNormalizedConstraint.apply("x[i:6][j:11]"))),
         pic(geq(x_i_j, 0), boundI, boundJ).normalize().simplify());
+  }
+
+  @Test
+  public void pic_with_contextual_instantiation() {
+    var g1 = new Group("g1");
+    var t1 = new Teacher("t1", new Date(2023, JULY, 20));
+    var th1 = new Course("th1", Duration.ofHours(6));
+    var ac_g1_th1_t1 = new AwardedCourse(th1, g1, t1);
+
+    var ac = new BounderZ<AwardedCourse>("ac");
+    var d = new BounderZ<Date>("d");
+    var acBound = new Bound<>(ac, new AwardedCourse[]{ac_g1_th1_t1});
+    var dBound = new Bound<>(d, new Date(2023, JULY, 20), new Date(2023, JULY, 21));
+    var o_ac_d = new Z<>("o", ac, d);
+
+    var ta = new BounderZ<Teacher>("ta");
+    var taBound = new Bound<>(ta, new Teacher[]{t1});
+    Instantiator<Teacher> instantiator = (teacher, ctx) ->
+        teacher.isAvailableOn((Date) (ctx.get(d).costly())) ? ONE : ZERO;
+
+    var teacher_must_be_available =
+        pic(eq(o_ac_d, mono(ta)), acBound, dBound, taBound.wi(instantiator));
+
+    assertEquals(
+        DisjunctivePolytopes.of(Polytope.of(
+            new NormalizedConstraint(new NormalizedLE(Map.of(new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul20]"), ONE), new Constant(-1))),
+            new NormalizedConstraint(new NormalizedLE(Map.of(new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul20]"), new Constant(-1)), ONE)),
+            new NormalizedConstraint(new NormalizedLE(Map.of(new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul21]"), ONE), ZERO)),
+            new NormalizedConstraint(new NormalizedLE(Map.of(new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul21]"), new Constant(-1)), ZERO))
+        )),
+        teacher_must_be_available.normalize().simplify());
   }
 }

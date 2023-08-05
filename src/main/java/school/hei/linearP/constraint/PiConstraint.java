@@ -1,32 +1,24 @@
 package school.hei.linearP.constraint;
 
-import school.hei.linearE.instantiableE.Bound;
+import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearE.instantiableE.Variable;
 import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
 
-import java.util.Arrays;
 import java.util.Set;
-
-import static school.hei.linearP.constraint.True.TRUE;
 
 public final class PiConstraint extends Constraint {
 
   private final Constraint constraint;
-  private final Bound bound;
+  private final SubstitutionContext substitutionContext;
 
-  public PiConstraint(Constraint constraint, Bound bound) {
+  public PiConstraint(Constraint constraint, SubstitutionContext substitutionContext) {
     this.constraint = constraint;
-    this.bound = bound;
+    this.substitutionContext = substitutionContext;
   }
 
   @Override
-  public DisjunctivePolytopes normalize() {
-    return Arrays.stream(bound.values())
-        .map(bounderValue -> constraint.normalize()
-            .substitute(bound.bounder(), bounderValue)
-            .toDnf())
-        .reduce(TRUE, Constraint::and)
-        .normalize();
+  public DisjunctivePolytopes normalize(SubstitutionContext substitutionContext) {
+    return constraint.normalize(substitutionContext.add(this.substitutionContext));
   }
 
   @Override

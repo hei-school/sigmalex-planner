@@ -7,6 +7,7 @@ import school.hei.linearE.instantiableE.BounderValue;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.InstantiableE;
 import school.hei.linearE.instantiableE.MultIE;
+import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearE.instantiableE.Variable;
 import school.hei.linearE.instantiableE.exception.ArithmeticConversionException;
 
@@ -17,6 +18,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
+import static school.hei.linearE.instantiableE.IEFactory.addie;
 import static school.hei.linearE.instantiableE.IEFactory.multie;
 import static school.hei.linearP.constraint.Le.DEFAULT_EPSILON;
 
@@ -28,13 +30,15 @@ public final class NormalizedLE implements LinearE {
   private final Map<Variable, InstantiableE> weightedV;
   private final InstantiableE e;
 
+  private final SubstitutionContext substitutionContext;
 
   public NormalizedLE(Map<Variable, InstantiableE> weightedV, InstantiableE e) {
     checkNoDuplicateNames(weightedV);
     this.weightedV = new HashMap<>();
     this.weightedV.putAll(weightedV);
-
     this.e = e;
+
+    substitutionContext = new SubstitutionContext<>(new HashMap<>());
   }
 
   public NormalizedLE(double c) {
@@ -112,6 +116,14 @@ public final class NormalizedLE implements LinearE {
   }
 
   public NormalizedLE substitute(Bounder k, BounderValue kValue) {
+    return substitute(k, kValue, SubstitutionContext.of());
+  }
+
+  public NormalizedLE substitute(Bounder k, BounderValue kValue, SubstitutionContext<?> initialSubstitutionContext) {
+    initialSubstitutionContext.substitutions().forEach(
+        (bounder, bounderValue) -> substitutionContext.put(bounder, bounderValue));
+    substitutionContext.put(k, kValue);
+
     var substitutedWeightedV = new HashMap<>(weightedV);
     weightedV.forEach((v, c) -> {
       var substitutedV = v.substitute(k, kValue);
@@ -128,7 +140,10 @@ public final class NormalizedLE implements LinearE {
     var newE = e;
     if (weightedV.containsKey(k)) {
       try {
-        newE = new AddIE(newE, new MultIE(kValue.toQ(kValue.costly(), k.instantiator()), weightedV.get(k)));
+        var instantiatedMult = multie(
+            kValue.toQ(kValue.costly(), substitutionContext, k.instantiator()),
+            weightedV.get(k));
+        newE = addie(newE, instantiatedMult);
       } catch (ArithmeticConversionException e) {
         throw new RuntimeException(e);
       }

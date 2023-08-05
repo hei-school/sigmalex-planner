@@ -2,6 +2,7 @@ package school.hei.linearP.constraint.polytope;
 
 import school.hei.linearE.instantiableE.Bounder;
 import school.hei.linearE.instantiableE.BounderValue;
+import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearP.constraint.Constraint;
 
 import java.util.Arrays;
@@ -20,9 +21,9 @@ public record DisjunctivePolytopes(Set<Polytope> polytopes) {
     polytopes.add(polytope);
   }
 
-  public DisjunctivePolytopes substitute(Bounder bounder, BounderValue bounderValue) {
+  public DisjunctivePolytopes substitute(Bounder bounder, BounderValue bounderValue, SubstitutionContext substitutionContext) {
     DisjunctivePolytopes res = new DisjunctivePolytopes(polytopes.stream()
-        .map(polytope -> polytope.substitute(bounder, bounderValue))
+        .map(polytope -> polytope.substitute(bounder, bounderValue, substitutionContext))
         .collect(toSet()));
     return res;
   }

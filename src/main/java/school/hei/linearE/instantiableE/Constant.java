@@ -2,8 +2,6 @@ package school.hei.linearE.instantiableE;
 
 import school.hei.linearE.instantiableE.exception.ArithmeticConversionException;
 
-import java.util.function.Function;
-
 public record Constant<Costly>(double c) implements InstantiableE<Costly>, BounderValue<Costly> {
   public static final Constant ZERO = new Constant(0.);
   public static final Constant ONE = new Constant(1.);
@@ -14,7 +12,8 @@ public record Constant<Costly>(double c) implements InstantiableE<Costly>, Bound
   }
 
   @Override
-  public InstantiableE<Costly> toQ(Costly costly, Function<Costly, InstantiableE<Costly>> instantiator)
+  public InstantiableE<Costly> toQ(
+      Costly costly, SubstitutionContext<Costly> substitutionContext, Instantiator<Costly> instantiator)
       throws ArithmeticConversionException {
     return this;
   }

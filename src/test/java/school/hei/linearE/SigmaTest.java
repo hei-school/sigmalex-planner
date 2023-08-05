@@ -6,14 +6,15 @@ import school.hei.linearE.instantiableE.BounderValue;
 import school.hei.linearE.instantiableE.BounderZ;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.InstantiableE;
+import school.hei.linearE.instantiableE.Instantiator;
 import school.hei.linearE.instantiableE.Q;
+import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearE.instantiableE.Z;
 import school.hei.linearE.instantiableE.exception.ArithmeticConversionException;
 import school.hei.linearE.instantiableE.exception.MissingInstantiationException;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -158,6 +159,26 @@ class SigmaTest {
         () -> sigma(le, correctly_ordered_bounds[1], correctly_ordered_bounds[0]).normalize().simplify());
   }
 
+  @Test
+  public void weekend_as_bounder_with_nested_contextual_instantiation() {
+    var weekend = new BounderZ<InstantiableDays>("w");
+    var working_day = new BounderZ<InstantiableDays>("d");
+    var weekend_bound = new Bound<>(weekend, InstantiableDays.saturday, InstantiableDays.sunday);
+    var working_bound = new Bound<>(working_day, InstantiableDays.monday);
+
+    var le = add(mono(working_day), mono(weekend));
+    Instantiator<InstantiableDays> contextual_wi = (day, ctx) -> {
+      var w_as_costly = ((InstantiableDays) (ctx.get(weekend).costly()));
+      return new Constant<>(w_as_costly.order + 3. * day.order);
+    };
+    var correctly_ordered_bounds = new Bound[]{
+        working_bound.wi(day -> multie(2, weekend)),
+        weekend_bound.wi(contextual_wi)};
+    assertEquals(
+        new NormalizedLE(Map.of(), new Constant<>(156)),
+        sigma(le, correctly_ordered_bounds).normalize().simplify());
+  }
+
   enum NonInstantiableDays implements BounderValue<NonInstantiableDays> {
     monday, tuesday, wednesday, thursday, friday, saturday, sunday;
 
@@ -168,7 +189,9 @@ class SigmaTest {
 
     @Override
     public InstantiableE<NonInstantiableDays> toQ(
-        NonInstantiableDays v, Function<NonInstantiableDays, InstantiableE<NonInstantiableDays>> instantiator)
+        NonInstantiableDays costly,
+        SubstitutionContext<NonInstantiableDays> substitutionContext,
+        Instantiator<NonInstantiableDays> instantiator)
         throws ArithmeticConversionException {
       throw new ArithmeticConversionException("Days is not supposed to be instantiated");
     }
@@ -190,9 +213,11 @@ class SigmaTest {
 
     @Override
     public InstantiableE<InstantiableDays> toQ(
-        InstantiableDays costly, Function<InstantiableDays, InstantiableE<InstantiableDays>> instantiator)
+        InstantiableDays costly,
+        SubstitutionContext<InstantiableDays> substitutionContext,
+        Instantiator<InstantiableDays> instantiator)
         throws ArithmeticConversionException {
-      return instantiator.apply(costly);
+      return instantiator.apply(costly, substitutionContext);
     }
   }
 }

@@ -3,6 +3,7 @@ package school.hei.linearP.constraint.polytope;
 
 import school.hei.linearE.instantiableE.Bounder;
 import school.hei.linearE.instantiableE.BounderValue;
+import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearP.constraint.Constraint;
 import school.hei.linearP.constraint.NormalizedConstraint;
 
@@ -22,9 +23,9 @@ public record Polytope(Set<NormalizedConstraint> constraints) {
     return and(constraints.toArray(Constraint[]::new));
   }
 
-  public Polytope substitute(Bounder bounder, BounderValue bounderValue) {
+  public Polytope substitute(Bounder bounder, BounderValue bounderValue, SubstitutionContext substitutionContext) {
     return new Polytope(constraints.stream()
-        .map(constraint -> constraint.substitute(bounder, bounderValue))
+        .map(constraint -> constraint.substitute(bounder, bounderValue, substitutionContext))
         .collect(toSet()));
   }
 
