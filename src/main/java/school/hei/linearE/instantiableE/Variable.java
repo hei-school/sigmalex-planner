@@ -1,6 +1,5 @@
 package school.hei.linearE.instantiableE;
 
-import school.hei.linearE.instantiableE.exception.BounderCannotBeRedefinedException;
 import school.hei.linearE.instantiableE.exception.NoDuplicateBounderException;
 
 import java.util.Arrays;
@@ -63,18 +62,11 @@ public abstract sealed class Variable<Costly> permits InstantiableV, NonInstanti
     if (!substitutionContext.containsKey(bounder)) {
       return this;
     }
-    if (isBounderAlreadySubstituted(bounder)) {
-      throw new BounderCannotBeRedefinedException(bounder);
-    }
 
     SubstitutionContext<Costly> newBounderSubstitutions =
         new SubstitutionContext<>(new HashMap<>(substitutionContext.substitutions()));
     newBounderSubstitutions.put(bounder, bounderValue);
     return toNew(newBounderSubstitutions);
-  }
-
-  public boolean isBounderAlreadySubstituted(Bounder<Costly> k) {
-    return substitutionContext.containsKey(k) && substitutionContext.get(k) != null;
   }
 
   public abstract Variable<Costly> toNew(SubstitutionContext<Costly> substitutionContext);

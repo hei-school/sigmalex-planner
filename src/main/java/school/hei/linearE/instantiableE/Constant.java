@@ -3,8 +3,8 @@ package school.hei.linearE.instantiableE;
 import school.hei.linearE.instantiableE.exception.ArithmeticConversionException;
 
 public record Constant<Costly>(double c) implements InstantiableE<Costly>, BounderValue<Costly> {
-  public static final Constant ZERO = new Constant(0.);
-  public static final Constant ONE = new Constant(1.);
+  public static final Constant ZERO = new Constant<>(0.);
+  public static final Constant ONE = new Constant<>(1.);
 
   @Override
   public double simplify() {
@@ -19,7 +19,7 @@ public record Constant<Costly>(double c) implements InstantiableE<Costly>, Bound
   }
 
   @Override
-  public InstantiableE instantiate(Bounder bounder, BounderValue bounderValue)
+  public InstantiableE instantiate(Bounder bounder, BounderValue bounderValue, SubstitutionContext substitutionContext)
       throws ArithmeticConversionException {
     return this;
   }

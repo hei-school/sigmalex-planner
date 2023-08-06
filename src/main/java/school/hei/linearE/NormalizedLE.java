@@ -59,7 +59,7 @@ public final class NormalizedLE implements LinearE {
   }
 
   @Override
-  public NormalizedLE normalize() {
+  public NormalizedLE normalize(SubstitutionContext substitutionContext) {
     return this;
   }
 
@@ -115,10 +115,6 @@ public final class NormalizedLE implements LinearE {
             new Constant(DEFAULT_EPSILON)));
   }
 
-  public NormalizedLE substitute(Bounder k, BounderValue kValue) {
-    return substitute(k, kValue, SubstitutionContext.of());
-  }
-
   public NormalizedLE substitute(Bounder k, BounderValue kValue, SubstitutionContext<?> initialSubstitutionContext) {
     initialSubstitutionContext.substitutions().forEach(
         (bounder, bounderValue) -> substitutionContext.put(bounder, bounderValue));
@@ -128,7 +124,7 @@ public final class NormalizedLE implements LinearE {
     weightedV.forEach((v, c) -> {
       var substitutedV = v.substitute(k, kValue);
       try {
-        substitutedWeightedV.put(substitutedV, c.instantiate(k, kValue));
+        substitutedWeightedV.put(substitutedV, c.instantiate(k, kValue, substitutionContext));
       } catch (ArithmeticConversionException ex) {
         throw new RuntimeException(ex);
       }
@@ -152,9 +148,18 @@ public final class NormalizedLE implements LinearE {
     }
 
     try {
-      return new NormalizedLE(substitutedWeightedV, newE.instantiate(k, kValue));
+      return new NormalizedLE(substitutedWeightedV, newE.instantiate(k, kValue, substitutionContext));
     } catch (ArithmeticConversionException ex) {
       throw new RuntimeException(ex);
     }
+  }
+
+  public NormalizedLE substituteAll(SubstitutionContext<?> substitutionContext) {
+    var res = this;
+    var substitutions = substitutionContext.substitutions();
+    for (var bounder : substitutionContext.substitutions().keySet()) {
+      res = res.substitute(bounder, substitutions.get(bounder), substitutionContext);
+    }
+    return res;
   }
 }

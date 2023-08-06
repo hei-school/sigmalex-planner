@@ -9,11 +9,11 @@ public record MultIE(InstantiableE e1, InstantiableE e2) implements Instantiable
   }
 
   @Override
-  public InstantiableE instantiate(Bounder bounder, BounderValue bounderValue)
+  public InstantiableE instantiate(Bounder bounder, BounderValue bounderValue, SubstitutionContext substitutionContext)
       throws ArithmeticConversionException {
     return new MultIE(
-        e1.instantiate(bounder, bounderValue),
-        e2.instantiate(bounder, bounderValue));
+        e1.instantiate(bounder, bounderValue, substitutionContext),
+        e2.instantiate(bounder, bounderValue, substitutionContext));
   }
 
   @Override

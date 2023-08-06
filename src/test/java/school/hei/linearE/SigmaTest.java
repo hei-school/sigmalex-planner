@@ -11,7 +11,6 @@ import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearE.instantiableE.Z;
 import school.hei.linearE.instantiableE.exception.ArithmeticConversionException;
-import school.hei.linearE.instantiableE.exception.MissingInstantiationException;
 
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +32,7 @@ class SigmaTest {
     int n = 10;
     assertEquals(
         new NormalizedLE(n * (n + 1) / 2.),
-        new Sigma(mono(k), new Bound<>(k, 1, n)).normalize().simplify());
+        sigma(mono(k), new Bound<>(k, 1, n)).normify());
   }
 
   @Test
@@ -44,10 +43,10 @@ class SigmaTest {
 
     assertEquals(
         new NormalizedLE(n / 2. * (2 * a + (n - 1) * d)),
-        new Sigma(
+        sigma(
             add(mono(a), mult(d, add(mono(k), mono(-1)))),
             new Bound<>(k, 1, n))
-            .normalize().simplify());
+            .normify());
   }
 
   @Test
@@ -64,7 +63,7 @@ class SigmaTest {
                 new Q<>("x[i:5]"), new Constant<>(3),
                 new Q<>("x[i:6]"), new Constant<>(3)),
             ZERO),
-        new Sigma(le_i, boundI).normalize().simplify());
+        sigma(le_i, boundI).normify());
 
     var j = new BounderZ<>("j");
     var x_i_j = new Q<>("x", Set.of(i, j));
@@ -80,7 +79,7 @@ class SigmaTest {
                 new Q<>("x[i:5][j:11]"), new Constant<>(3),
                 new Q<>("x[i:6][j:11]"), new Constant<>(3)),
             ZERO),
-        new Sigma(new Sigma(le_i_j, boundI), boundJ).normalize().simplify());
+        sigma(sigma(le_i_j, boundI), boundJ).normify());
   }
 
   @Test
@@ -92,12 +91,12 @@ class SigmaTest {
     var boundI = new Bound<>(i, 4, 6);
     assertEquals(
         new NormalizedLE(Map.of(j, new Constant<>(9)), new Constant<>(30)),
-        new Sigma(le, boundI).normalize().simplify());
+        sigma(le, boundI).normify());
 
     var boundJ = new Bound<>(j, 10, 11);
     assertEquals(
         new NormalizedLE(Map.of(), new Constant<>(249)),
-        new Sigma(new Sigma(le, boundI), boundJ).normalize().simplify());
+        sigma(sigma(le, boundI), boundJ).normify());
   }
 
   @Test
@@ -113,12 +112,12 @@ class SigmaTest {
                 new Z<>("hours[w:saturday]"), ONE,
                 new Z<>("hours[w:sunday]"), ONE),
             ZERO),
-        new Sigma(hours_weekend_le, weekend_bound).normalize().simplify());
+        sigma(hours_weekend_le, weekend_bound).normify());
 
     var add_day_to_z = add(mono(weekend), hours_weekend_le);
     var e = assertThrows(
         RuntimeException.class,
-        () -> new Sigma(add_day_to_z, weekend_bound).normalize());
+        () -> sigma(add_day_to_z, weekend_bound).normify());
     assertEquals(ArithmeticConversionException.class, e.getCause().getClass());
   }
 
@@ -134,9 +133,9 @@ class SigmaTest {
                 new Z<>("hours[w:saturday]"), ONE,
                 new Z<>("hours[w:sunday]"), ONE),
             new Constant<>(26)),
-        new Sigma(add(mono(hours_weekend), mono(weekend)),
+        sigma(add(mono(hours_weekend), mono(weekend)),
             weekend_bound.wi(day -> multie(2, day.order)))
-            .normalize().simplify());
+            .normify());
   }
 
   @Test
@@ -152,11 +151,7 @@ class SigmaTest {
         weekend_bound.wiq(day -> 3. * day.order)};
     assertEquals(
         new NormalizedLE(Map.of(), new Constant<>(117)),
-        sigma(le, correctly_ordered_bounds).normalize().simplify());
-
-    assertThrows(
-        MissingInstantiationException.class,
-        () -> sigma(le, correctly_ordered_bounds[1], correctly_ordered_bounds[0]).normalize().simplify());
+        sigma(le, correctly_ordered_bounds).normify());
   }
 
   @Test
@@ -176,7 +171,7 @@ class SigmaTest {
         weekend_bound.wi(contextual_wi)};
     assertEquals(
         new NormalizedLE(Map.of(), new Constant<>(156)),
-        sigma(le, correctly_ordered_bounds).normalize().simplify());
+        sigma(le, correctly_ordered_bounds).normify());
   }
 
   enum NonInstantiableDays implements BounderValue<NonInstantiableDays> {

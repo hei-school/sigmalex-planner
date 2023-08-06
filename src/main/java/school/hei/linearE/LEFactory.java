@@ -8,6 +8,8 @@ import school.hei.linearE.instantiableE.Variable;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static school.hei.linearE.instantiableE.Constant.ZERO;
+
 public class LEFactory {
 
   public static Mono mono(double c) {
@@ -92,11 +94,14 @@ public class LEFactory {
   }
 
   public static LinearE sigma(LinearE le, Bound... bounds) {
-    Sigma compoundSigma = new Sigma(le, bounds[0]);
-    for (int i = 1; i < bounds.length; i++) {
-      compoundSigma = new Sigma(compoundSigma, bounds[i]);
+    var substitutionContexts = Bound.toBSubstitutionContexts(bounds);
+
+    LinearE res = mono(ZERO);
+    for (var substitutionContext : substitutionContexts) {
+      res = add(res, new Sigma(le, substitutionContext));
     }
-    return compoundSigma;
+
+    return res;
   }
 
   public static LinearE sigma(Variable le, Bound... bounds) {

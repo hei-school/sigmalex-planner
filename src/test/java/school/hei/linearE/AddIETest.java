@@ -23,6 +23,6 @@ class AddIETest {
                 x, new Constant(3),
                 y, new Constant(2.5)),
             ZERO),
-        add(mono(3, x), mono(2.5, y)).normalize().simplify());
+        add(mono(3, x), mono(2.5, y)).normify());
   }
 }

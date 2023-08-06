@@ -3,7 +3,6 @@ package school.hei.linearE.instantiableE;
 import school.hei.linearE.instantiableE.exception.ArithmeticConversionException;
 import school.hei.linearE.instantiableE.exception.MissingInstantiationException;
 
-import java.util.Map;
 import java.util.Set;
 
 public final class BounderZ<Costly> extends InstantiableV<Costly> implements Bounder<Costly> {
@@ -33,16 +32,11 @@ public final class BounderZ<Costly> extends InstantiableV<Costly> implements Bou
   }
 
   @Override
-  public InstantiableE<Costly> instantiate(Bounder<Costly> bounder, BounderValue<Costly> bounderValue)
+  public InstantiableE<Costly> instantiate(
+      Bounder<Costly> bounder, BounderValue<Costly> bounderValue, SubstitutionContext substitutionContext)
       throws ArithmeticConversionException {
     if (this.equals(bounder)) {
-      return bounderValue.toQ(
-          bounderValue.costly(),
-
-          //TODO: we lose previous substitutions. Isn't this catastrophic doctor?
-          new SubstitutionContext(Map.of(bounder, bounderValue)),
-
-          bounder.instantiator());
+      return bounderValue.toQ(bounderValue.costly(), substitutionContext, bounder.instantiator());
     }
     return this;
   }

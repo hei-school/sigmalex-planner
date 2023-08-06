@@ -1,6 +1,7 @@
 package school.hei.linearE;
 
 import school.hei.linearE.instantiableE.InstantiableE;
+import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearE.instantiableE.Variable;
 
 import java.util.Map;
@@ -12,10 +13,11 @@ import static school.hei.linearE.instantiableE.Constant.ZERO;
 public record Mono(InstantiableE e, Optional<Variable> optV) implements LinearE {
 
   @Override
-  public NormalizedLE normalize() {
+  public NormalizedLE normalize(SubstitutionContext<?> substitutionContext) {
     return optV
         .map(v -> new NormalizedLE(Map.of(v, e), ZERO))
-        .orElseGet(() -> new NormalizedLE(Map.of(), e));
+        .orElseGet(() -> new NormalizedLE(Map.of(), e))
+        .substituteAll(substitutionContext);
   }
 
   @Override

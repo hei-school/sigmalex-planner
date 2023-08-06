@@ -2,6 +2,7 @@ package school.hei.linearE;
 
 import school.hei.linearE.instantiableE.AddIE;
 import school.hei.linearE.instantiableE.InstantiableE;
+import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearE.instantiableE.Variable;
 
 import java.util.HashMap;
@@ -15,9 +16,9 @@ import static school.hei.linearE.instantiableE.IEFactory.addie;
 public record Add(LinearE le1, LinearE le2) implements LinearE {
 
   @Override
-  public NormalizedLE normalize() {
-    var normalizedLe1 = le1.normalize();
-    var normalizedLe2 = le2.normalize();
+  public NormalizedLE normalize(SubstitutionContext substitutionContext) {
+    var normalizedLe1 = le1.normalize(substitutionContext);
+    var normalizedLe2 = le2.normalize(substitutionContext);
     var weightedV1 = normalizedLe1.weightedV();
     var weightedV2 = normalizedLe2.weightedV();
 
@@ -29,7 +30,7 @@ public record Add(LinearE le1, LinearE le2) implements LinearE {
       }
     });
 
-    return new NormalizedLE(weightedV, addie(normalizedLe1.e(), normalizedLe2.e()));
+    return new NormalizedLE(weightedV, addie(normalizedLe1.e(), normalizedLe2.e())).substituteAll(substitutionContext);
   }
 
   @Override

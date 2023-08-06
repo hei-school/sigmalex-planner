@@ -22,7 +22,9 @@ import java.util.function.Function;
 
 import static java.time.Month.JULY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static school.hei.linearE.LEFactory.mono;
+import static school.hei.linearE.LEFactory.mult;
 import static school.hei.linearE.LEFactory.sigma;
 import static school.hei.linearE.LEFactory.vadd;
 import static school.hei.linearE.instantiableE.Constant.ONE;
@@ -114,5 +116,45 @@ class PiConstraintTest {
             new NormalizedConstraint(new NormalizedLE(Map.of(new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul21]"), new Constant(-1)), ZERO))
         )),
         teacher_must_be_available.normalize().simplify());
+  }
+
+  @Test
+  public void pic_with_contextual_instantiation_inside_sigma() {
+    var g1 = new Group("g1");
+    var t1 = new Teacher("t1", new Date(2023, JULY, 20));
+    var th1 = new Course("th1", Duration.ofHours(6));
+    var ac_g1_th1_t1 = new AwardedCourse(th1, g1, t1);
+
+    var ac = new BounderZ<AwardedCourse>("ac");
+    var d = new BounderZ<Date>("d");
+    var g = new BounderZ<Group>("g");
+    var acBound = new Bound<>(ac, new AwardedCourse[]{ac_g1_th1_t1});
+    var dBound = new Bound<>(d, new Date(2023, JULY, 20), new Date(2023, JULY, 21));
+    var gBound = new Bound<>(g, g1);
+
+    var o_ac_d = new Z<>("o", ac, d);
+    var ta = new BounderZ<Teacher>("ta");
+    var taBound = new Bound<>(ta, new Teacher[]{t1});
+    Instantiator<Teacher> instantiator = (teacher, ctx) -> {
+      assertNotNull(ctx.get(g));
+      return teacher.isAvailableOn((Date) (ctx.get(d).costly())) ? ONE : ZERO;
+    };
+
+    var teacher_must_be_available =
+        pic(eq(sigma(mult(ta, o_ac_d), acBound, dBound, taBound.wi(instantiator)), mono(g)),
+            gBound.wi(costly -> new Constant<>(7)));
+
+    assertEquals(
+        DisjunctivePolytopes.of(Polytope.of(
+            new NormalizedConstraint(new NormalizedLE(Map.of(
+                new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul20]"), ONE,
+                new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul21]"), ZERO),
+                new Constant(-7))),
+            new NormalizedConstraint(new NormalizedLE(Map.of(
+                new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul20]"), new Constant(-1),
+                new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul21]"), ZERO),
+                new Constant(7)))
+        )).toString(), //TODO: have to resort to string equality as fails otherwise. Prolly bounder names involved.
+        teacher_must_be_available.normalize().simplify().toString());
   }
 }

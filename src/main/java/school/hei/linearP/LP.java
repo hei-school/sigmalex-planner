@@ -49,7 +49,7 @@ public record LP(
         .map(polytope -> new NormalizedLP(
             name,
             optimizationType,
-            objective.normalize().simplify(),
+            objective.normify(),
             polytope.constraints().stream()
                 .map(NormalizedConstraint::simplify)
                 .collect(toSet())))

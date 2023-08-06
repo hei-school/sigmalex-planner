@@ -1,28 +1,15 @@
 package school.hei.linearE;
 
-import school.hei.linearE.instantiableE.Bound;
-import school.hei.linearE.instantiableE.BounderValue;
+import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearE.instantiableE.Variable;
 
 import java.util.Set;
 
-import static school.hei.linearE.LEFactory.add;
-import static school.hei.linearE.LEFactory.mono;
-
-public record Sigma(LinearE le, Bound bound) implements LinearE {
+public record Sigma(LinearE le, SubstitutionContext substitutionContext) implements LinearE {
 
   @Override
-  public NormalizedLE normalize() {
-    var normalizedLeToSigma = le.normalize();
-    LinearE summed = mono(0);
-
-    var bounderValues = bound.values();
-    for (BounderValue bounderValue : bounderValues) {
-      summed = add(
-          summed,
-          normalizedLeToSigma.substitute(bound.bounder(), bounderValue));
-    }
-    return summed.normalize();
+  public NormalizedLE normalize(SubstitutionContext substitutionContext) {
+    return le.normalize(substitutionContext.add(this.substitutionContext)).substituteAll(substitutionContext);
   }
 
   @Override
