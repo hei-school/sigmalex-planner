@@ -7,10 +7,12 @@ import school.hei.linearE.instantiableE.BounderQ;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Instantiator;
 import school.hei.linearE.instantiableE.Q;
+import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearE.instantiableE.Z;
 import school.hei.linearP.constraint.polytope.DisjunctivePolytopes;
 import school.hei.linearP.constraint.polytope.Polytope;
 import school.hei.linearP.hei.costly.AwardedCourse;
+import school.hei.linearP.hei.costly.Costly;
 import school.hei.linearP.hei.costly.Course;
 import school.hei.linearP.hei.costly.Date;
 import school.hei.linearP.hei.costly.Group;
@@ -100,10 +102,10 @@ class PiConstraintTest {
     var dBound = new Bound<>(d, new Date(2023, JULY, 20), new Date(2023, JULY, 21));
     var o_ac_d = new Z("o", ac, d);
 
-    var ta = new BounderQ<Teacher>("ta");
-    var taBound = new Bound<>(ta, new Teacher[]{t1});
-    Instantiator<Teacher> instantiator = (teacher, ctx) ->
-        teacher.isAvailableOn((Date) (ctx.get(d).costly())) ? ONE : ZERO;
+    var ta = new BounderQ<Costly<?>>("ta");
+    var taBound = new Bound<>(ta, new Costly<>());
+    Instantiator<Costly<?>> instantiator = (Costly<?> teacher, SubstitutionContext<Costly<?>> ctx) ->
+        ((Teacher) teacher).isAvailableOn((Date) (ctx.get(d).costly())) ? ONE : ZERO;
 
     var teacher_must_be_available =
         pic(eq(o_ac_d, mono(ta)), acBound, dBound, taBound.wi(instantiator));
@@ -133,11 +135,11 @@ class PiConstraintTest {
     var gBound = new Bound<>(g, g1);
 
     var o_ac_d = new Z("o", ac, d);
-    var ta = new BounderQ<Teacher>("ta");
-    var taBound = new Bound<>(ta, new Teacher[]{t1});
-    Instantiator<Teacher> instantiator = (teacher, ctx) -> {
+    var ta = new BounderQ<Costly<?>>("ta");
+    var taBound = new Bound<>(ta, new Costly<>());
+    Instantiator<Costly<?>> instantiator = (Costly<?> teacher, SubstitutionContext<Costly<?>> ctx) -> {
       assertNotNull(ctx.get(g));
-      return teacher.isAvailableOn((Date) (ctx.get(d).costly())) ? ONE : ZERO;
+      return ((Teacher) teacher).isAvailableOn((Date) (ctx.get(d).costly())) ? ONE : ZERO;
     };
 
     var teacher_must_be_available =

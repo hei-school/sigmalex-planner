@@ -1,8 +1,11 @@
 package school.hei.linearP.hei.costly;
 
-import school.hei.linearE.instantiableE.BounderValue;
+import lombok.Value;
 
-public record Room(String name) implements BounderValue<Room> {
+@Value
+public class Room extends Costly<Room> {
+  String name;
+
   @Override
   public String toString() {
     return name;

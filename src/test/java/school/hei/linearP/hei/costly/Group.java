@@ -1,8 +1,11 @@
 package school.hei.linearP.hei.costly;
 
-import school.hei.linearE.instantiableE.BounderValue;
+import lombok.Value;
 
-public record Group(String name) implements BounderValue<Group> {
+@Value
+public class Group extends Costly<Group> {
+  String name;
+
   @Override
   public String toString() {
     return name;

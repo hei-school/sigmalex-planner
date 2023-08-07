@@ -13,6 +13,10 @@ import java.util.stream.IntStream;
 import static java.util.stream.Collectors.toSet;
 
 public record Bound<Costly>(Bounder<Costly> bounder, BounderValue<Costly>... values) {
+  @SafeVarargs
+  public Bound {
+  }
+
   public Bound(BounderQ k, int kMin, int kMax) {
     this(k, IntStream.range(kMin, kMax + 1).mapToObj(Constant::new).toArray(Constant[]::new));
   }

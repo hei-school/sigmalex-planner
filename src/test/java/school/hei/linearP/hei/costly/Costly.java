@@ -2,9 +2,10 @@ package school.hei.linearP.hei.costly;
 
 import school.hei.linearE.instantiableE.BounderValue;
 
-public class Costly implements BounderValue<Costly> {
+public sealed class Costly<T> implements BounderValue<T>
+    permits AwardedCourse, Course, Date, Group, Room, Slot, Teacher {
   @Override
-  public Costly costly() {
-    return this;
+  public T costly() {
+    return null;
   }
 }

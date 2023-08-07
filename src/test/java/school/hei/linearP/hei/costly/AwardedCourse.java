@@ -1,11 +1,16 @@
 package school.hei.linearP.hei.costly;
 
-import school.hei.linearE.instantiableE.BounderValue;
+import lombok.Value;
 
-public record AwardedCourse(Course course, Group group, Teacher teacher) implements BounderValue<AwardedCourse> {
+@Value
+public class AwardedCourse extends Costly<AwardedCourse> {
+
+  Course course;
+  Group group;
+  Teacher teacher;
 
   public double durationInHours() {
-    return course.duration().toHours();
+    return course.getDuration().toHours();
   }
 
   @Override

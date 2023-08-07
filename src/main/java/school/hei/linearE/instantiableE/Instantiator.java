@@ -4,6 +4,6 @@ import java.util.function.BiFunction;
 
 public interface Instantiator<Costly> extends BiFunction<
     Costly,
-    SubstitutionContext,
+    SubstitutionContext<Costly>,
     InstantiableE<Costly>> {
 }

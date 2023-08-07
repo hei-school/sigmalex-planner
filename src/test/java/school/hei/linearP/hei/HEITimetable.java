@@ -3,8 +3,10 @@ package school.hei.linearP.hei;
 import school.hei.linearE.LinearE;
 import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.BounderQ;
+import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Instantiator;
 import school.hei.linearE.instantiableE.Q;
+import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearE.instantiableE.Z;
 import school.hei.linearP.MILP;
 import school.hei.linearP.Solution;
@@ -18,8 +20,6 @@ import school.hei.linearP.solver.ORTools;
 
 import static school.hei.linearE.LEFactory.mult;
 import static school.hei.linearE.LEFactory.sigma;
-import static school.hei.linearE.instantiableE.Constant.ONE;
-import static school.hei.linearE.instantiableE.Constant.ZERO;
 import static school.hei.linearE.instantiableE.IEFactory.addie;
 import static school.hei.linearE.instantiableE.IEFactory.multie;
 import static school.hei.linearP.OptimizationType.min;
@@ -94,13 +94,13 @@ public class HEITimetable {
     var o_domain =
         pic(and(leq(0, o_ac_d_s_r), leq(o_ac_d_s_r, 1)), acBound, dBound, sBound, rBound);
 
-    var ta = new BounderQ<Costly>("ta"); // teacher availability
-    var taBound = new Bound<>(ta, new Costly());
-    Instantiator<Costly> taInstantiator = (costly, ctx) -> {
+    var ta = new BounderQ<Costly<?>>("ta"); // teacher availability
+    var taBound = new Bound<>(ta, new Costly<>());
+    Instantiator<Costly<?>> taInstantiator = (Costly<?> costly, SubstitutionContext<Costly<?>> ctx) -> {
       var lambda_ac = (AwardedCourse) (ctx.get(ac).costly());
-      var lambda_t = lambda_ac.teacher();
+      var lambda_t = lambda_ac.getTeacher();
       var lambda_d = (Date) (ctx.get(d).costly());
-      return lambda_t.isAvailableOn(lambda_d) ? ONE : ZERO;
+      return lambda_t.isAvailableOn(lambda_d) ? new Constant<>(1) : new Constant<>(0);
     };
     var sh = Slot.DURATION.toHours();
     var finish_courses_hours_with_teacher =

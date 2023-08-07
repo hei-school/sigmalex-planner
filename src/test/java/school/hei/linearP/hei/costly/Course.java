@@ -1,10 +1,14 @@
 package school.hei.linearP.hei.costly;
 
-import school.hei.linearE.instantiableE.BounderValue;
+import lombok.Value;
 
 import java.time.Duration;
 
-public record Course(String name, Duration duration) implements BounderValue<Course> {
+@Value
+public class Course extends Costly<Course> {
+  String name;
+  Duration duration;
+
   @Override
   public String toString() {
     return name;

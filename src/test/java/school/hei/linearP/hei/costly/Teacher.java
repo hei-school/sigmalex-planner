@@ -1,10 +1,19 @@
 package school.hei.linearP.hei.costly;
 
-import school.hei.linearE.instantiableE.BounderValue;
+import lombok.Value;
 
 import java.util.Arrays;
 
-public record Teacher(String name, Date... availabilities) implements BounderValue<Teacher> {
+@Value
+public class Teacher extends Costly<Teacher> {
+
+  String name;
+  Date[] availabilities;
+
+  public Teacher(String name, Date... availabilities) {
+    this.name = name;
+    this.availabilities = availabilities;
+  }
 
   public boolean isAvailableOn(Date date) {
     return Arrays.asList(availabilities).contains(date);
