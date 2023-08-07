@@ -5,7 +5,7 @@ import school.hei.linearE.instantiableE.BounderQ;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Variable;
 import school.hei.linearE.instantiableE.Z;
-import school.hei.linearP.NormalizedLP;
+import school.hei.linearP.NormalizedMILP;
 import school.hei.linearP.Solution;
 
 import java.util.HashMap;
@@ -21,7 +21,7 @@ import static school.hei.linearP.Solution.UNFEASIBLE;
  */
 public class ORTools extends Solver {
   @Override
-  protected Solution solveNormalized(NormalizedLP lp) {
+  protected Solution solveNormalized(NormalizedMILP lp) {
     loadNativeLibraries();
     var solver = createSolver("SCIP"); // https://www.scipopt.org/
 

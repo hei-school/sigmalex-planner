@@ -1,7 +1,7 @@
 package school.hei.linearP.solver;
 
-import school.hei.linearP.LP;
-import school.hei.linearP.NormalizedLP;
+import school.hei.linearP.MILP;
+import school.hei.linearP.NormalizedMILP;
 import school.hei.linearP.Solution;
 
 import static java.util.Comparator.comparing;
@@ -14,9 +14,9 @@ public abstract class Solver {
   private int solvedMilp = 0;
   private int printedSolvedMilp = 0;
 
-  public Solution solve(LP lp) {
+  public Solution solve(MILP MILP) {
     System.out.print("Disjunctive polytopes normalization... ");
-    var normalizedLp = lp.normify();
+    var normalizedLp = MILP.normify();
     System.out.println("done.");
 
     totalMilp = normalizedLp.size();
@@ -40,5 +40,5 @@ public abstract class Solver {
     }
   }
 
-  protected abstract Solution solveNormalized(NormalizedLP lp);
+  protected abstract Solution solveNormalized(NormalizedMILP lp);
 }

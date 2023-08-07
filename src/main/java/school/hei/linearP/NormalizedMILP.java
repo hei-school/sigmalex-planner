@@ -7,7 +7,7 @@ import school.hei.linearP.constraint.NormalizedConstraint;
 import java.util.HashSet;
 import java.util.Set;
 
-public record NormalizedLP(
+public record NormalizedMILP(
     String name,
     OptimizationType optimizationType,
     NormalizedLE objective,

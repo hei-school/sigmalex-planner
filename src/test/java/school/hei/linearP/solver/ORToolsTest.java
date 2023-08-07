@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Z;
-import school.hei.linearP.LP;
+import school.hei.linearP.MILP;
 import school.hei.linearP.Solution;
 
 import java.util.Map;
@@ -49,7 +49,7 @@ class ORToolsTest {
 
     var x = new Q("x");
     var y = new Q("y");
-    var lp = new LP(
+    var lp = new MILP(
         max, add(mult(143, x), mult(60, y)),
         leq(
             add(mult(120, x), mult(200, y)),
@@ -77,7 +77,7 @@ class ORToolsTest {
        2 x + 3 y <= 12; */
     var x = new Z("x");
     var y = new Z("y");
-    var lp = new LP(
+    var lp = new MILP(
         max, y,
         geq(x, 0), geq(y, 0),
         leq(add(mult(-1, x), y), 1),
@@ -101,7 +101,7 @@ class ORToolsTest {
        2 x + 3 y <= 12; */
     var x = new Z("x");
     var y = new Z("y");
-    var lp = new LP(
+    var lp = new MILP(
         max, y,
         geq(x, 0), geq(y, 0),
         le(add(mult(-1, x), y), mono(1)), // instead of Leq
@@ -126,7 +126,7 @@ class ORToolsTest {
     var x = new Z("x");
     var y = new Z("y");
     var hugeEpsilon = 3;
-    var lp = new LP(
+    var lp = new MILP(
         max, y,
         geq(x, 0), geq(y, 0),
         le( // instead of Leq
@@ -158,7 +158,7 @@ class ORToolsTest {
     var b = leq(add(mult(3, x), 2), 12);
     var c = leq(add(mult(2, x), mult(3, y)), 12);
 
-    var feasible1 = new LP(
+    var feasible1 = new MILP(
         max, y,
         x_domain, y_domain,
         not(a), b, c);
@@ -168,7 +168,7 @@ class ORToolsTest {
             Map.of(x, -0., y, 4.)),
         subject.solve(feasible1));
 
-    var feasible2 = new LP(
+    var feasible2 = new MILP(
         max, y,
         x_domain, y_domain,
         a, not(b), c);
@@ -178,17 +178,17 @@ class ORToolsTest {
             Map.of(x, 4., y, 1.)),
         subject.solve(feasible2));
 
-    var unfeasible = new LP(
+    var unfeasible = new MILP(
         max, y,
         x_domain, y_domain,
         not(a), not(b), c);
     assertEquals(UNFEASIBLE, subject.solve(unfeasible));
 
-    var a_and_b_and_c = new LP(
+    var a_and_b_and_c = new MILP(
         max, y,
         x_domain, y_domain,
         a, b, c);
-    var a_and_b_and_c_but_in_a_fancy_way = new LP(
+    var a_and_b_and_c_but_in_a_fancy_way = new MILP(
         max, y,
         x_domain, y_domain,
         not(not(a)), not(or(not(b), not(c))), // fancy a&b&c
@@ -218,21 +218,21 @@ class ORToolsTest {
     var b = leq(add(mult(3, x), 2), 12);
     var c = leq(add(mult(2, x), mult(3, y)), 12);
 
-    var withGreaterObjective = new LP(
+    var withGreaterObjective = new MILP(
         max, y,
         geq(x, 0), geq(y, 0),
         b, c);
     var greaterSolution = subject.solve(withGreaterObjective);
     assertEquals(4, greaterSolution.optimalObjective());
 
-    var withLesserObjective = new LP(
+    var withLesserObjective = new MILP(
         max, y,
         geq(x, 0), geq(y, 0),
         a, c);
     var lesserSolution = subject.solve(withLesserObjective);
     assertEquals(2, lesserSolution.optimalObjective());
 
-    var chooseBetweenAAndB = new LP(
+    var chooseBetweenAAndB = new MILP(
         max, y,
         geq(x, 0), geq(y, 0),
         or(a, b), c);
@@ -251,7 +251,7 @@ class ORToolsTest {
        2 x1 + 3 x2 <= 20; */
     var x1 = new Q("x1");
     var x2 = new Z("x2");
-    var lp = new LP(
+    var lp = new MILP(
         min, add(mult(8, x1), x2),
         geq(add(x1, mult(2, x2)), -14),
         leq(sub(mult(-4, x1), x2), -33),
@@ -289,16 +289,16 @@ class ORToolsTest {
     var b = leq(add(mult(2, x1), x2), 20);
     var c = leq(sub(mult(-4, x1), x2), -33);
 
-    var unfeasible1 = new LP(min, objective, a);
+    var unfeasible1 = new MILP(min, objective, a);
     assertTrue(subject.solve(unfeasible1).isEmpty());
 
-    var unfeasible2 = new LP(min, objective, Set.of(a, b));
+    var unfeasible2 = new MILP(min, objective, Set.of(a, b));
     assertTrue(subject.solve(unfeasible2).isEmpty());
 
-    var unfeasible3 = new LP(min, objective, Set.of(a, c));
+    var unfeasible3 = new MILP(min, objective, Set.of(a, c));
     assertTrue(subject.solve(unfeasible3).isEmpty());
 
-    var feasible = new LP(min, objective, or(a, and(b, c)));
+    var feasible = new MILP(min, objective, or(a, and(b, c)));
     assertEquals(
         new Solution(58.99999999999999, Map.of(x1, 6.500000000000002, x2, 7.)),
         subject.solve(feasible));
@@ -306,7 +306,7 @@ class ORToolsTest {
 
   @Test
   public void unfeasible() {
-    var lp = new LP(
+    var lp = new MILP(
         min, new Q("x"),
         geq(0, 1));
 

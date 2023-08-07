@@ -6,7 +6,7 @@ import school.hei.linearE.instantiableE.BounderQ;
 import school.hei.linearE.instantiableE.Instantiator;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Z;
-import school.hei.linearP.LP;
+import school.hei.linearP.MILP;
 import school.hei.linearP.Solution;
 import school.hei.linearP.constraint.Constraint;
 import school.hei.linearP.hei.costly.AwardedCourse;
@@ -31,7 +31,7 @@ import static school.hei.linearP.constraint.Constraint.pic;
 
 public class HEITimetable {
 
-  private final LP milp;
+  private final MILP milp;
 
   public HEITimetable(AwardedCourse[] awarded_courses, Room[] rooms, Date[] dates_all, Date[] dates_off, Slot[] slots) {
     var ac = new BounderQ<AwardedCourse>("ac");
@@ -44,7 +44,7 @@ public class HEITimetable {
     var rBound = new Bound<>(r, rooms);
     var prioritize_early_days_and_slots_context =
         prioritize_early_days_and_slots(ac, d, s, r, cBound, dBound, sBound, rBound);
-    this.milp = new LP(
+    this.milp = new MILP(
         min, prioritize_early_days_and_slots_context.objective,
         prioritize_early_days_and_slots_context.constraint,
         exclude_days_off(dates_off, ac, d, s, r, cBound, sBound, rBound),
@@ -68,7 +68,7 @@ public class HEITimetable {
     return pic(eq(o_ac_d_s_r, 0), acBound, dBound, sBound, rBound);
   }
 
-  private LPContext prioritize_early_days_and_slots(
+  private MILPContext prioritize_early_days_and_slots(
       BounderQ<AwardedCourse> ac, BounderQ<Date> d, BounderQ<Slot> s, BounderQ<Room> r,
       Bound<AwardedCourse> acBound, Bound<Date> dBound, Bound<Slot> sBound, Bound<Room> rBound) {
     var o_ac_d_s_r = new Z("occupation", ac, d, s, r);
@@ -84,7 +84,7 @@ public class HEITimetable {
     var assign_costs =
         pic(eq(cost_ac_d_s_r, mult(cost_d_s_unlinked_to_o, o_ac_d_s_r)),
             acBound, dBound.wiq(Date::cost), sBound.wiq(Slot::cost), rBound);
-    return new LPContext(cost, and(cost_domains, assign_costs));
+    return new MILPContext(cost, and(cost_domains, assign_costs));
   }
 
   private Constraint finish_course_hours_with_available_teachers_and_no_room_conflict(
@@ -120,6 +120,6 @@ public class HEITimetable {
     return new ORTools().solve(milp);
   }
 
-  record LPContext(LinearE objective, Constraint constraint) {
+  record MILPContext(LinearE objective, Constraint constraint) {
   }
 }

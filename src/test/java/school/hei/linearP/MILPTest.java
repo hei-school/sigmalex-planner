@@ -21,17 +21,17 @@ import static school.hei.linearP.constraint.Constraint.eq;
 import static school.hei.linearP.constraint.Constraint.geq;
 import static school.hei.linearP.constraint.Constraint.leq;
 
-class LPTest {
+class MILPTest {
 
   @Test
   public void min_leq_constraint() {
     var x = new Q("x");
     var y = new Q("y");
-    var lpName = "lp_name";
+    var milpName = "lp_name";
 
     assertEquals(
-        Set.of(new NormalizedLP(
-            lpName, min,
+        Set.of(new NormalizedMILP(
+            milpName, min,
             new NormalizedLE(Map.of(x, new Constant(1)), new Constant(7)),
             Set.of(
                 new NormalizedConstraint(
@@ -40,8 +40,8 @@ class LPTest {
                             x, new Constant(1),
                             y, new Constant(-1)),
                         ZERO))))),
-        new LP(
-            lpName, min,
+        new MILP(
+            milpName, min,
             add(mono(x), mono(7)),
             Set.of(leq(mono(x), mono(y))))
             .normify());
@@ -51,11 +51,11 @@ class LPTest {
   public void min_geq_constraint() {
     var x = new Q("x");
     var y = new Q("y");
-    var lpName = "lp_name";
+    var milpName = "lp_name";
 
     assertEquals(
-        Set.of(new NormalizedLP(
-            lpName, min,
+        Set.of(new NormalizedMILP(
+            milpName, min,
             new NormalizedLE(Map.of(x, new Constant(1)), new Constant(7)),
             Set.of(
                 new NormalizedConstraint(
@@ -64,8 +64,8 @@ class LPTest {
                             x, new Constant(-1),
                             y, new Constant(1)),
                         ZERO))))),
-        new LP(
-            lpName, min,
+        new MILP(
+            milpName, min,
             add(mono(x), mono(7)),
             Set.of(
                 geq(mono(x), mono(y))))
@@ -76,11 +76,11 @@ class LPTest {
   public void max_eq_constraint() {
     var x = new Q("x");
     var y = new Q("y");
-    var lpName = "lp_name";
+    var milpName = "lp_name";
 
     assertEquals(
-        Set.of(new NormalizedLP(
-            lpName, max,
+        Set.of(new NormalizedMILP(
+            milpName, max,
             new NormalizedLE(Map.of(x, new Constant(1)), new Constant(7)),
             Set.of(
                 new NormalizedConstraint(
@@ -95,8 +95,8 @@ class LPTest {
                             x, new Constant(-1),
                             y, new Constant(1)),
                         new Constant(-9)))))),
-        new LP(
-            lpName, max,
+        new MILP(
+            milpName, max,
             add(mono(x), mono(7)),
             Set.of(eq(mono(x), sub(mono(y), mono(9)))))
             .normify());
@@ -106,12 +106,12 @@ class LPTest {
   public void max_eq_constraint_as_variadic() {
     var x = new Q("x");
     var y = new Q("y");
-    var lpName = "lp_name";
+    var milpName = "lp_name";
 
     var yPlus9 = sub(mono(y), mono(9));
     assertEquals(
-        Set.of(new NormalizedLP(
-            lpName, max,
+        Set.of(new NormalizedMILP(
+            milpName, max,
             new NormalizedLE(Map.of(x, new Constant(1)), new Constant(7)),
             Set.of(
                 new NormalizedConstraint(
@@ -126,8 +126,8 @@ class LPTest {
                             x, new Constant(-1),
                             y, new Constant(1)),
                         new Constant(-9)))))),
-        new LP(
-            lpName, max,
+        new MILP(
+            milpName, max,
             add(mono(x), mono(7)),
             Set.of(
                 and(
