@@ -1,7 +1,7 @@
 package school.hei.linearP.solver;
 
 import com.google.ortools.linearsolver.MPVariable;
-import school.hei.linearE.instantiableE.BounderZ;
+import school.hei.linearE.instantiableE.BounderQ;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Variable;
 import school.hei.linearE.instantiableE.Z;
@@ -29,7 +29,7 @@ public class ORTools extends Solver {
     lp.variables().forEach(v -> lpvToMpv.put(v, switch (v) {
       case Q q -> solver.makeNumVar(NEGATIVE_INFINITY, POSITIVE_INFINITY, q.boundedName());
       case Z z -> solver.makeIntVar(NEGATIVE_INFINITY, POSITIVE_INFINITY, z.boundedName());
-      case BounderZ bounderZ -> throw new UnsupportedOperationException();
+      case BounderQ bounderQ -> throw new UnsupportedOperationException();
     }));
 
     var objective = solver.objective();

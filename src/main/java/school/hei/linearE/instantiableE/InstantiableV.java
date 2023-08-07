@@ -3,7 +3,7 @@ package school.hei.linearE.instantiableE;
 import java.util.Set;
 
 public abstract sealed class InstantiableV<Costly>
-    extends Variable<Costly> implements InstantiableE<Costly> permits BounderZ {
+    extends Variable<Costly> implements InstantiableE<Costly> permits BounderQ {
   public InstantiableV(String name, Set<Bounder<? extends Costly>> bounders) {
     super(name, bounders);
   }

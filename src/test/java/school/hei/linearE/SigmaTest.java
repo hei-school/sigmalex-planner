@@ -2,8 +2,8 @@ package school.hei.linearE;
 
 import org.junit.jupiter.api.Test;
 import school.hei.linearE.instantiableE.Bound;
+import school.hei.linearE.instantiableE.BounderQ;
 import school.hei.linearE.instantiableE.BounderValue;
-import school.hei.linearE.instantiableE.BounderZ;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.InstantiableE;
 import school.hei.linearE.instantiableE.Instantiator;
@@ -28,7 +28,7 @@ import static school.hei.linearE.instantiableE.IEFactory.multie;
 class SigmaTest {
   @Test
   public void first_n_sum() {
-    var k = new BounderZ<>("k");
+    var k = new BounderQ<>("k");
     int n = 10;
     assertEquals(
         new NormalizedLE(n * (n + 1) / 2.),
@@ -39,7 +39,7 @@ class SigmaTest {
   public void first_arith_progression_sum() {
     // Does Wikipedia know math? https://en.wikipedia.org/wiki/Arithmetic_progression
     int n = 5, a = 2, d = 3;
-    var k = new BounderZ<>("k");
+    var k = new BounderQ<>("k");
 
     assertEquals(
         new NormalizedLE(n / 2. * (2 * a + (n - 1) * d)),
@@ -51,7 +51,7 @@ class SigmaTest {
 
   @Test
   public void bounded_vars() {
-    var i = new BounderZ<>("i");
+    var i = new BounderQ<>("i");
     var x_i = new Q<>("x", Set.of(i));
     var le_i = mono(3, x_i);
 
@@ -65,7 +65,7 @@ class SigmaTest {
             ZERO),
         sigma(le_i, boundI).normify());
 
-    var j = new BounderZ<>("j");
+    var j = new BounderQ<>("j");
     var x_i_j = new Q<>("x", Set.of(i, j));
     var le_i_j = mono(3, x_i_j);
     var boundJ = new Bound<>(j, 10, 11);
@@ -84,8 +84,8 @@ class SigmaTest {
 
   @Test
   public void nested_sigma() {
-    var i = new BounderZ<>("i");
-    var j = new BounderZ<>("j");
+    var i = new BounderQ<>("i");
+    var j = new BounderQ<>("j");
     var le = add(mono(2, i), mono(3, j));
 
     var boundI = new Bound<>(i, 4, 6);
@@ -101,7 +101,7 @@ class SigmaTest {
 
   @Test
   public void weekend_as_bounder() {
-    var weekend = new BounderZ<NonInstantiableDays>("w");
+    var weekend = new BounderQ<NonInstantiableDays>("w");
     var weekend_bound = new Bound<>(weekend, NonInstantiableDays.saturday, NonInstantiableDays.sunday);
 
     var hours_weekend = new Z<>("hours", weekend);
@@ -123,7 +123,7 @@ class SigmaTest {
 
   @Test
   public void weekend_as_bounder_with_dynamic_instantiation() {
-    var weekend = new BounderZ<InstantiableDays>("w");
+    var weekend = new BounderQ<InstantiableDays>("w");
     var hours_weekend = new Z<>("hours", weekend);
     var weekend_bound = new Bound<>(weekend, InstantiableDays.saturday, InstantiableDays.sunday);
 
@@ -140,8 +140,8 @@ class SigmaTest {
 
   @Test
   public void weekend_as_bounder_with_nested_dynamic_instantiation() {
-    var weekend = new BounderZ<InstantiableDays>("w");
-    var working_day = new BounderZ<InstantiableDays>("d");
+    var weekend = new BounderQ<InstantiableDays>("w");
+    var working_day = new BounderQ<InstantiableDays>("d");
     var weekend_bound = new Bound<>(weekend, InstantiableDays.saturday, InstantiableDays.sunday);
     var working_bound = new Bound<>(working_day, InstantiableDays.monday);
 
@@ -156,8 +156,8 @@ class SigmaTest {
 
   @Test
   public void weekend_as_bounder_with_nested_contextual_instantiation() {
-    var weekend = new BounderZ<InstantiableDays>("w");
-    var working_day = new BounderZ<InstantiableDays>("d");
+    var weekend = new BounderQ<InstantiableDays>("w");
+    var working_day = new BounderQ<InstantiableDays>("d");
     var weekend_bound = new Bound<>(weekend, InstantiableDays.saturday, InstantiableDays.sunday);
     var working_bound = new Bound<>(working_day, InstantiableDays.monday);
 

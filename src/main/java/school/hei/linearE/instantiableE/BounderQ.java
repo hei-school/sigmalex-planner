@@ -5,16 +5,16 @@ import school.hei.linearE.instantiableE.exception.MissingInstantiationException;
 
 import java.util.Set;
 
-public final class BounderZ<Costly> extends InstantiableV<Costly> implements Bounder<Costly> {
+public final class BounderQ<Costly> extends InstantiableV<Costly> implements Bounder<Costly> {
 
   private final Instantiator<Costly> instantiator;
 
-  public BounderZ(String name) {
+  public BounderQ(String name) {
     super(name, Set.of());
     instantiator = (costly, substitutionCtx) -> null;
   }
 
-  private BounderZ(
+  private BounderQ(
       String name,
       SubstitutionContext<Costly> substitutionContext,
       Instantiator<Costly> instantiator) {
@@ -22,7 +22,7 @@ public final class BounderZ<Costly> extends InstantiableV<Costly> implements Bou
     this.instantiator = instantiator;
   }
 
-  private BounderZ(String name, SubstitutionContext<Costly> substitutionContext) {
+  private BounderQ(String name, SubstitutionContext<Costly> substitutionContext) {
     this(name, substitutionContext, (costly, lambdaSubstitutionCtx) -> null);
   }
 
@@ -53,13 +53,13 @@ public final class BounderZ<Costly> extends InstantiableV<Costly> implements Bou
 
 
   @Override
-  public BounderZ<Costly> wi(Instantiator<Costly> instantiator) {
-    return new BounderZ<>(name, substitutionContext, instantiator);
+  public BounderQ<Costly> wi(Instantiator<Costly> instantiator) {
+    return new BounderQ<>(name, substitutionContext, instantiator);
   }
 
   @Override
   public Variable<Costly> toNew(SubstitutionContext<Costly> substitutionContext) {
-    return new BounderZ<>(name, substitutionContext);
+    return new BounderQ<>(name, substitutionContext);
   }
 
   @Override

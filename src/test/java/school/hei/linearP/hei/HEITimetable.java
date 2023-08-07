@@ -2,7 +2,7 @@ package school.hei.linearP.hei;
 
 import school.hei.linearE.LinearE;
 import school.hei.linearE.instantiableE.Bound;
-import school.hei.linearE.instantiableE.BounderZ;
+import school.hei.linearE.instantiableE.BounderQ;
 import school.hei.linearE.instantiableE.Instantiator;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Z;
@@ -34,10 +34,10 @@ public class HEITimetable {
   private final LP milp;
 
   public HEITimetable(AwardedCourse[] awarded_courses, Room[] rooms, Date[] dates_all, Date[] dates_off, Slot[] slots) {
-    var ac = new BounderZ<AwardedCourse>("ac");
-    var d = new BounderZ<Date>("d");
-    var s = new BounderZ<Slot>("s");
-    var r = new BounderZ<Room>("r");
+    var ac = new BounderQ<AwardedCourse>("ac");
+    var d = new BounderQ<Date>("d");
+    var s = new BounderQ<Slot>("s");
+    var r = new BounderQ<Room>("r");
     var cBound = new Bound<>(ac, awarded_courses);
     var dBound = new Bound<>(d, dates_all);
     var sBound = new Bound<>(s, slots);
@@ -53,7 +53,7 @@ public class HEITimetable {
   }
 
   private Constraint only_one_slot_max_per_course_per_day(
-      BounderZ<AwardedCourse> ac, BounderZ<Date> d, BounderZ<Slot> s, BounderZ<Room> r,
+      BounderQ<AwardedCourse> ac, BounderQ<Date> d, BounderQ<Slot> s, BounderQ<Room> r,
       Bound<AwardedCourse> acBound, Bound<Date> dBound, Bound<Slot> sBound, Bound<Room> rBound) {
     var o_ac_d_s_r = new Z<>("occupation", ac, d, s, r);
     return pic(leq(sigma(o_ac_d_s_r, sBound, rBound), 1), acBound, dBound);
@@ -61,7 +61,7 @@ public class HEITimetable {
 
   private Constraint exclude_days_off(
       Date[] off,
-      BounderZ<AwardedCourse> ac, BounderZ<Date> d, BounderZ<Slot> s, BounderZ<Room> r,
+      BounderQ<AwardedCourse> ac, BounderQ<Date> d, BounderQ<Slot> s, BounderQ<Room> r,
       Bound<AwardedCourse> acBound, Bound<Slot> sBound, Bound<Room> rBound) {
     var dBound = new Bound<>(d, off);
     var o_ac_d_s_r = new Z<>("occupation", ac, d, s, r);
@@ -69,7 +69,7 @@ public class HEITimetable {
   }
 
   private LPContext prioritize_early_days_and_slots(
-      BounderZ<AwardedCourse> ac, BounderZ<Date> d, BounderZ<Slot> s, BounderZ<Room> r,
+      BounderQ<AwardedCourse> ac, BounderQ<Date> d, BounderQ<Slot> s, BounderQ<Room> r,
       Bound<AwardedCourse> acBound, Bound<Date> dBound, Bound<Slot> sBound, Bound<Room> rBound) {
     var o_ac_d_s_r = new Z<>("occupation", ac, d, s, r);
 
@@ -88,13 +88,13 @@ public class HEITimetable {
   }
 
   private Constraint finish_course_hours_with_available_teachers_and_no_room_conflict(
-      BounderZ<AwardedCourse> ac, BounderZ<Date> d, BounderZ<Slot> s, BounderZ<Room> r,
+      BounderQ<AwardedCourse> ac, BounderQ<Date> d, BounderQ<Slot> s, BounderQ<Room> r,
       Bound<AwardedCourse> acBound, Bound<Date> dBound, Bound<Slot> sBound, Bound<Room> rBound) {
     var o_ac_d_s_r = new Z<>("occupation", ac, d, s, r);
     var o_domain =
         pic(and(leq(0, o_ac_d_s_r), leq(o_ac_d_s_r, 1)), acBound, dBound, sBound, rBound);
 
-    var ta = new BounderZ<Costly>("ta"); // teacher availability
+    var ta = new BounderQ<Costly>("ta"); // teacher availability
     var taBound = new Bound<>(ta, new Costly());
     Instantiator<Costly> taInstantiator = (costly, ctx) -> {
       var lambda_ac = (AwardedCourse) (ctx.get(ac).costly());

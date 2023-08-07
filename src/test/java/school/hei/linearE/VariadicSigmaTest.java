@@ -3,7 +3,7 @@ package school.hei.linearE;
 import org.junit.jupiter.api.Test;
 import school.hei.linearE.exception.DuplicateVariableNameException;
 import school.hei.linearE.instantiableE.Bound;
-import school.hei.linearE.instantiableE.BounderZ;
+import school.hei.linearE.instantiableE.BounderQ;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Z;
@@ -22,8 +22,8 @@ import static school.hei.linearE.LEFactory.vadd;
 class VariadicSigmaTest {
   @Test
   public void nested_sigma_as_variadic() {
-    var i = new BounderZ<>("i");
-    var j = new BounderZ<>("j");
+    var i = new BounderQ<>("i");
+    var j = new BounderQ<>("j");
     var le = add(mono(2, i), mono(3, j));
 
     var boundI = new Bound<>(i, 4, 6);
@@ -35,8 +35,8 @@ class VariadicSigmaTest {
 
   @Test
   public void bounded_vars() {
-    var i = new BounderZ<>("i");
-    var j = new BounderZ<>("j");
+    var i = new BounderQ<>("i");
+    var j = new BounderQ<>("j");
     var x_i_j = new Q<>("x", j, i);
     var le_i_j = vadd(mono(i), mono(j), mono(3, x_i_j));
 
@@ -57,7 +57,7 @@ class VariadicSigmaTest {
 
   @Test
   public void duplicate_bounders_prohibited() {
-    var i = new BounderZ<>("i");
+    var i = new BounderQ<>("i");
     assertThrows(NoDuplicateBounderException.class, () -> new Q<>("x", i, i));
     assertThrows(NoDuplicateBounderException.class, () -> new Z<>("x", i, i));
   }
@@ -70,8 +70,8 @@ class VariadicSigmaTest {
         DuplicateVariableNameException.class,
         () -> add(mono(3, x), mono(2.5, y)).normify());
 
-    var i = new BounderZ<>("i");
-    var j = new BounderZ<>("j");
+    var i = new BounderQ<>("i");
+    var j = new BounderQ<>("j");
     var x_i_j = new Z<>("x", j, i);
     var y_i_j = new Q<>("x", j, i); // oopsie
     var le_i_j = vadd(x_i_j, y_i_j);

@@ -3,7 +3,7 @@ package school.hei.linearP.constraint;
 import org.junit.jupiter.api.Test;
 import school.hei.linearE.NormalizedLE;
 import school.hei.linearE.instantiableE.Bound;
-import school.hei.linearE.instantiableE.BounderZ;
+import school.hei.linearE.instantiableE.BounderQ;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Instantiator;
 import school.hei.linearE.instantiableE.Q;
@@ -38,9 +38,9 @@ class PiConstraintTest {
 
   @Test
   public void sigma_le_and_pi_constraint() {
-    var i = new BounderZ("i");
-    var j = new BounderZ("j");
-    var k = new BounderZ("k");
+    var i = new BounderQ("i");
+    var j = new BounderQ("j");
+    var k = new BounderQ("k");
     var x_i_j_k = new Q("x", j, i, k);
     var le_i_j = vadd(mono(i), mono(j), mono(3, x_i_j_k));
 
@@ -66,8 +66,8 @@ class PiConstraintTest {
 
   @Test
   public void vpic_as_nested_pic() {
-    var i = new BounderZ("i");
-    var j = new BounderZ("j");
+    var i = new BounderQ("i");
+    var j = new BounderQ("j");
     var x_i_j = new Q("x", j, i);
 
     var boundI = new Bound(i, 4, 6);
@@ -94,13 +94,13 @@ class PiConstraintTest {
     var th1 = new Course("th1", Duration.ofHours(6));
     var ac_g1_th1_t1 = new AwardedCourse(th1, g1, t1);
 
-    var ac = new BounderZ<AwardedCourse>("ac");
-    var d = new BounderZ<Date>("d");
+    var ac = new BounderQ<AwardedCourse>("ac");
+    var d = new BounderQ<Date>("d");
     var acBound = new Bound<>(ac, new AwardedCourse[]{ac_g1_th1_t1});
     var dBound = new Bound<>(d, new Date(2023, JULY, 20), new Date(2023, JULY, 21));
     var o_ac_d = new Z<>("o", ac, d);
 
-    var ta = new BounderZ<Teacher>("ta");
+    var ta = new BounderQ<Teacher>("ta");
     var taBound = new Bound<>(ta, new Teacher[]{t1});
     Instantiator<Teacher> instantiator = (teacher, ctx) ->
         teacher.isAvailableOn((Date) (ctx.get(d).costly())) ? ONE : ZERO;
@@ -125,15 +125,15 @@ class PiConstraintTest {
     var th1 = new Course("th1", Duration.ofHours(6));
     var ac_g1_th1_t1 = new AwardedCourse(th1, g1, t1);
 
-    var ac = new BounderZ<AwardedCourse>("ac");
-    var d = new BounderZ<Date>("d");
-    var g = new BounderZ<Group>("g");
+    var ac = new BounderQ<AwardedCourse>("ac");
+    var d = new BounderQ<Date>("d");
+    var g = new BounderQ<Group>("g");
     var acBound = new Bound<>(ac, new AwardedCourse[]{ac_g1_th1_t1});
     var dBound = new Bound<>(d, new Date(2023, JULY, 20), new Date(2023, JULY, 21));
     var gBound = new Bound<>(g, g1);
 
     var o_ac_d = new Z<>("o", ac, d);
-    var ta = new BounderZ<Teacher>("ta");
+    var ta = new BounderQ<Teacher>("ta");
     var taBound = new Bound<>(ta, new Teacher[]{t1});
     Instantiator<Teacher> instantiator = (teacher, ctx) -> {
       assertNotNull(ctx.get(g));
