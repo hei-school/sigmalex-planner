@@ -75,21 +75,21 @@ public class HEITest {
     assertEquals(1.219312E7, actual_solution.optimalObjective());
     assertEquals(
         """
-            occupation[ac:[c:sem1][g:g1][t:t2]][d:jul20][r:b][s:f08t10]=1.0
+            occupation[ac:[c:sem1][g:g1][t:t2]][d:jul20][r:a][s:f08t10]=1.0
             occupation[ac:[c:prog2][g:g2][t:t2]][d:jul20][r:a][s:f10t12]=1.0
             occupation[ac:[c:prog2][g:g1][t:t2]][d:jul20][r:a][s:f13t15]=1.0
-            occupation[ac:[c:th1][g:g1][t:t1]][d:jul23][r:a][s:f08t10]=1.0
-            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul23][r:a][s:f10t12]=1.0
-            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul23][r:a][s:f13t15]=1.0
-            occupation[ac:[c:th1][g:g2][t:t1]][d:jul23][r:b][s:f15t17]=1.0
-            occupation[ac:[c:th1][g:g2][t:t1]][d:jul24][r:b][s:f08t10]=1.0
-            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul24][r:a][s:f10t12]=1.0
-            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul24][r:a][s:f13t15]=1.0
-            occupation[ac:[c:th1][g:g1][t:t1]][d:jul24][r:a][s:f15t17]=1.0
-            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul25][r:a][s:f08t10]=1.0
-            occupation[ac:[c:th1][g:g2][t:t1]][d:jul25][r:a][s:f10t12]=1.0
-            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul25][r:a][s:f13t15]=1.0
-            occupation[ac:[c:th1][g:g1][t:t1]][d:jul25][r:a][s:f15t17]=1.0""",
+            occupation[ac:[c:th1][g:g2][t:t1]][d:jul23][r:a][s:f08t10]=1.0
+            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul23][r:a][s:f10t12]=1.0
+            occupation[ac:[c:th1][g:g1][t:t1]][d:jul23][r:b][s:f13t15]=1.0
+            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul23][r:a][s:f15t17]=1.0
+            occupation[ac:[c:th1][g:g1][t:t1]][d:jul24][r:a][s:f08t10]=1.0
+            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul24][r:b][s:f10t12]=1.0
+            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul24][r:b][s:f13t15]=1.0
+            occupation[ac:[c:th1][g:g2][t:t1]][d:jul24][r:b][s:f15t17]=1.0
+            occupation[ac:[c:th1][g:g1][t:t1]][d:jul25][r:a][s:f08t10]=1.0
+            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul25][r:a][s:f10t12]=1.0
+            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul25][r:b][s:f13t15]=1.0
+            occupation[ac:[c:th1][g:g2][t:t1]][d:jul25][r:b][s:f15t17]=1.0""",
         toStringTimetable(actual_solution.optimalBoundedVariablesForUnboundedName("occupation")));
   }
 

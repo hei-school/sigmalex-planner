@@ -103,9 +103,9 @@ class PiConstraintTest {
     var o_ac_d = new Z("o", ac, d);
 
     var ta = new BounderQ<Costly<?>>("ta");
-    var taBound = new Bound<>(ta, new Costly<>());
+    var taBound = new Bound(ta, t1);
     Instantiator<Costly<?>> instantiator = (Costly<?> teacher, SubstitutionContext<Costly<?>> ctx) ->
-        ((Teacher) teacher).isAvailableOn((Date) (ctx.get(d).costly())) ? ONE : ZERO;
+        ((Teacher) teacher).isAvailableOn((Date) (ctx.get(d).costly())) ? new Constant<>(1) : new Constant<>(0);
 
     var teacher_must_be_available =
         pic(eq(o_ac_d, mono(ta)), acBound, dBound, taBound.wi(instantiator));
@@ -136,10 +136,11 @@ class PiConstraintTest {
 
     var o_ac_d = new Z("o", ac, d);
     var ta = new BounderQ<Costly<?>>("ta");
-    var taBound = new Bound<>(ta, new Costly<>());
+    var taBound = new Bound(ta, t1);
     Instantiator<Costly<?>> instantiator = (Costly<?> teacher, SubstitutionContext<Costly<?>> ctx) -> {
       assertNotNull(ctx.get(g));
-      return ((Teacher) teacher).isAvailableOn((Date) (ctx.get(d).costly())) ? ONE : ZERO;
+      return ((Teacher) teacher).isAvailableOn((Date) (ctx.get(d).costly()))
+          ? new Constant<>(1) : new Constant<>(0);
     };
 
     var teacher_must_be_available =
