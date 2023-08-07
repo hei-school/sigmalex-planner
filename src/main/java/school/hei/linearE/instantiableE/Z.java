@@ -2,17 +2,16 @@ package school.hei.linearE.instantiableE;
 
 import java.util.Set;
 
-public final class Z<Costly> extends NonInstantiableV<Costly> implements Bounder<Costly> {
-  public Z(String name, Set<Bounder<? extends Costly>> bounders) {
+public final class Z extends NonInstantiableV<Object> implements Bounder<Object> {
+  public Z(String name, Set<Bounder<?>> bounders) {
     super(name, bounders);
   }
 
-  @SafeVarargs
-  public Z(String name, Bounder<? extends Costly>... bounders) {
+  public Z(String name, Bounder<?>... bounders) {
     super(name, bounders);
   }
 
-  private Z(String name, SubstitutionContext<Costly> substitutionContext) {
+  private Z(String name, SubstitutionContext<Object> substitutionContext) {
     super(name, substitutionContext);
   }
 
@@ -21,8 +20,8 @@ public final class Z<Costly> extends NonInstantiableV<Costly> implements Bounder
   }
 
   @Override
-  public Variable<Costly> toNew(SubstitutionContext<Costly> substitutionContext) {
-    return new Z<>(name, substitutionContext);
+  public Variable<Object> toNew(SubstitutionContext<Object> substitutionContext) {
+    return new Z(name, substitutionContext);
   }
 
   @Override
@@ -33,17 +32,17 @@ public final class Z<Costly> extends NonInstantiableV<Costly> implements Bounder
   }
 
   @Override
-  public Variable<Costly> variable() {
+  public Variable<Object> variable() {
     return this;
   }
 
   @Override
-  public Instantiator<Costly> instantiator() {
+  public Instantiator<Object> instantiator() {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public Bounder<Costly> wi(Instantiator<Costly> instantiator) {
+  public Bounder<Object> wi(Instantiator<Object> instantiator) {
     throw new UnsupportedOperationException();
   }
 }

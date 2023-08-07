@@ -52,32 +52,32 @@ class SigmaTest {
   @Test
   public void bounded_vars() {
     var i = new BounderQ<>("i");
-    var x_i = new Q<>("x", Set.of(i));
+    var x_i = new Q("x", Set.of(i));
     var le_i = mono(3, x_i);
 
     var boundI = new Bound<>(i, 4, 6);
     assertEquals(
         new NormalizedLE(
             Map.of(
-                new Q<>("x[i:4]"), new Constant<>(3),
-                new Q<>("x[i:5]"), new Constant<>(3),
-                new Q<>("x[i:6]"), new Constant<>(3)),
+                new Q("x[i:4]"), new Constant<>(3),
+                new Q("x[i:5]"), new Constant<>(3),
+                new Q("x[i:6]"), new Constant<>(3)),
             ZERO),
         sigma(le_i, boundI).normify());
 
     var j = new BounderQ<>("j");
-    var x_i_j = new Q<>("x", Set.of(i, j));
+    var x_i_j = new Q("x", Set.of(i, j));
     var le_i_j = mono(3, x_i_j);
     var boundJ = new Bound<>(j, 10, 11);
     assertEquals(
         new NormalizedLE(
             Map.of(
-                new Q<>("x[i:4][j:10]"), new Constant<>(3),
-                new Q<>("x[i:5][j:10]"), new Constant<>(3),
-                new Q<>("x[i:6][j:10]"), new Constant<>(3),
-                new Q<>("x[i:4][j:11]"), new Constant<>(3),
-                new Q<>("x[i:5][j:11]"), new Constant<>(3),
-                new Q<>("x[i:6][j:11]"), new Constant<>(3)),
+                new Q("x[i:4][j:10]"), new Constant<>(3),
+                new Q("x[i:5][j:10]"), new Constant<>(3),
+                new Q("x[i:6][j:10]"), new Constant<>(3),
+                new Q("x[i:4][j:11]"), new Constant<>(3),
+                new Q("x[i:5][j:11]"), new Constant<>(3),
+                new Q("x[i:6][j:11]"), new Constant<>(3)),
             ZERO),
         sigma(sigma(le_i_j, boundI), boundJ).normify());
   }
@@ -104,13 +104,13 @@ class SigmaTest {
     var weekend = new BounderQ<NonInstantiableDays>("w");
     var weekend_bound = new Bound<>(weekend, NonInstantiableDays.saturday, NonInstantiableDays.sunday);
 
-    var hours_weekend = new Z<>("hours", weekend);
+    var hours_weekend = new Z("hours", weekend);
     var hours_weekend_le = mono(hours_weekend);
     assertEquals(
         new NormalizedLE(
             Map.of(
-                new Z<>("hours[w:saturday]"), ONE,
-                new Z<>("hours[w:sunday]"), ONE),
+                new Z("hours[w:saturday]"), ONE,
+                new Z("hours[w:sunday]"), ONE),
             ZERO),
         sigma(hours_weekend_le, weekend_bound).normify());
 
@@ -124,14 +124,14 @@ class SigmaTest {
   @Test
   public void weekend_as_bounder_with_dynamic_instantiation() {
     var weekend = new BounderQ<InstantiableDays>("w");
-    var hours_weekend = new Z<>("hours", weekend);
+    var hours_weekend = new Z("hours", weekend);
     var weekend_bound = new Bound<>(weekend, InstantiableDays.saturday, InstantiableDays.sunday);
 
     assertEquals(
         new NormalizedLE(
             Map.of(
-                new Z<>("hours[w:saturday]"), ONE,
-                new Z<>("hours[w:sunday]"), ONE),
+                new Z("hours[w:saturday]"), ONE,
+                new Z("hours[w:sunday]"), ONE),
             new Constant<>(26)),
         sigma(add(mono(hours_weekend), mono(weekend)),
             weekend_bound.wi(day -> multie(2, day.order)))

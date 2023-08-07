@@ -2,17 +2,16 @@ package school.hei.linearE.instantiableE;
 
 import java.util.Set;
 
-public final class Q<Costly> extends NonInstantiableV<Costly> implements Bounder<Costly> {
-  public Q(String name, Set<Bounder<? extends Costly>> bounders) {
+public final class Q extends NonInstantiableV<Object> implements Bounder<Object> {
+  public Q(String name, Set<Bounder<?>> bounders) {
     super(name, bounders);
   }
 
-  @SafeVarargs
-  public Q(String name, Bounder<? extends Costly>... bounders) {
+  public Q(String name, Bounder<?>... bounders) {
     super(name, bounders);
   }
 
-  private Q(String name, SubstitutionContext<Costly> substitutionContext) {
+  private Q(String name, SubstitutionContext<Object> substitutionContext) {
     super(name, substitutionContext);
   }
 
@@ -21,7 +20,7 @@ public final class Q<Costly> extends NonInstantiableV<Costly> implements Bounder
   }
 
   @Override
-  public Variable<Costly> toNew(SubstitutionContext<Costly> substitutionContext) {
+  public Variable<Object> toNew(SubstitutionContext<Object> substitutionContext) {
     return new Q(name, substitutionContext);
   }
 
@@ -33,17 +32,17 @@ public final class Q<Costly> extends NonInstantiableV<Costly> implements Bounder
   }
 
   @Override
-  public Variable<Costly> variable() {
+  public Variable<Object> variable() {
     return this;
   }
 
   @Override
-  public Instantiator<Costly> instantiator() {
+  public Instantiator<Object> instantiator() {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public Bounder<Costly> wi(Instantiator<Costly> instantiator) {
+  public Bounder<Object> wi(Instantiator<Object> instantiator) {
     throw new UnsupportedOperationException();
   }
 }

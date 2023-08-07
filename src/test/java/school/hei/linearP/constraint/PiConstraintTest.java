@@ -98,7 +98,7 @@ class PiConstraintTest {
     var d = new BounderQ<Date>("d");
     var acBound = new Bound<>(ac, new AwardedCourse[]{ac_g1_th1_t1});
     var dBound = new Bound<>(d, new Date(2023, JULY, 20), new Date(2023, JULY, 21));
-    var o_ac_d = new Z<>("o", ac, d);
+    var o_ac_d = new Z("o", ac, d);
 
     var ta = new BounderQ<Teacher>("ta");
     var taBound = new Bound<>(ta, new Teacher[]{t1});
@@ -132,7 +132,7 @@ class PiConstraintTest {
     var dBound = new Bound<>(d, new Date(2023, JULY, 20), new Date(2023, JULY, 21));
     var gBound = new Bound<>(g, g1);
 
-    var o_ac_d = new Z<>("o", ac, d);
+    var o_ac_d = new Z("o", ac, d);
     var ta = new BounderQ<Teacher>("ta");
     var taBound = new Bound<>(ta, new Teacher[]{t1});
     Instantiator<Teacher> instantiator = (teacher, ctx) -> {
