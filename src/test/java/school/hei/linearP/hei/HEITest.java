@@ -1,23 +1,13 @@
 package school.hei.linearP.hei;
 
 import org.junit.jupiter.api.RepeatedTest;
-import school.hei.linearE.LinearE;
-import school.hei.linearE.instantiableE.Bound;
-import school.hei.linearE.instantiableE.BounderZ;
-import school.hei.linearE.instantiableE.Instantiator;
-import school.hei.linearE.instantiableE.Q;
-import school.hei.linearE.instantiableE.Z;
-import school.hei.linearP.LP;
-import school.hei.linearP.constraint.Constraint;
 import school.hei.linearP.hei.costly.AwardedCourse;
-import school.hei.linearP.hei.costly.Costly;
 import school.hei.linearP.hei.costly.Course;
 import school.hei.linearP.hei.costly.Date;
 import school.hei.linearP.hei.costly.Group;
 import school.hei.linearP.hei.costly.Room;
 import school.hei.linearP.hei.costly.Slot;
 import school.hei.linearP.hei.costly.Teacher;
-import school.hei.linearP.solver.ORTools;
 
 import java.time.Duration;
 import java.util.Map;
@@ -26,18 +16,6 @@ import java.util.regex.Pattern;
 import static java.time.Month.JULY;
 import static java.util.stream.Collectors.joining;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static school.hei.linearE.LEFactory.mult;
-import static school.hei.linearE.LEFactory.sigma;
-import static school.hei.linearE.instantiableE.Constant.ONE;
-import static school.hei.linearE.instantiableE.Constant.ZERO;
-import static school.hei.linearE.instantiableE.IEFactory.addie;
-import static school.hei.linearE.instantiableE.IEFactory.multie;
-import static school.hei.linearP.OptimizationType.min;
-import static school.hei.linearP.constraint.Constraint.and;
-import static school.hei.linearP.constraint.Constraint.eq;
-import static school.hei.linearP.constraint.Constraint.geq;
-import static school.hei.linearP.constraint.Constraint.leq;
-import static school.hei.linearP.constraint.Constraint.pic;
 
 public class HEITest {
 
@@ -92,24 +70,8 @@ public class HEITest {
     var f15t17 = new Slot("f15t17", 20);
     var slots = new Slot[]{f08t10, f10t12, f13t15, f15t17};
 
-    var ac = new BounderZ<AwardedCourse>("ac");
-    var d = new BounderZ<Date>("d");
-    var s = new BounderZ<Slot>("s");
-    var r = new BounderZ<Room>("r");
-    var cBound = new Bound<>(ac, awarded_courses);
-    var dBound = new Bound<>(d, dates_all);
-    var sBound = new Bound<>(s, slots);
-    var rBound = new Bound<>(r, rooms);
-    var prioritize_early_days_and_slots_context =
-        prioritize_early_days_and_slots(ac, d, s, r, cBound, dBound, sBound, rBound);
-    var lp = new LP(
-        min, prioritize_early_days_and_slots_context.objective,
-        prioritize_early_days_and_slots_context.constraint,
-        exclude_days_off(dates_off, ac, d, s, r, cBound, sBound, rBound),
-        only_one_slot_max_per_course_per_day(ac, d, s, r, cBound, dBound, sBound, rBound),
-        finish_course_hours_with_available_teachers_and_no_room_conflict(ac, d, s, r, cBound, dBound, sBound, rBound));
+    var actual_solution = new HEITimetable(awarded_courses, rooms, dates_all, dates_off, slots).solve();
 
-    var actual_solution = new ORTools().solve(lp);
     assertEquals(1.219312E7, actual_solution.optimalObjective());
     assertEquals(
         """
@@ -128,10 +90,10 @@ public class HEITest {
             occupation[ac:[c:th1][g:g2][t:t1]][d:jul25][r:a][s:f10t12]=1.0
             occupation[ac:[c:prog2][g:g2][t:t2]][d:jul25][r:a][s:f13t15]=1.0
             occupation[ac:[c:th1][g:g1][t:t1]][d:jul25][r:a][s:f15t17]=1.0""",
-        toHEIPlanning(actual_solution.optimalBoundedVariablesForUnboundedName("occupation")));
+        toStringTimetable(actual_solution.optimalBoundedVariablesForUnboundedName("occupation")));
   }
 
-  private String toHEIPlanning(Map<String, Double> occupations) {
+  private String toStringTimetable(Map<String, Double> occupations) {
     return occupations.entrySet().stream()
         .sorted(this::compareOccupationEntry)
         .map(Map.Entry::toString)
@@ -160,72 +122,5 @@ public class HEITest {
       return compareSlots;
     }
     return matcher1.group(5).compareTo(matcher2.group(5)); // room
-  }
-
-  private Constraint only_one_slot_max_per_course_per_day(
-      BounderZ<AwardedCourse> ac, BounderZ<Date> d, BounderZ<Slot> s, BounderZ<Room> r,
-      Bound<AwardedCourse> acBound, Bound<Date> dBound, Bound<Slot> sBound, Bound<Room> rBound) {
-    var o_ac_d_s_r = new Z<>("occupation", ac, d, s, r);
-    return pic(leq(sigma(o_ac_d_s_r, sBound, rBound), 1), acBound, dBound);
-  }
-
-  private Constraint exclude_days_off(
-      Date[] off,
-      BounderZ<AwardedCourse> ac, BounderZ<Date> d, BounderZ<Slot> s, BounderZ<Room> r,
-      Bound<AwardedCourse> acBound, Bound<Slot> sBound, Bound<Room> rBound) {
-    var dBound = new Bound<>(d, off);
-    var o_ac_d_s_r = new Z<>("occupation", ac, d, s, r);
-    return pic(eq(o_ac_d_s_r, 0), acBound, dBound, sBound, rBound);
-  }
-
-  private LPContext prioritize_early_days_and_slots(
-      BounderZ<AwardedCourse> ac, BounderZ<Date> d, BounderZ<Slot> s, BounderZ<Room> r,
-      Bound<AwardedCourse> acBound, Bound<Date> dBound, Bound<Slot> sBound, Bound<Room> rBound) {
-    var o_ac_d_s_r = new Z<>("occupation", ac, d, s, r);
-
-    var cost_d_s = new Q<>("cost", d, s);
-    var cost_ac_d_s_r = new Q<>("cost", ac, d, s, r);
-    var cost_domains = and(
-        pic(geq(cost_d_s, 0), dBound, sBound),
-        pic(geq(cost_ac_d_s_r, 0), dBound, sBound, rBound));
-
-    var cost = sigma(cost_ac_d_s_r, acBound, dBound, sBound, rBound);
-    var cost_d_s_unlinked_to_o = addie(multie(d, Slot.SLOTS_IN_A_DAY), s);
-    var assign_costs =
-        pic(eq(cost_ac_d_s_r, mult(cost_d_s_unlinked_to_o, o_ac_d_s_r)),
-            acBound, dBound.wiq(Date::cost), sBound.wiq(Slot::cost), rBound);
-    return new LPContext(cost, and(cost_domains, assign_costs));
-  }
-
-  private Constraint finish_course_hours_with_available_teachers_and_no_room_conflict(
-      BounderZ<AwardedCourse> ac, BounderZ<Date> d, BounderZ<Slot> s, BounderZ<Room> r,
-      Bound<AwardedCourse> acBound, Bound<Date> dBound, Bound<Slot> sBound, Bound<Room> rBound) {
-    var o_ac_d_s_r = new Z<>("occupation", ac, d, s, r);
-    var o_domain =
-        pic(and(leq(0, o_ac_d_s_r), leq(o_ac_d_s_r, 1)), acBound, dBound, sBound, rBound);
-
-    var ta = new BounderZ<Costly>("ta"); // teacher availability
-    var taBound = new Bound<>(ta, new Costly());
-    Instantiator<Costly> taInstantiator = (costly, ctx) -> {
-      var lambda_ac = (AwardedCourse) (ctx.get(ac).costly());
-      var lambda_t = lambda_ac.teacher();
-      var lambda_d = (Date) (ctx.get(d).costly());
-      return lambda_t.isAvailableOn(lambda_d) ? ONE : ZERO;
-    };
-    var sh = Slot.DURATION.toHours();
-    var finish_courses_hours_with_teacher =
-        pic(eq(ac, mult(sh, sigma(mult(ta, o_ac_d_s_r), dBound, sBound, rBound, taBound.wi(taInstantiator)))),
-            acBound.wiq(AwardedCourse::durationInHours));
-
-    var a_group_can_only_study_a_course_at_a_time =
-        pic(leq(sigma(o_ac_d_s_r, acBound, rBound), 1), dBound, sBound);
-
-    return and(
-        o_domain,
-        finish_courses_hours_with_teacher,
-        a_group_can_only_study_a_course_at_a_time);
-  }
-
-  record LPContext(LinearE objective, Constraint constraint) {
   }
 }
