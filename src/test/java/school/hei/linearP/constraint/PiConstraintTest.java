@@ -104,7 +104,7 @@ class PiConstraintTest {
 
     var ta = new BounderQ<Costly<?>>("ta");
     var taBound = new Bound(ta, t1);
-    Instantiator<Costly<?>> instantiator = (Costly<?> teacher, SubstitutionContext<Costly<?>> ctx) ->
+    Instantiator<Costly<?>> instantiator = (Costly<?> teacher, SubstitutionContext ctx) ->
         ((Teacher) teacher).isAvailableOn((Date) (ctx.get(d).costly())) ? new Constant<>(1) : new Constant<>(0);
 
     var teacher_must_be_available =
@@ -136,8 +136,8 @@ class PiConstraintTest {
 
     var o_ac_d = new Z("o", ac, d);
     var ta = new BounderQ<Costly<?>>("ta");
-    var taBound = new Bound(ta, t1);
-    Instantiator<Costly<?>> instantiator = (Costly<?> teacher, SubstitutionContext<Costly<?>> ctx) -> {
+    var taBound = new Bound<>(ta, t1);
+    Instantiator<Costly<?>> instantiator = (Costly<?> teacher, SubstitutionContext ctx) -> {
       assertNotNull(ctx.get(g));
       return ((Teacher) teacher).isAvailableOn((Date) (ctx.get(d).costly()))
           ? new Constant<>(1) : new Constant<>(0);
@@ -152,11 +152,11 @@ class PiConstraintTest {
             new NormalizedConstraint(new NormalizedLE(Map.of(
                 new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul20]"), ONE,
                 new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul21]"), ZERO),
-                new Constant(-7))),
+                new Constant<>(-7))),
             new NormalizedConstraint(new NormalizedLE(Map.of(
-                new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul20]"), new Constant(-1),
+                new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul20]"), new Constant<>(-1),
                 new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul21]"), ZERO),
-                new Constant(7)))
+                new Constant<>(7)))
         )).toString(), //TODO: have to resort to string equality as fails otherwise. Prolly bounder names involved.
         teacher_must_be_available.normalize().simplify().toString());
   }

@@ -2,7 +2,7 @@ package school.hei.linearE.instantiableE;
 
 import java.util.Set;
 
-public final class Z extends NonInstantiableV<Object> implements Bounder<Object> {
+public final class Z extends NonInstantiableV implements Bounder<Void> {
   public Z(String name, Set<Bounder<?>> bounders) {
     super(name, bounders);
   }
@@ -11,7 +11,7 @@ public final class Z extends NonInstantiableV<Object> implements Bounder<Object>
     super(name, bounders);
   }
 
-  private Z(String name, SubstitutionContext<Object> substitutionContext) {
+  private Z(String name, SubstitutionContext substitutionContext) {
     super(name, substitutionContext);
   }
 
@@ -20,7 +20,7 @@ public final class Z extends NonInstantiableV<Object> implements Bounder<Object>
   }
 
   @Override
-  public Variable<Object> toNew(SubstitutionContext<Object> substitutionContext) {
+  public Variable toNew(SubstitutionContext substitutionContext) {
     return new Z(name, substitutionContext);
   }
 
@@ -32,17 +32,17 @@ public final class Z extends NonInstantiableV<Object> implements Bounder<Object>
   }
 
   @Override
-  public Variable<Object> variable() {
+  public Variable variable() {
     return this;
   }
 
   @Override
-  public Instantiator<Object> instantiator() {
+  public Instantiator<Void> instantiator() {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public Bounder<Object> wi(Instantiator<Object> instantiator) {
+  public Bounder<Void> wi(Instantiator<Void> instantiator) {
     throw new UnsupportedOperationException();
   }
 }

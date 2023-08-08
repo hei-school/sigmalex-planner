@@ -38,7 +38,7 @@ public final class NormalizedLE implements LinearE {
     this.weightedV.putAll(weightedV);
     this.e = e;
 
-    substitutionContext = new SubstitutionContext<>(new HashMap<>());
+    substitutionContext = new SubstitutionContext(new HashMap<>());
   }
 
   public NormalizedLE(double c) {
@@ -115,7 +115,7 @@ public final class NormalizedLE implements LinearE {
             new Constant(DEFAULT_EPSILON)));
   }
 
-  public NormalizedLE substitute(Bounder k, BounderValue kValue, SubstitutionContext<?> initialSubstitutionContext) {
+  public NormalizedLE substitute(Bounder k, BounderValue kValue, SubstitutionContext initialSubstitutionContext) {
     initialSubstitutionContext.substitutions().forEach(
         (bounder, bounderValue) -> substitutionContext.put(bounder, bounderValue));
     substitutionContext.put(k, kValue);
@@ -154,7 +154,7 @@ public final class NormalizedLE implements LinearE {
     }
   }
 
-  public NormalizedLE substituteAll(SubstitutionContext<?> substitutionContext) {
+  public NormalizedLE substituteAll(SubstitutionContext substitutionContext) {
     var res = this;
     var substitutions = substitutionContext.substitutions();
     for (var bounder : substitutionContext.substitutions().keySet()) {

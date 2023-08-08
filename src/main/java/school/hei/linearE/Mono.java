@@ -13,7 +13,7 @@ import static school.hei.linearE.instantiableE.Constant.ZERO;
 public record Mono(InstantiableE e, Optional<Variable> optV) implements LinearE {
 
   @Override
-  public NormalizedLE normalize(SubstitutionContext<?> substitutionContext) {
+  public NormalizedLE normalize(SubstitutionContext substitutionContext) {
     return optV
         .map(v -> new NormalizedLE(Map.of(v, e), ZERO))
         .orElseGet(() -> new NormalizedLE(Map.of(), e))

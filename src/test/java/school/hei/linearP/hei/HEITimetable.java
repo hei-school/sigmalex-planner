@@ -96,7 +96,7 @@ public class HEITimetable {
 
     var ta = new BounderQ<Costly<?>>("ta"); // teacher availability
     var taBound = new Bound<>(ta, new Costly<>());
-    Instantiator<Costly<?>> taInstantiator = (Costly<?> costly, SubstitutionContext<Costly<?>> ctx) -> {
+    Instantiator<Costly<?>> taInstantiator = (Costly<?> costly, SubstitutionContext ctx) -> {
       var lambda_ac = (AwardedCourse) (ctx.get(ac).costly());
       var lambda_t = lambda_ac.getTeacher();
       var lambda_d = (Date) (ctx.get(d).costly());

@@ -1,7 +1,7 @@
 package school.hei.linearE.instantiableE;
 
 public interface Bounder<Costly> {
-  Variable<Costly> variable();
+  Variable variable();
 
   Instantiator<Costly> instantiator();
 

@@ -185,7 +185,7 @@ class SigmaTest {
     @Override
     public InstantiableE<NonInstantiableDays> toQ(
         NonInstantiableDays costly,
-        SubstitutionContext<NonInstantiableDays> substitutionContext,
+        SubstitutionContext substitutionContext,
         Instantiator<NonInstantiableDays> instantiator)
         throws ArithmeticConversionException {
       throw new ArithmeticConversionException("Days is not supposed to be instantiated");
@@ -209,7 +209,7 @@ class SigmaTest {
     @Override
     public InstantiableE<InstantiableDays> toQ(
         InstantiableDays costly,
-        SubstitutionContext<InstantiableDays> substitutionContext,
+        SubstitutionContext substitutionContext,
         Instantiator<InstantiableDays> instantiator)
         throws ArithmeticConversionException {
       return instantiator.apply(costly, substitutionContext);

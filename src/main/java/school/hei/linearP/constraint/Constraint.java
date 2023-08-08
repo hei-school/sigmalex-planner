@@ -119,7 +119,7 @@ public sealed abstract class Constraint
   }
 
   private static Constraint normalizedSubstitution(
-      Constraint constraint, SubstitutionContext<?> substitutionContext) {
+      Constraint constraint, SubstitutionContext substitutionContext) {
     var normalized = constraint.normalize(substitutionContext);
     for (Bounder bounder : substitutionContext.substitutions().keySet()) {
       normalized = normalized.substitute(bounder, substitutionContext.get(bounder), substitutionContext);

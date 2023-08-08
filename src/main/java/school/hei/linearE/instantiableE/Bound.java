@@ -12,16 +12,16 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toSet;
 
-public record Bound<Costly>(Bounder<Costly> bounder, BounderValue<Costly>... values) {
+public record Bound<Costly>(Bounder<Costly> bounder, BounderValue<?>... values) {
   @SafeVarargs
   public Bound {
   }
 
-  public Bound(BounderQ k, int kMin, int kMax) {
+  public Bound(BounderQ<Costly> k, int kMin, int kMax) {
     this(k, IntStream.range(kMin, kMax + 1).mapToObj(Constant::new).toArray(Constant[]::new));
   }
 
-  public static Set<SubstitutionContext> toBSubstitutionContexts(Bound... bounds) {
+  public static Set<SubstitutionContext> toBSubstitutionContexts(Bound<?>... bounds) {
     var bounderAndValuesArray = Arrays.stream(bounds)
         .map(bound -> Arrays.stream(bound.values())
             .map(bounderValue -> new BoundedValue(bound.bounder(), bounderValue))
@@ -36,7 +36,7 @@ public record Bound<Costly>(Bounder<Costly> bounder, BounderValue<Costly>... val
             Map.of(((BoundedValue) bounderAndValues).bounder(), ((BoundedValue) bounderAndValues).bounderValue())));
         continue;
       }
-      var substitutionContextMap = new HashMap<>();
+      var substitutionContextMap = new HashMap<Bounder<?>, BounderValue<?>>();
       Set<BoundedValue> bounderAndValuesAsSet = (Set) bounderAndValues;
       bounderAndValuesAsSet.forEach(boundedValue ->
           substitutionContextMap.put(boundedValue.bounder(), boundedValue.bounderValue()));

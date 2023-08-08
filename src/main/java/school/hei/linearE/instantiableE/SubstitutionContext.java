@@ -4,32 +4,32 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public record SubstitutionContext<Costly>(Map<Bounder<? extends Costly>, BounderValue<Costly>> substitutions) {
+public record SubstitutionContext(Map<Bounder<?>, BounderValue<?>> substitutions) {
 
-  public static <Costly> SubstitutionContext<Costly> of() {
-    return new SubstitutionContext<>(Map.of());
+  public static SubstitutionContext of() {
+    return new SubstitutionContext(Map.of());
   }
 
   public SubstitutionContext add(SubstitutionContext that) {
-    Map<Bounder<? extends Costly>, BounderValue<Costly>> thisAndThatMap = new HashMap<>();
+    Map<Bounder<?>, BounderValue<?>> thisAndThatMap = new HashMap<>();
     thisAndThatMap.putAll(this.substitutions);
     thisAndThatMap.putAll(that.substitutions);
     return new SubstitutionContext(thisAndThatMap);
   }
 
-  public void put(Bounder<? extends Costly> bounder, BounderValue<Costly> bounderValue) {
+  public void put(Bounder<?> bounder, BounderValue<?> bounderValue) {
     substitutions.put(bounder, bounderValue);
   }
 
-  public Set<Bounder<? extends Costly>> keySet() {
+  public Set<Bounder<?>> keySet() {
     return substitutions.keySet();
   }
 
-  public BounderValue<Costly> get(Bounder<? extends Costly> bounder) {
+  public BounderValue<?> get(Bounder<?> bounder) {
     return substitutions.get(bounder);
   }
 
-  public boolean containsKey(Bounder<Costly> bounder) {
+  public boolean containsKey(Bounder<?> bounder) {
     return substitutions.containsKey(bounder);
   }
 }

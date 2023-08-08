@@ -16,13 +16,13 @@ public final class BounderQ<Costly> extends InstantiableV<Costly> implements Bou
 
   private BounderQ(
       String name,
-      SubstitutionContext<Costly> substitutionContext,
+      SubstitutionContext substitutionContext,
       Instantiator<Costly> instantiator) {
     super(name, substitutionContext);
     this.instantiator = instantiator;
   }
 
-  private BounderQ(String name, SubstitutionContext<Costly> substitutionContext) {
+  private BounderQ(String name, SubstitutionContext substitutionContext) {
     this(name, substitutionContext, (costly, lambdaSubstitutionCtx) -> null);
   }
 
@@ -32,7 +32,7 @@ public final class BounderQ<Costly> extends InstantiableV<Costly> implements Bou
   }
 
   @Override
-  public InstantiableE<Costly> instantiate(
+  public InstantiableE<?> instantiate(
       Bounder<Costly> bounder, BounderValue<Costly> bounderValue, SubstitutionContext substitutionContext)
       throws ArithmeticConversionException {
     if (this.equals(bounder)) {
@@ -42,7 +42,7 @@ public final class BounderQ<Costly> extends InstantiableV<Costly> implements Bou
   }
 
   @Override
-  public Variable<Costly> variable() {
+  public Variable variable() {
     return this;
   }
 
@@ -58,7 +58,7 @@ public final class BounderQ<Costly> extends InstantiableV<Costly> implements Bou
   }
 
   @Override
-  public Variable<Costly> toNew(SubstitutionContext<Costly> substitutionContext) {
+  public Variable toNew(SubstitutionContext substitutionContext) {
     return new BounderQ<>(name, substitutionContext);
   }
 

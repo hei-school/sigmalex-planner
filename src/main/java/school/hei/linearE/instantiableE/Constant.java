@@ -13,13 +13,14 @@ public record Constant<Costly>(double c) implements InstantiableE<Costly>, Bound
 
   @Override
   public InstantiableE<Costly> toQ(
-      Costly costly, SubstitutionContext<Costly> substitutionContext, Instantiator<Costly> instantiator)
+      Costly costly, SubstitutionContext substitutionContext, Instantiator<Costly> instantiator)
       throws ArithmeticConversionException {
     return this;
   }
 
   @Override
-  public InstantiableE instantiate(Bounder bounder, BounderValue bounderValue, SubstitutionContext substitutionContext)
+  public InstantiableE<Costly> instantiate(
+      Bounder<Costly> bounder, BounderValue<Costly> bounderValue, SubstitutionContext substitutionContext)
       throws ArithmeticConversionException {
     return this;
   }
