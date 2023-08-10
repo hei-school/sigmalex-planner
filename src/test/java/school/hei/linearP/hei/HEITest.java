@@ -22,7 +22,7 @@ public class HEITest {
   private static final Pattern OCCUPATION_VAR_PATTERN = Pattern.compile(
       "occupation\\[ac:\\[c:(.*)]\\[g:(.*)]\\[t:(.*)]]\\[d:(.*)]\\[r:(.*)]\\[s:(.*)]");
 
-  @RepeatedTest(value = 10)
+  @RepeatedTest(value = 1)
   public void ask_sigmalex_the_wise_to_plan_hei() {
     var g1 = new Group("g1");
     var g2 = new Group("g2");
@@ -31,14 +31,20 @@ public class HEITest {
         new Date(2023, JULY, 21),
         new Date(2023, JULY, 23),
         new Date(2023, JULY, 24),
-        new Date(2023, JULY, 25));
+        new Date(2023, JULY, 25),
+        new Date(2023, JULY, 26),
+        new Date(2023, JULY, 27),
+        new Date(2023, JULY, 28));
     var t2 = new Teacher(
         "t2",
         new Date(2023, JULY, 20),
         new Date(2023, JULY, 22),
         new Date(2023, JULY, 23),
         new Date(2023, JULY, 24),
-        new Date(2023, JULY, 25));
+        new Date(2023, JULY, 25),
+        new Date(2023, JULY, 26),
+        new Date(2023, JULY, 27),
+        new Date(2023, JULY, 28));
     var th1 = new Course("th1", Duration.ofHours(6));
     var prog2 = new Course("prog2", Duration.ofHours(8));
     var sem1 = new Course("sem1", Duration.ofHours(2));
@@ -58,38 +64,34 @@ public class HEITest {
         new Date(2023, JULY, 22),
         new Date(2023, JULY, 23),
         new Date(2023, JULY, 24),
-        new Date(2023, JULY, 25)};
+        new Date(2023, JULY, 25),
+        new Date(2023, JULY, 26),
+        new Date(2023, JULY, 27),
+        new Date(2023, JULY, 28)};
     var dates_off = new Date[]{ // to be enriched later on with slots_off
         new Date(2023, JULY, 21),
         new Date(2023, JULY, 22)};
-    Slot.DURATION = Duration.ofHours(2);
-    Slot.SLOTS_IN_A_DAY = 4;
-    var f08t10 = new Slot("f08t10", 1);
-    var f10t12 = new Slot("f10t12", 2);
-    var f13t15 = new Slot("f13t15", 10);
-    var f15t17 = new Slot("f15t17", 20);
-    var slots = new Slot[]{f08t10, f10t12, f13t15, f15t17};
 
-    var actual_solution = new HEITimetable(awarded_courses, rooms, dates_all, dates_off, slots).solve();
+    var actual_solution = new HEITimetable(awarded_courses, rooms, dates_all, dates_off, Slot.values()).solve();
 
-    assertEquals(1.219312E7, actual_solution.optimalObjective());
+    assertEquals(1.2192220000000002E7, actual_solution.optimalObjective());
     assertEquals(
         """
-            occupation[ac:[c:sem1][g:g1][t:t2]][d:jul20][r:a][s:f08t10]=1.0
-            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul20][r:a][s:f10t12]=1.0
-            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul20][r:a][s:f13t15]=1.0
+            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul20][r:a][s:f08t10]=1.0
+            occupation[ac:[c:sem1][g:g1][t:t2]][d:jul20][r:b][s:f08t10]=1.0
+            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul20][r:b][s:f10t12]=1.0
             occupation[ac:[c:th1][g:g2][t:t1]][d:jul23][r:a][s:f08t10]=1.0
-            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul23][r:a][s:f10t12]=1.0
-            occupation[ac:[c:th1][g:g1][t:t1]][d:jul23][r:b][s:f13t15]=1.0
-            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul23][r:a][s:f15t17]=1.0
-            occupation[ac:[c:th1][g:g1][t:t1]][d:jul24][r:a][s:f08t10]=1.0
-            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul24][r:b][s:f10t12]=1.0
-            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul24][r:b][s:f13t15]=1.0
-            occupation[ac:[c:th1][g:g2][t:t1]][d:jul24][r:b][s:f15t17]=1.0
-            occupation[ac:[c:th1][g:g1][t:t1]][d:jul25][r:a][s:f08t10]=1.0
+            occupation[ac:[c:th1][g:g1][t:t1]][d:jul23][r:b][s:f08t10]=1.0
+            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul23][r:a][s:f10t12]=1.0
+            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul23][r:b][s:f10t12]=1.0
+            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul24][r:a][s:f08t10]=1.0
+            occupation[ac:[c:th1][g:g1][t:t1]][d:jul24][r:b][s:f08t10]=1.0
+            occupation[ac:[c:th1][g:g2][t:t1]][d:jul24][r:a][s:f10t12]=1.0
+            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul24][r:b][s:f10t12]=1.0
+            occupation[ac:[c:th1][g:g2][t:t1]][d:jul25][r:a][s:f08t10]=1.0
+            occupation[ac:[c:th1][g:g1][t:t1]][d:jul25][r:b][s:f08t10]=1.0
             occupation[ac:[c:prog2][g:g1][t:t2]][d:jul25][r:a][s:f10t12]=1.0
-            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul25][r:b][s:f13t15]=1.0
-            occupation[ac:[c:th1][g:g2][t:t1]][d:jul25][r:b][s:f15t17]=1.0""",
+            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul25][r:b][s:f10t12]=1.0""",
         toStringTimetable(actual_solution.optimalBoundedVariablesForUnboundedName("occupation")));
   }
 

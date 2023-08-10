@@ -16,6 +16,7 @@ import school.hei.linearP.hei.costly.Costly;
 import school.hei.linearP.hei.costly.Course;
 import school.hei.linearP.hei.costly.Date;
 import school.hei.linearP.hei.costly.Group;
+import school.hei.linearP.hei.costly.Slot;
 import school.hei.linearP.hei.costly.Teacher;
 
 import java.time.Duration;
@@ -150,14 +151,48 @@ class PiConstraintTest {
     assertEquals(
         DisjunctivePolytopes.of(Polytope.of(
             new NormalizedConstraint(new NormalizedLE(Map.of(
-                new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul20]"), ONE,
-                new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul21]"), ZERO),
+                new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul20]"), new Constant<>(1),
+                new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul21]"), new Constant<>(0)),
                 new Constant<>(-7))),
             new NormalizedConstraint(new NormalizedLE(Map.of(
                 new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul20]"), new Constant<>(-1),
-                new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul21]"), ZERO),
+                new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul21]"), new Constant<>(0)),
                 new Constant<>(7)))
         )).toString(), //TODO: have to resort to string equality as fails otherwise. Prolly bounder names involved.
         teacher_must_be_available.normalize().simplify().toString());
+  }
+
+  @Test
+  public void contextual_instantiation_inside_both_pic_and_sigma() {
+    var g1 = new Group("g1");
+    var t1 = new Teacher("t1", new Date(2023, JULY, 20));
+    var th1 = new Course("th1", Duration.ofHours(6));
+    var prog2 = new Course("prog2", Duration.ofHours(8));
+    var ac_g1_th1_t1 = new AwardedCourse(th1, g1, t1);
+    var ac_g1_prog2_t1 = new AwardedCourse(prog2, g1, t1);
+
+    var ac = new BounderQ<AwardedCourse>("ac");
+    var d = new BounderQ<Date>("d");
+    var acBound = new Bound<>(ac, new AwardedCourse[]{ac_g1_th1_t1, ac_g1_prog2_t1});
+    var dBound = new Bound<>(d, new Date(2023, JULY, 20), new Date(2023, JULY, 21));
+    var o_ac_d = new Z("occupation", ac, d);
+
+    var sh = Slot.DURATION.toHours();
+    var finish_courses_hours_with_teacher =
+        pic(leq(ac, mult(sh, sigma(o_ac_d, dBound))),
+            acBound.wiq(AwardedCourse::durationInHours));
+
+    assertEquals(
+        DisjunctivePolytopes.of(Polytope.of(
+            new NormalizedConstraint(new NormalizedLE(Map.of(
+                new Z("occupation[ac:[c:th1][g:g1][t:t1]][d:jul20]"), new Constant<>(-2),
+                new Z("occupation[ac:[c:th1][g:g1][t:t1]][d:jul21]"), new Constant<>(-2)),
+                new Constant<>(6))),
+            new NormalizedConstraint(new NormalizedLE(Map.of(
+                new Z("occupation[ac:[c:prog2][g:g1][t:t1]][d:jul20]"), new Constant<>(-2),
+                new Z("occupation[ac:[c:prog2][g:g1][t:t1]][d:jul21]"), new Constant<>(-2)),
+                new Constant<>(8)))
+        )),
+        finish_courses_hours_with_teacher.normalize().simplify());
   }
 }

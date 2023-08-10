@@ -1,19 +1,8 @@
 package school.hei.linearP.hei.costly;
 
-import lombok.Value;
-
 import java.util.Arrays;
 
-@Value
-public class Teacher extends Costly<Teacher> {
-
-  String name;
-  Date[] availabilities;
-
-  public Teacher(String name, Date... availabilities) {
-    this.name = name;
-    this.availabilities = availabilities;
-  }
+public record Teacher(String name, Date... availabilities) implements Costly<Teacher> {
 
   public boolean isAvailableOn(Date date) {
     return Arrays.asList(availabilities).contains(date);

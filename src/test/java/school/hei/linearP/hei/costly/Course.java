@@ -1,14 +1,8 @@
 package school.hei.linearP.hei.costly;
 
-import lombok.Value;
-
 import java.time.Duration;
 
-@Value
-public class Course extends Costly<Course> {
-  String name;
-  Duration duration;
-
+public record Course(String name, Duration duration) implements Costly<Course> {
   @Override
   public String toString() {
     return name;

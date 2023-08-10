@@ -1,16 +1,9 @@
 package school.hei.linearP.hei.costly;
 
-import lombok.Value;
-
-@Value
-public class AwardedCourse extends Costly<AwardedCourse> {
-
-  Course course;
-  Group group;
-  Teacher teacher;
+public record AwardedCourse(Course course, Group group, Teacher teacher) implements Costly<AwardedCourse> {
 
   public double durationInHours() {
-    return course.getDuration().toHours();
+    return course.duration().toHours();
   }
 
   @Override

@@ -9,7 +9,7 @@ import static java.time.Month.JANUARY;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @Value
-public class Date extends Costly<Date> {
+public class Date implements Costly<Date> {
 
   private static final LocalDate DEFAULT_REFERENCE_DATE = LocalDate.of(2023, JANUARY, 1);
   private static final double DEFAULT_COST_WEIGHT = 1_000;

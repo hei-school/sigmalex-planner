@@ -1,11 +1,6 @@
 package school.hei.linearP.hei.costly;
 
-import lombok.Value;
-
-@Value
-public class Room extends Costly<Room> {
-  String name;
-
+public record Room(String name) implements Costly<Room> {
   @Override
   public String toString() {
     return name;

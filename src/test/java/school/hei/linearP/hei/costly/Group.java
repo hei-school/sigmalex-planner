@@ -1,11 +1,6 @@
 package school.hei.linearP.hei.costly;
 
-import lombok.Value;
-
-@Value
-public class Group extends Costly<Group> {
-  String name;
-
+public record Group(String name) implements Costly<Group> {
   @Override
   public String toString() {
     return name;

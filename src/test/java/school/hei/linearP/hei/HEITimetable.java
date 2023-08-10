@@ -28,6 +28,8 @@ import static school.hei.linearP.constraint.Constraint.eq;
 import static school.hei.linearP.constraint.Constraint.geq;
 import static school.hei.linearP.constraint.Constraint.leq;
 import static school.hei.linearP.constraint.Constraint.pic;
+import static school.hei.linearP.hei.costly.Slot.f08t10;
+import static school.hei.linearP.hei.costly.Slot.f15t17;
 
 public class HEITimetable {
 
@@ -49,6 +51,7 @@ public class HEITimetable {
         prioritize_early_days_and_slots_context.constraint,
         exclude_days_off(dates_off, ac, d, s, r, cBound, sBound, rBound),
         only_one_slot_max_per_course_per_day(ac, d, s, r, cBound, dBound, sBound, rBound),
+        no_group_studies_all_day_long(ac, d, s, r, cBound, dBound, rBound),
         finish_course_hours_with_available_teachers_and_no_room_conflict(ac, d, s, r, cBound, dBound, sBound, rBound));
   }
 
@@ -66,6 +69,15 @@ public class HEITimetable {
     var dBound = new Bound<>(d, off);
     var o_ac_d_s_r = new Z("occupation", ac, d, s, r);
     return pic(eq(o_ac_d_s_r, 0), acBound, dBound, sBound, rBound);
+  }
+
+  private Constraint no_group_studies_all_day_long(
+      BounderQ<AwardedCourse> ac, BounderQ<Date> d, BounderQ<Slot> s, BounderQ<Room> r,
+      Bound<AwardedCourse> acBound, Bound<Date> dBound, Bound<Room> rBound) {
+    var o_ac_d_s_r = new Z("occupation", ac, d, s, r);
+
+    var s1s4Bound = new Bound<>(s, new Slot[]{f08t10, f15t17});
+    return pic(leq(sigma(o_ac_d_s_r, s1s4Bound), 1), acBound, dBound, rBound);
   }
 
   private MILPContext prioritize_early_days_and_slots(
@@ -94,26 +106,29 @@ public class HEITimetable {
     var o_domain =
         pic(and(leq(0, o_ac_d_s_r), leq(o_ac_d_s_r, 1)), acBound, dBound, sBound, rBound);
 
-    var ta = new BounderQ<Costly<?>>("ta"); // teacher availability
-    var taBound = new Bound<>(ta, new Costly<>());
+    var ta = new BounderQ<Costly<?>>("ta"); // teacher availability?
+    var taBound = new Bound<>(ta, () -> null);
     Instantiator<Costly<?>> taInstantiator = (Costly<?> costly, SubstitutionContext ctx) -> {
-      var lambda_ac = (AwardedCourse) (ctx.get(ac).costly());
-      var lambda_t = lambda_ac.getTeacher();
-      var lambda_d = (Date) (ctx.get(d).costly());
-      return lambda_t.isAvailableOn(lambda_d) ? new Constant<>(1) : new Constant<>(0);
+      var ctx_ac = (AwardedCourse) (ctx.get(ac).costly());
+      var ctx_t = ctx_ac.teacher();
+      var ctx_d = (Date) (ctx.get(d).costly());
+      return ctx_t.isAvailableOn(ctx_d) ? new Constant<>(1) : new Constant<>(0);
     };
     var sh = Slot.DURATION.toHours();
     var finish_courses_hours_with_teacher =
-        pic(eq(ac, mult(sh, sigma(mult(ta, o_ac_d_s_r), dBound, sBound, rBound, taBound.wi(taInstantiator)))),
+        pic(and(eq(ac, mult(sh, sigma(o_ac_d_s_r, dBound, sBound, rBound))),
+                eq(ac, mult(sh, sigma(mult(ta, o_ac_d_s_r), dBound, sBound, rBound, taBound.wi(taInstantiator))))),
             acBound.wiq(AwardedCourse::durationInHours));
 
-    var a_group_can_only_study_a_course_at_a_time =
-        pic(leq(sigma(o_ac_d_s_r, acBound, rBound), 1), dBound, sBound);
+    var a_group_can_only_study_a_course_at_a_time = and(
+        pic(leq(sigma(o_ac_d_s_r, rBound), 1), acBound, dBound, sBound),
+        pic(leq(sigma(o_ac_d_s_r, acBound), 1), rBound, dBound, sBound));
 
     return and(
         o_domain,
         finish_courses_hours_with_teacher,
-        a_group_can_only_study_a_course_at_a_time);
+        a_group_can_only_study_a_course_at_a_time
+    );
   }
 
   public Solution solve() {

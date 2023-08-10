@@ -22,24 +22,24 @@ public sealed abstract class Constraint
     return new Not(constraint);
   }
 
-  public static Leq leq(String name, LinearE le1, LinearE le2) {
+  public static Leq leq(LinearE le1, LinearE le2) {
     return new Leq(le1, le2);
   }
 
-  public static Leq leq(LinearE le1, LinearE le2) {
-    return leq(null, le1, le2);
-  }
-
   public static Leq leq(LinearE le, double c) {
-    return leq(null, le, mono(c));
+    return leq(le, mono(c));
   }
 
   public static Leq leq(Variable v, double c) {
-    return leq(null, mono(v), mono(c));
+    return leq(mono(v), mono(c));
+  }
+
+  public static Leq leq(Variable v, LinearE le) {
+    return leq(mono(v), le);
   }
 
   public static Leq leq(double c, Variable v) {
-    return leq(null, mono(c), mono(v));
+    return leq(mono(c), mono(v));
   }
 
   public static Le le(LinearE le1, LinearE le2, double epsilon) {
@@ -84,6 +84,11 @@ public sealed abstract class Constraint
 
   public static Constraint eq(Variable v, LinearE le) {
     return eq(mono(v), le);
+  }
+
+  //TODO: contextual instantiation from sigma inside pic does __not__ work with neq
+  public static Constraint neq(LinearE le, double c) {
+    return not(eq(le, mono(c)));
   }
 
   public static Constraint eq(Variable v, double c) {
