@@ -97,14 +97,14 @@ class PiConstraintTest {
     var th1 = new Course("th1", Duration.ofHours(6));
     var ac_g1_th1_t1 = new AwardedCourse(th1, g1, t1);
 
-    var ac = new BounderQ<AwardedCourse>("awardedCourse");
+    var ac = new BounderQ<AwardedCourse>("ac");
     var d = new BounderQ<Date>("d");
     var acBound = new Bound<>(ac, new AwardedCourse[]{ac_g1_th1_t1});
     var dBound = new Bound<>(d, new Date(2023, JULY, 20), new Date(2023, JULY, 21));
     var o_ac_d = new Z("o", ac, d);
 
     var ta = new BounderQ<Costly<?>>("ta");
-    var taBound = new Bound(ta, t1);
+    var taBound = new Bound<>(ta, t1);
     Instantiator<Costly<?>> instantiator = (Costly<?> teacher, SubstitutionContext ctx) ->
         ((Teacher) teacher).isAvailableOn((Date) (ctx.get(d).costly())) ? new Constant<>(1) : new Constant<>(0);
 
@@ -128,7 +128,7 @@ class PiConstraintTest {
     var th1 = new Course("th1", Duration.ofHours(6));
     var ac_g1_th1_t1 = new AwardedCourse(th1, g1, t1);
 
-    var ac = new BounderQ<AwardedCourse>("awardedCourse");
+    var ac = new BounderQ<AwardedCourse>("ac");
     var d = new BounderQ<Date>("d");
     var g = new BounderQ<Group>("g");
     var acBound = new Bound<>(ac, new AwardedCourse[]{ac_g1_th1_t1});
@@ -171,7 +171,7 @@ class PiConstraintTest {
     var ac_g1_th1_t1 = new AwardedCourse(th1, g1, t1);
     var ac_g1_prog2_t1 = new AwardedCourse(prog2, g1, t1);
 
-    var ac = new BounderQ<AwardedCourse>("awardedCourse");
+    var ac = new BounderQ<AwardedCourse>("ac");
     var d = new BounderQ<Date>("d");
     var acBound = new Bound<>(ac, new AwardedCourse[]{ac_g1_th1_t1, ac_g1_prog2_t1});
     var dBound = new Bound<>(d, new Date(2023, JULY, 20), new Date(2023, JULY, 21));
