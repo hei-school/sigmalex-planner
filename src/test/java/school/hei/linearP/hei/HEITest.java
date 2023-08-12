@@ -1,6 +1,7 @@
 package school.hei.linearP.hei;
 
 import org.junit.jupiter.api.RepeatedTest;
+import school.hei.linearP.hei.constraint.HEITimetableConstraint;
 import school.hei.linearP.hei.costly.AwardedCourse;
 import school.hei.linearP.hei.costly.Course;
 import school.hei.linearP.hei.costly.Date;
@@ -71,27 +72,28 @@ public class HEITest {
     var dates_off = new Date[]{ // to be enriched later on with slots_off
         new Date(2023, JULY, 21),
         new Date(2023, JULY, 22)};
+    var heiTimetable = new HEITimetable(awarded_courses, rooms, dates_all, dates_off, Slot.values());
 
-    var actual_solution = new HEITimetable(awarded_courses, rooms, dates_all, dates_off, Slot.values()).solve();
+    var actual_solution = new HEITimetableConstraint(heiTimetable).solve();
 
-    assertEquals(1.2192220000000002E7, actual_solution.optimalObjective());
+    assertEquals(1.219222E7, actual_solution.optimalObjective());
     assertEquals(
         """
             occupation[ac:[c:prog2][g:g2][t:t2]][d:jul20][r:a][s:f08t10]=1.0
             occupation[ac:[c:sem1][g:g1][t:t2]][d:jul20][r:b][s:f08t10]=1.0
             occupation[ac:[c:prog2][g:g1][t:t2]][d:jul20][r:b][s:f10t12]=1.0
             occupation[ac:[c:th1][g:g2][t:t1]][d:jul23][r:a][s:f08t10]=1.0
-            occupation[ac:[c:th1][g:g1][t:t1]][d:jul23][r:b][s:f08t10]=1.0
-            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul23][r:a][s:f10t12]=1.0
-            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul23][r:b][s:f10t12]=1.0
-            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul24][r:a][s:f08t10]=1.0
-            occupation[ac:[c:th1][g:g1][t:t1]][d:jul24][r:b][s:f08t10]=1.0
-            occupation[ac:[c:th1][g:g2][t:t1]][d:jul24][r:a][s:f10t12]=1.0
-            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul24][r:b][s:f10t12]=1.0
-            occupation[ac:[c:th1][g:g2][t:t1]][d:jul25][r:a][s:f08t10]=1.0
+            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul23][r:b][s:f08t10]=1.0
+            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul23][r:a][s:f10t12]=1.0
+            occupation[ac:[c:th1][g:g1][t:t1]][d:jul23][r:b][s:f10t12]=1.0
+            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul24][r:a][s:f08t10]=1.0
+            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul24][r:b][s:f08t10]=1.0
+            occupation[ac:[c:th1][g:g1][t:t1]][d:jul24][r:a][s:f10t12]=1.0
+            occupation[ac:[c:th1][g:g2][t:t1]][d:jul24][r:b][s:f10t12]=1.0
+            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul25][r:a][s:f08t10]=1.0
             occupation[ac:[c:th1][g:g1][t:t1]][d:jul25][r:b][s:f08t10]=1.0
             occupation[ac:[c:prog2][g:g1][t:t2]][d:jul25][r:a][s:f10t12]=1.0
-            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul25][r:b][s:f10t12]=1.0""",
+            occupation[ac:[c:th1][g:g2][t:t1]][d:jul25][r:b][s:f10t12]=1.0""",
         toStringTimetable(actual_solution.optimalBoundedVariablesForUnboundedName("occupation")));
   }
 
