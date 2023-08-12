@@ -1,5 +1,6 @@
 package school.hei.linearP.hei.constraint;
 
+import school.hei.linearE.LinearE;
 import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.BounderQ;
 import school.hei.linearE.instantiableE.Constant;
@@ -43,8 +44,10 @@ import static school.hei.linearP.hei.Occupation.groupNameFromOccupation;
 import static school.hei.linearP.hei.Occupation.roomNameFromOccupation;
 import static school.hei.linearP.hei.Occupation.slotNameFromOccupation;
 import static school.hei.linearP.hei.Occupation.teacherNameFromOccupation;
+import static school.hei.linearP.hei.constraint.ThreeValuedLogic.true_3vl;
+import static school.hei.linearP.hei.constraint.ThreeValuedLogic.unknown_3vl;
 
-public class HEITimetableConstraint implements SATConstraint {
+public class HEITimetableConstraint implements ViolatorConstraint {
 
   private static final String OCCUPATION_VAR_MAIN_NAME = "occupation";
   protected final HEITimetable timetable;
@@ -104,9 +107,29 @@ public class HEITimetableConstraint implements SATConstraint {
     return res;
   }
 
+  @Override
+  public ThreeValuedLogic isViolator() {
+    var subViolableConstraints = new HashSet<>(subViolableConstraints());
+    subViolableConstraints.removeIf(subC -> subC.getClass().equals(getClass()));
+    var subConstraints = and(subViolableConstraints.stream()
+        .map(ViolatorConstraint::constraint)
+        .toArray(Constraint[]::new));
+
+    var milp = new MILP(min, objective(), domains(), costs(), subConstraints);
+    var solution = new ORTools().solve(milp);
+    return solution.isEmpty() ? unknown_3vl : true_3vl;
+  }
+
   public Set<Violation> detectViolations() {
-    return subConstraints().stream()
-        .flatMap(satConstraint -> satConstraint.sat().stream())
+    if (!solve().isEmpty()) {
+      return Set.of();
+    }
+
+    return subViolableConstraints().stream()
+        .filter(violatorConstraint -> true_3vl.equals(violatorConstraint.isViolator()))
+        .map(violatorConstraint -> new Violation(
+            violatorConstraint.getClass().getSimpleName(),
+            violatorConstraint.violationRemedySuggestions()))
         .collect(toSet());
   }
 
@@ -128,16 +151,25 @@ public class HEITimetableConstraint implements SATConstraint {
   }
 
   private MILP milp() {
-    var domains =
-        pic(and(leq(0, o_ac_d_s_r), leq(o_ac_d_s_r, 1)), acBound, dBound, sBound, rBound);
-    var prioritize_early_days_and_slots_context = prioritize_early_days_and_slots();
     return new MILP(
-        min, prioritize_early_days_and_slots_context.objective(),
-        prioritize_early_days_and_slots_context.constraint(),
-        domains, constraint());
+        min, objective(),
+        costs(),
+        domains(), constraint());
   }
 
-  private Set<SATConstraint> subConstraints() {
+  private LinearE objective() {
+    return prioritize_early_days_and_slots().objective();
+  }
+
+  private Constraint costs() {
+    return prioritize_early_days_and_slots().constraint();
+  }
+
+  private Constraint domains() {
+    return pic(and(leq(0, o_ac_d_s_r), leq(o_ac_d_s_r, 1)), acBound, dBound, sBound, rBound);
+  }
+
+  private Set<ViolatorConstraint> subViolableConstraints() {
     return Set.of(
         new exclude_days_off(timetable),
         new only_one_slot_max_per_course_per_day(timetable),
@@ -146,11 +178,15 @@ public class HEITimetableConstraint implements SATConstraint {
         new finish_course_hours_with_available_teachers(timetable));
   }
 
+  private Set<Constraint> subConstraints() {
+    return subViolableConstraints().stream()
+        .map(ViolatorConstraint::constraint)
+        .collect(toSet());
+  }
+
   @Override
   public Constraint constraint() {
-    return and(subConstraints().stream()
-        .map(SATConstraint::constraint)
-        .toArray(Constraint[]::new));
+    return and(subConstraints().toArray(Constraint[]::new));
   }
 
   protected Instantiator<Group> if_ac() {

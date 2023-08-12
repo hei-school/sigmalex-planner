@@ -1,5 +1,7 @@
 package school.hei.linearP.hei.constraint;
 
-public record Violation(String constraintName) {
+import java.util.Set;
+
+public record Violation(String constraintName, Set<String> remedySuggestions) {
 
 }
