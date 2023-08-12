@@ -72,7 +72,8 @@ public class HEITest {
     var dates_off = new Date[]{ // to be enriched later on with slots_off
         new Date(2023, JULY, 21),
         new Date(2023, JULY, 22)};
-    var heiTimetable = new HEITimetable(awarded_courses, rooms, dates_all, dates_off, Slot.values());
+    var occupations = new Occupation[]{};
+    var heiTimetable = new HEITimetable(awarded_courses, rooms, dates_all, dates_off, Slot.values(), occupations);
 
     var actual_solution = new HEITimetableConstraint(heiTimetable).solve();
 
