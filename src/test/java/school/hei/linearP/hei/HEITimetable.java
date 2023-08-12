@@ -60,29 +60,23 @@ public class HEITimetable {
     this.slots = slots;
     this.occupations = occupations;
 
-    this.coursesByName = noDuplicateName(toCourses(awardedCourses).stream()
-        .collect(groupingBy(Course::toString)));
-    this.groupsByName = noDuplicateName(toGroups(awardedCourses).stream()
-        .collect(groupingBy(Group::toString)));
-    this.teachersByName = noDuplicateName(toTeachers(awardedCourses).stream()
-        .collect(groupingBy(Teacher::toString)));
-    this.roomsByName = noDuplicateName(Arrays.stream(rooms)
-        .collect(groupingBy(Room::toString)));
-    this.datesAllByName = noDuplicateName(Arrays.stream(datesAll)
-        .collect(groupingBy(Date::toString)));
-    this.slotsByName = noDuplicateName(Arrays.stream(slots)
-        .collect(groupingBy(Slot::toString)));
+    this.coursesByName = noDuplicateName(courses().stream().collect(groupingBy(Course::toString)));
+    this.groupsByName = noDuplicateName(groups().stream().collect(groupingBy(Group::toString)));
+    this.teachersByName = noDuplicateName(teachers().stream().collect(groupingBy(Teacher::toString)));
+    this.roomsByName = noDuplicateName(Arrays.stream(rooms).collect(groupingBy(Room::toString)));
+    this.datesAllByName = noDuplicateName(Arrays.stream(datesAll).collect(groupingBy(Date::toString)));
+    this.slotsByName = noDuplicateName(Arrays.stream(slots).collect(groupingBy(Slot::toString)));
   }
 
-  private Set<Course> toCourses(AwardedCourse[] awardedCourses) {
+  public Set<Course> courses() {
     return Arrays.stream(awardedCourses).map(AwardedCourse::course).collect(toSet());
   }
 
-  private Set<Group> toGroups(AwardedCourse[] awardedCourses) {
+  public Set<Group> groups() {
     return Arrays.stream(awardedCourses).map(AwardedCourse::group).collect(toSet());
   }
 
-  private Set<Teacher> toTeachers(AwardedCourse[] awardedCourses) {
+  public Set<Teacher> teachers() {
     return Arrays.stream(awardedCourses).map(AwardedCourse::teacher).collect(toSet());
   }
 

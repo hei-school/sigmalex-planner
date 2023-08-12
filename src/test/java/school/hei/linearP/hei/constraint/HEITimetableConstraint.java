@@ -2,7 +2,10 @@ package school.hei.linearP.hei.constraint;
 
 import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.BounderQ;
+import school.hei.linearE.instantiableE.Constant;
+import school.hei.linearE.instantiableE.Instantiator;
 import school.hei.linearE.instantiableE.Q;
+import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearE.instantiableE.Z;
 import school.hei.linearP.MILP;
 import school.hei.linearP.constraint.Constraint;
@@ -15,6 +18,7 @@ import school.hei.linearP.hei.constraint.sub.no_group_studies_all_day_long;
 import school.hei.linearP.hei.constraint.sub.only_one_slot_max_per_course_per_day;
 import school.hei.linearP.hei.costly.AwardedCourse;
 import school.hei.linearP.hei.costly.Date;
+import school.hei.linearP.hei.costly.Group;
 import school.hei.linearP.hei.costly.Room;
 import school.hei.linearP.hei.costly.Slot;
 import school.hei.linearP.solver.ORTools;
@@ -45,10 +49,12 @@ public class HEITimetableConstraint implements SATConstraint {
   private static final String OCCUPATION_VAR_MAIN_NAME = "occupation";
   protected final HEITimetable timetable;
   protected final BounderQ<AwardedCourse> ac = new BounderQ<>("ac");
+  protected final BounderQ<Group> g = new BounderQ<>("g");
   protected final BounderQ<Date> d = new BounderQ<>("d");
   protected final BounderQ<Slot> s = new BounderQ<>("s");
   protected final BounderQ<Room> r = new BounderQ<>("r");
   protected final Bound<AwardedCourse> acBound;
+  protected final Bound<Group> gBound;
   protected final Bound<Date> dBound;
   protected final Bound<Date> doffBound;
   protected final Bound<Slot> sBound;
@@ -58,6 +64,7 @@ public class HEITimetableConstraint implements SATConstraint {
   public HEITimetableConstraint(HEITimetable timetable) {
     this.timetable = timetable;
     this.acBound = new Bound<>(ac, timetable.getAwardedCourses());
+    this.gBound = new Bound<>(g, timetable.groups().toArray(Group[]::new));
     this.dBound = new Bound<>(d, timetable.getDatesAll());
     this.doffBound = new Bound<>(d, timetable.getDatesOff());
     this.sBound = new Bound<>(s, timetable.getSlots());
@@ -138,5 +145,12 @@ public class HEITimetableConstraint implements SATConstraint {
     return and(subConstraints().stream()
         .map(SATConstraint::constraint)
         .toArray(Constraint[]::new));
+  }
+
+  protected Instantiator<Group> if_ac() {
+    return (Group costly, SubstitutionContext ctx) -> {
+      var ctx_ac = (AwardedCourse) (ctx.get(ac).costly());
+      return costly.equals(ctx_ac.group()) ? new Constant<>(1) : new Constant<>(0);
+    };
   }
 }
