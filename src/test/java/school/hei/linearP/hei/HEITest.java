@@ -14,16 +14,13 @@ import java.time.Duration;
 import java.util.Set;
 
 import static java.time.Month.JULY;
-import static java.util.stream.Collectors.joining;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static school.hei.linearP.hei.Occupation.dateNameFromOccupation;
-import static school.hei.linearP.hei.Occupation.roomNameFromOccupation;
-import static school.hei.linearP.hei.Occupation.slotNameFromOccupation;
+import static school.hei.linearP.hei.Occupation.toOrderedLines;
 
 public class HEITest {
 
   @RepeatedTest(value = 1)
-  public void ask_sigmalex_the_wise_to_plan_hei() {
+  public void sigmalex_the_wise_can_solve_a_feasible_hei_timetable() {
     var g1 = new Group("g1");
     var g2 = new Group("g2");
     var t1 = new Teacher(
@@ -100,30 +97,6 @@ public class HEITest {
             occupation[ac:[c:prog2][g:g2][t:t2]][d:jul25][r:b][s:f10t12]
             occupation[ac:[c:sys2p3][g:g1][t:t3]][d:jul26][r:a][s:f08t10]
             occupation[ac:[c:sys2p3][g:g1][t:t3]][d:jul27][r:a][s:f08t10]""",
-        toStringTimetable(solution_occupations));
-  }
-
-  private String toStringTimetable(Set<Occupation> occupations) {
-    return occupations.stream()
-        .sorted(this::compareOccupationEntry)
-        .map(Occupation::toString)
-        .collect(joining("\n"));
-  }
-
-  private int compareOccupationEntry(Occupation o1, Occupation o2) {
-    var name1 = o1.toString();
-    var name2 = o2.toString();
-
-    var compareDates = dateNameFromOccupation(name1).compareTo(dateNameFromOccupation(name2));
-    if (compareDates != 0) {
-      return compareDates;
-    }
-
-    var compareSlots = slotNameFromOccupation(name1).compareTo(slotNameFromOccupation(name2));
-    if (compareSlots != 0) {
-      return compareSlots;
-    }
-
-    return roomNameFromOccupation(name1).compareTo(roomNameFromOccupation(name2));
+        toOrderedLines(solution_occupations));
   }
 }

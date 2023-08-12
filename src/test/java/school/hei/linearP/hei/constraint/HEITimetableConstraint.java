@@ -24,9 +24,9 @@ import school.hei.linearP.hei.costly.Slot;
 import school.hei.linearP.solver.ORTools;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import static java.util.stream.Collectors.toSet;
 import static school.hei.linearE.LEFactory.mult;
 import static school.hei.linearE.LEFactory.sigma;
 import static school.hei.linearE.instantiableE.IEFactory.addie;
@@ -104,6 +104,12 @@ public class HEITimetableConstraint implements SATConstraint {
     return res;
   }
 
+  public Set<Violation> detectViolations() {
+    return subConstraints().stream()
+        .flatMap(satConstraint -> satConstraint.sat().stream())
+        .collect(toSet());
+  }
+
   private Occupation occupationFrom(String occupationString) {
     var courseName = courseNameFromOccupation(occupationString);
     var groupName = groupNameFromOccupation(occupationString);
@@ -131,8 +137,8 @@ public class HEITimetableConstraint implements SATConstraint {
         domains, constraint());
   }
 
-  private List<SATConstraint> subConstraints() {
-    return List.of(
+  private Set<SATConstraint> subConstraints() {
+    return Set.of(
         new exclude_days_off(timetable),
         new only_one_slot_max_per_course_per_day(timetable),
         new no_group_studies_all_day_long(timetable),

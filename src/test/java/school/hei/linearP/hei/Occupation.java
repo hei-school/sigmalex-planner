@@ -5,8 +5,11 @@ import school.hei.linearP.hei.costly.Date;
 import school.hei.linearP.hei.costly.Room;
 import school.hei.linearP.hei.costly.Slot;
 
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.util.stream.Collectors.joining;
 
 public record Occupation(AwardedCourse awardedCourse, Date date, Slot slot, Room room) {
 
@@ -42,6 +45,30 @@ public record Occupation(AwardedCourse awardedCourse, Date date, Slot slot, Room
       throw new RuntimeException("Pattern does not match");
     }
     return uncheckedMatcher;
+  }
+
+  public static String toOrderedLines(Set<Occupation> occupations) {
+    return occupations.stream()
+        .sorted(Occupation::compareOccupationEntry)
+        .map(Occupation::toString)
+        .collect(joining("\n"));
+  }
+
+  private static int compareOccupationEntry(Occupation o1, Occupation o2) {
+    var name1 = o1.toString();
+    var name2 = o2.toString();
+
+    var compareDates = dateNameFromOccupation(name1).compareTo(dateNameFromOccupation(name2));
+    if (compareDates != 0) {
+      return compareDates;
+    }
+
+    var compareSlots = slotNameFromOccupation(name1).compareTo(slotNameFromOccupation(name2));
+    if (compareSlots != 0) {
+      return compareSlots;
+    }
+
+    return roomNameFromOccupation(name1).compareTo(roomNameFromOccupation(name2));
   }
 
   @Override
