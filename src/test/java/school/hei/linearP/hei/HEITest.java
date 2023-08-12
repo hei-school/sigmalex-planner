@@ -11,19 +11,18 @@ import school.hei.linearP.hei.costly.Slot;
 import school.hei.linearP.hei.costly.Teacher;
 
 import java.time.Duration;
-import java.util.Map;
-import java.util.regex.Pattern;
+import java.util.Set;
 
 import static java.time.Month.JULY;
 import static java.util.stream.Collectors.joining;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static school.hei.linearP.hei.Occupation.dateNameFromOccupation;
+import static school.hei.linearP.hei.Occupation.roomNameFromOccupation;
+import static school.hei.linearP.hei.Occupation.slotNameFromOccupation;
 
 public class HEITest {
 
-  private static final Pattern OCCUPATION_VAR_PATTERN = Pattern.compile(
-      "occupation\\[ac:\\[c:(.*)]\\[g:(.*)]\\[t:(.*)]]\\[d:(.*)]\\[r:(.*)]\\[s:(.*)]");
-
-  @RepeatedTest(value = 1)
+  @RepeatedTest(value = 10)
   public void ask_sigmalex_the_wise_to_plan_hei() {
     var g1 = new Group("g1");
     var g2 = new Group("g2");
@@ -72,60 +71,52 @@ public class HEITest {
     var dates_off = new Date[]{ // to be enriched later on with slots_off
         new Date(2023, JULY, 21),
         new Date(2023, JULY, 22)};
-    var occupations = new Occupation[]{};
+    Set<Occupation> occupations = Set.of();
     var heiTimetable = new HEITimetable(awarded_courses, rooms, dates_all, dates_off, Slot.values(), occupations);
 
-    var actual_solution = new HEITimetableConstraint(heiTimetable).solve();
+    var solution_occupations = new HEITimetableConstraint(heiTimetable).solve();
 
-    assertEquals(1.219222E7, actual_solution.optimalObjective());
     assertEquals(
         """
-            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul20][r:a][s:f08t10]=1.0
-            occupation[ac:[c:sem1][g:g1][t:t2]][d:jul20][r:b][s:f08t10]=1.0
-            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul20][r:b][s:f10t12]=1.0
-            occupation[ac:[c:th1][g:g2][t:t1]][d:jul23][r:a][s:f08t10]=1.0
-            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul23][r:b][s:f08t10]=1.0
-            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul23][r:a][s:f10t12]=1.0
-            occupation[ac:[c:th1][g:g1][t:t1]][d:jul23][r:b][s:f10t12]=1.0
-            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul24][r:a][s:f08t10]=1.0
-            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul24][r:b][s:f08t10]=1.0
-            occupation[ac:[c:th1][g:g1][t:t1]][d:jul24][r:a][s:f10t12]=1.0
-            occupation[ac:[c:th1][g:g2][t:t1]][d:jul24][r:b][s:f10t12]=1.0
-            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul25][r:a][s:f08t10]=1.0
-            occupation[ac:[c:th1][g:g1][t:t1]][d:jul25][r:b][s:f08t10]=1.0
-            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul25][r:a][s:f10t12]=1.0
-            occupation[ac:[c:th1][g:g2][t:t1]][d:jul25][r:b][s:f10t12]=1.0""",
-        toStringTimetable(actual_solution.optimalBoundedVariablesForUnboundedName("occupation")));
+            occupation[ac:[c:sem1][g:g1][t:t2]][d:jul20][r:a][s:f08t10]
+            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul20][r:b][s:f08t10]
+            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul20][r:b][s:f10t12]
+            occupation[ac:[c:th1][g:g1][t:t1]][d:jul23][r:a][s:f08t10]
+            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul23][r:b][s:f08t10]
+            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul23][r:a][s:f10t12]
+            occupation[ac:[c:th1][g:g2][t:t1]][d:jul23][r:b][s:f10t12]
+            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul24][r:a][s:f08t10]
+            occupation[ac:[c:th1][g:g1][t:t1]][d:jul24][r:b][s:f08t10]
+            occupation[ac:[c:th1][g:g2][t:t1]][d:jul24][r:a][s:f10t12]
+            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul24][r:b][s:f10t12]
+            occupation[ac:[c:th1][g:g2][t:t1]][d:jul25][r:a][s:f08t10]
+            occupation[ac:[c:th1][g:g1][t:t1]][d:jul25][r:b][s:f08t10]
+            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul25][r:a][s:f10t12]
+            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul25][r:b][s:f10t12]""",
+        toStringTimetable(solution_occupations));
   }
 
-  private String toStringTimetable(Map<String, Double> occupations) {
-    return occupations.entrySet().stream()
+  private String toStringTimetable(Set<Occupation> occupations) {
+    return occupations.stream()
         .sorted(this::compareOccupationEntry)
-        .map(Map.Entry::toString)
+        .map(Occupation::toString)
         .collect(joining("\n"));
   }
 
-  private int compareOccupationEntry(Map.Entry<String, Double> entry1, Map.Entry<String, Double> entry2) {
-    var name1 = entry1.getKey();
-    var matcher1 = OCCUPATION_VAR_PATTERN.matcher(name1);
-    if (!matcher1.find()) {
-      throw new RuntimeException("Variable name does not follow expected pattern: " + name1);
-    }
+  private int compareOccupationEntry(Occupation o1, Occupation o2) {
+    var name1 = o1.toString();
+    var name2 = o2.toString();
 
-    var name2 = entry2.getKey();
-    var matcher2 = OCCUPATION_VAR_PATTERN.matcher(name2);
-    if (!matcher2.find()) {
-      throw new RuntimeException("Variable name does not follow expected pattern: " + name2);
-    }
-
-    var compareDates = matcher1.group(4).compareTo(matcher2.group(4));
+    var compareDates = dateNameFromOccupation(name1).compareTo(dateNameFromOccupation(name2));
     if (compareDates != 0) {
       return compareDates;
     }
-    var compareSlots = matcher1.group(6).compareTo(matcher2.group(6));
+
+    var compareSlots = slotNameFromOccupation(name1).compareTo(slotNameFromOccupation(name2));
     if (compareSlots != 0) {
       return compareSlots;
     }
-    return matcher1.group(5).compareTo(matcher2.group(5)); // room
+
+    return roomNameFromOccupation(name1).compareTo(roomNameFromOccupation(name2));
   }
 }
