@@ -116,7 +116,10 @@ public sealed abstract class Constraint
   }
 
   public static Constraint pic(Constraint constraint, Bound... bounds) {
-    return pic(constraint, toBSubstitutionContexts(bounds));
+    var optSubCtx = toBSubstitutionContexts(bounds);
+    return optSubCtx
+        .map(subCtx -> pic(constraint, subCtx))
+        .orElse(TRUE);
   }
 
   private static Constraint pic(Constraint constraint, Set<SubstitutionContext> substitutionContexts) {

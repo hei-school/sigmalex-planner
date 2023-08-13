@@ -21,7 +21,7 @@ import static school.hei.linearP.Solution.UNFEASIBLE;
  */
 public class ORTools extends Solver {
   @Override
-  protected Solution solveNormalized(NormalizedMILP lp) {
+  protected Solution solve(NormalizedMILP lp) {
     loadNativeLibraries();
     var solver = createSolver("SCIP"); // https://www.scipopt.org/
 

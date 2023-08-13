@@ -22,7 +22,7 @@ public abstract class Solver {
     totalMilp = normalizedLp.size();
     System.out.println("Nb of MILP to solve: " + totalMilp + "...");
     return normalizedLp.stream()
-        .map(this::solveNormalized)
+        .map(this::solve)
         .peek(solution -> solvedMilp++)
         .peek(this::printProgress)
         .filter(not(Solution::isEmpty))
@@ -40,5 +40,5 @@ public abstract class Solver {
     }
   }
 
-  protected abstract Solution solveNormalized(NormalizedMILP lp);
+  protected abstract Solution solve(NormalizedMILP lp);
 }

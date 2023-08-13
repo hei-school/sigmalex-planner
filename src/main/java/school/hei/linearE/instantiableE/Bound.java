@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -21,7 +22,13 @@ public record Bound<Costly>(Bounder<Costly> bounder, BounderValue<?>... values) 
     this(k, IntStream.range(kMin, kMax + 1).mapToObj(Constant::new).toArray(Constant[]::new));
   }
 
-  public static Set<SubstitutionContext> toBSubstitutionContexts(Bound<?>... bounds) {
+  public static Optional<Set<SubstitutionContext>> toBSubstitutionContexts(Bound<?>... bounds) {
+    for (var bound : bounds) {
+      if (bound.values.length == 0) {
+        return Optional.empty();
+      }
+    }
+
     var bounderAndValuesArray = Arrays.stream(bounds)
         .map(bound -> Arrays.stream(bound.values())
             .map(bounderValue -> new BoundedValue(bound.bounder(), bounderValue))
@@ -43,7 +50,7 @@ public record Bound<Costly>(Bounder<Costly> bounder, BounderValue<?>... values) 
       substitutionContexts.add(new SubstitutionContext(substitutionContextMap));
     }
 
-    return substitutionContexts;
+    return Optional.of(substitutionContexts);
   }
 
   public Bound<Costly> wi(Function<Costly, InstantiableE<Costly>> instantiator) {

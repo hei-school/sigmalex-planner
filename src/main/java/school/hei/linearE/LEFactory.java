@@ -94,7 +94,11 @@ public class LEFactory {
   }
 
   public static LinearE sigma(LinearE le, Bound... bounds) {
-    var substitutionContexts = Bound.toBSubstitutionContexts(bounds);
+    var substitutionContextsOpt = Bound.toBSubstitutionContexts(bounds);
+    if (substitutionContextsOpt.isEmpty()) {
+      return mono(0);
+    }
+    var substitutionContexts = substitutionContextsOpt.get();
 
     LinearE res = mono(ZERO);
     for (var substitutionContext : substitutionContexts) {
