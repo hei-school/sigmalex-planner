@@ -16,6 +16,7 @@ import school.hei.linearP.hei.constraint.sub.a_group_can_only_study_a_course_at_
 import school.hei.linearP.hei.constraint.sub.exclude_days_off;
 import school.hei.linearP.hei.constraint.sub.finish_course_hours_with_available_teachers;
 import school.hei.linearP.hei.constraint.sub.no_group_studies_all_day_long;
+import school.hei.linearP.hei.constraint.sub.no_more_than_one_ac_with_same_c_for_two_consecutive_days;
 import school.hei.linearP.hei.constraint.sub.only_one_slot_max_per_course_per_day;
 import school.hei.linearP.hei.costly.AwardedCourse;
 import school.hei.linearP.hei.costly.Date;
@@ -182,6 +183,7 @@ public class HEITimetableConstraint implements ViolatorConstraint {
         new only_one_slot_max_per_course_per_day(timetable),
         new no_group_studies_all_day_long(timetable),
         new a_group_can_only_study_a_course_at_a_time(timetable),
+        new no_more_than_one_ac_with_same_c_for_two_consecutive_days(timetable),
         new finish_course_hours_with_available_teachers(timetable));
   }
 

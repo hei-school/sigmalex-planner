@@ -4,6 +4,7 @@ import lombok.Value;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.temporal.ChronoUnit;
 
 import static java.time.Month.JANUARY;
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -19,6 +20,17 @@ public class Date implements Costly<Date> {
     this.localDate = LocalDate.of(year, month, day);
   }
 
+  private Date(LocalDate localDate) {
+    this.localDate = localDate;
+  }
+
+  public boolean isConsecutivelyAfter(Date that) {
+    return ChronoUnit.DAYS.between(that.localDate, localDate) == 1;
+  }
+
+  public Date next() {
+    return new Date(localDate.plusDays(1));
+  }
 
   @Override
   public String toString() {
