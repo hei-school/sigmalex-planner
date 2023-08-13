@@ -115,7 +115,7 @@ public class HEITimetableConstraint implements ViolatorConstraint {
         .map(ViolatorConstraint::constraint)
         .toArray(Constraint[]::new));
 
-    var milp = new MILP(min, objective(), domains(), costs(), subConstraints);
+    var milp = new MILP(min, objective(), base_constraints(), subConstraints);
     var solution = new ORTools().solve(milp);
     return solution.isEmpty() ? unknown_3vl : true_3vl;
   }
@@ -151,10 +151,11 @@ public class HEITimetableConstraint implements ViolatorConstraint {
   }
 
   private MILP milp() {
-    return new MILP(
-        min, objective(),
-        costs(),
-        domains(), constraint());
+    return new MILP(min, objective(), base_constraints(), constraint());
+  }
+
+  public Constraint base_constraints() {
+    return and(costs(), domains(), already_provided_occupations());
   }
 
   private LinearE objective() {
@@ -167,6 +168,12 @@ public class HEITimetableConstraint implements ViolatorConstraint {
 
   private Constraint domains() {
     return pic(and(leq(0, o_ac_d_s_r), leq(o_ac_d_s_r, 1)), acBound, dBound, sBound, rBound);
+  }
+
+  private Constraint already_provided_occupations() {
+    return and(timetable.getOccupations().stream()
+        .map(occupation -> eq(new Z(occupation.toString()), 1))
+        .toArray(Constraint[]::new));
   }
 
   private Set<ViolatorConstraint> subViolableConstraints() {

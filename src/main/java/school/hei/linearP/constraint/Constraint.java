@@ -96,6 +96,10 @@ public sealed abstract class Constraint
   }
 
   public static Constraint and(Constraint... constraints) {
+    if (constraints.length == 0) {
+      return TRUE;
+    }
+
     Constraint nested = constraints[0];
     for (int i = 1; i < constraints.length; i++) {
       nested = new And(nested, constraints[i]);
