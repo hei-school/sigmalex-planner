@@ -1,6 +1,6 @@
 package school.hei.planner.constraint;
 
-import school.hei.linearP.constraint.Constraint;
+import school.hei.sigmalex.linearP.constraint.Constraint;
 
 import java.util.Set;
 

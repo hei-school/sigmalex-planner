@@ -1,11 +1,11 @@
 package school.hei.planner.constraint.sub;
 
-import school.hei.linearE.instantiableE.Bound;
-import school.hei.linearE.instantiableE.BounderQ;
-import school.hei.linearE.instantiableE.Constant;
-import school.hei.linearE.instantiableE.Instantiator;
-import school.hei.linearE.instantiableE.SubstitutionContext;
-import school.hei.linearP.constraint.Constraint;
+import school.hei.sigmalex.linearE.instantiableE.Bound;
+import school.hei.sigmalex.linearE.instantiableE.BounderQ;
+import school.hei.sigmalex.linearE.instantiableE.Constant;
+import school.hei.sigmalex.linearE.instantiableE.Instantiator;
+import school.hei.sigmalex.linearE.instantiableE.SubstitutionContext;
+import school.hei.sigmalex.linearP.constraint.Constraint;
 import school.hei.planner.HEITimetable;
 import school.hei.planner.constraint.HEITimetableConstraint;
 import school.hei.planner.costly.AwardedCourse;
@@ -15,11 +15,11 @@ import school.hei.planner.costly.Slot;
 
 import java.util.Set;
 
-import static school.hei.linearE.LEFactory.mult;
-import static school.hei.linearE.LEFactory.sigma;
-import static school.hei.linearP.constraint.Constraint.and;
-import static school.hei.linearP.constraint.Constraint.eq;
-import static school.hei.linearP.constraint.Constraint.pic;
+import static school.hei.sigmalex.linearE.LEFactory.mult;
+import static school.hei.sigmalex.linearE.LEFactory.sigma;
+import static school.hei.sigmalex.linearP.constraint.Constraint.and;
+import static school.hei.sigmalex.linearP.constraint.Constraint.eq;
+import static school.hei.sigmalex.linearP.constraint.Constraint.pic;
 
 public class finish_course_hours_with_available_teachers extends HEITimetableConstraint {
   public finish_course_hours_with_available_teachers(HEITimetable timetable) {

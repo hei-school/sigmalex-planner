@@ -1,14 +1,14 @@
 package school.hei.planner.constraint.sub;
 
-import school.hei.linearP.constraint.Constraint;
+import school.hei.sigmalex.linearP.constraint.Constraint;
 import school.hei.planner.HEITimetable;
 import school.hei.planner.constraint.HEITimetableConstraint;
 
 import java.util.Set;
 
-import static school.hei.linearE.LEFactory.sigma;
-import static school.hei.linearP.constraint.Constraint.leq;
-import static school.hei.linearP.constraint.Constraint.pic;
+import static school.hei.sigmalex.linearE.LEFactory.sigma;
+import static school.hei.sigmalex.linearP.constraint.Constraint.leq;
+import static school.hei.sigmalex.linearP.constraint.Constraint.pic;
 
 public class only_one_slot_max_per_course_per_day extends HEITimetableConstraint {
 
