@@ -1,5 +1,6 @@
 package school.hei.linearP.hei.constraint;
 
+import lombok.Getter;
 import school.hei.linearE.LinearE;
 import school.hei.linearE.instantiableE.B;
 import school.hei.linearE.instantiableE.Bound;
@@ -50,6 +51,7 @@ import static school.hei.linearP.hei.constraint.ThreeValuedLogic.unknown_3vl;
 public class HEITimetableConstraint implements ViolatorConstraint {
 
   private static final String OCCUPATION_VAR_MAIN_NAME = "occupation";
+  @Getter
   protected final HEITimetable timetable;
   protected final BounderQ<AwardedCourse> ac = new BounderQ<>("ac");
   protected final BounderQ<Group> g = new BounderQ<>("g");
@@ -77,6 +79,23 @@ public class HEITimetableConstraint implements ViolatorConstraint {
     this.o_ac_d_s_r = new B(OCCUPATION_VAR_MAIN_NAME, ac, d, s, r);
   }
 
+  public static Occupation occupationFrom(String occupationString, HEITimetable timetable) {
+    var courseName = courseNameFromOccupation(occupationString);
+    var groupName = groupNameFromOccupation(occupationString);
+    var teacherName = teacherNameFromOccupation(occupationString);
+    var dateName = dateNameFromOccupation(occupationString);
+    var slotName = slotNameFromOccupation(occupationString);
+    var roomName = roomNameFromOccupation(occupationString);
+    return new Occupation(
+        new AwardedCourse(
+            timetable.courseByName(courseName),
+            timetable.groupByName(groupName),
+            timetable.teacherByName(teacherName)),
+        timetable.dateByName(dateName),
+        timetable.slotByName(slotName),
+        timetable.roomByName(roomName));
+  }
+
   protected MILPContext prioritize_early_days_and_slots() {
     var cost = sigma(cost_ac_d_s_r, acBound, dBound, sBound, rBound);
     var cost_d_s_unlinked_to_o = addie(multie(d, Slot.SLOTS_IN_A_DAY), s);
@@ -97,7 +116,7 @@ public class HEITimetableConstraint implements ViolatorConstraint {
         throw new RuntimeException(String.format(
             "Value expected to equal 1, but was: %.2f for %s", value, occupationString));
       }
-      res.add(occupationFrom(occupationString));
+      res.add(occupationFrom(occupationString, timetable));
     });
 
     return res;
@@ -127,23 +146,6 @@ public class HEITimetableConstraint implements ViolatorConstraint {
             violatorConstraint.getClass().getSimpleName(),
             violatorConstraint.violationRemedySuggestions()))
         .collect(toSet());
-  }
-
-  private Occupation occupationFrom(String occupationString) {
-    var courseName = courseNameFromOccupation(occupationString);
-    var groupName = groupNameFromOccupation(occupationString);
-    var teacherName = teacherNameFromOccupation(occupationString);
-    var dateName = dateNameFromOccupation(occupationString);
-    var slotName = slotNameFromOccupation(occupationString);
-    var roomName = roomNameFromOccupation(occupationString);
-    return new Occupation(
-        new AwardedCourse(
-            timetable.courseByName(courseName),
-            timetable.groupByName(groupName),
-            timetable.teacherByName(teacherName)),
-        timetable.dateByName(dateName),
-        timetable.slotByName(slotName),
-        timetable.roomByName(roomName));
   }
 
   private MILP milp() {

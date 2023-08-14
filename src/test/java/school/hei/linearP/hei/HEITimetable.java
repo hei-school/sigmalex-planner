@@ -68,6 +68,10 @@ public class HEITimetable {
     this.slotsByName = noDuplicateName(Arrays.stream(slots).collect(groupingBy(Slot::toString)));
   }
 
+  public HEITimetable withOccupations(Set<Occupation> occupations) {
+    return new HEITimetable(awardedCourses, rooms, datesAll, datesOff, slots, occupations);
+  }
+
   public Set<Course> courses() {
     return Arrays.stream(awardedCourses).map(AwardedCourse::course).collect(toSet());
   }

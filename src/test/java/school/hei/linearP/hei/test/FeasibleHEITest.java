@@ -14,17 +14,19 @@ import school.hei.linearP.hei.costly.Slot;
 import school.hei.linearP.hei.costly.Teacher;
 
 import java.time.Duration;
+import java.util.HashSet;
 import java.util.Set;
 
 import static java.time.Month.JULY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static school.hei.linearP.hei.Occupation.toOrderedLines;
+import static school.hei.linearP.hei.constraint.HEITimetableConstraint.occupationFrom;
 
 public class FeasibleHEITest {
 
 
-  private HEITimetableConstraint timetable1() {
+  private HEITimetable timetable1() {
     var g1 = new Group("g1");
     var g2 = new Group("g2");
     var t1 = new Teacher(
@@ -77,13 +79,12 @@ public class FeasibleHEITest {
         new Date(2023, JULY, 21),
         new Date(2023, JULY, 22)};
     Set<Occupation> occupations = Set.of();
-    var timetable = new HEITimetable(awarded_courses, rooms, dates_all, dates_off, Slot.values(), occupations);
-    return new HEITimetableConstraint(timetable);
+    return new HEITimetable(awarded_courses, rooms, dates_all, dates_off, Slot.values(), occupations);
   }
 
   @RepeatedTest(value = 1)
   public void sigmalex_the_wise_can_solve_feasible_timetable1() {
-    HEITimetableConstraint timetable_constraints = timetable1();
+    var timetable_constraints = new HEITimetableConstraint(timetable1());
 
     var solution_occupations = timetable_constraints.solve();
 
@@ -109,9 +110,41 @@ public class FeasibleHEITest {
         toOrderedLines(solution_occupations));
   }
 
+  @RepeatedTest(value = 1)
+  public void solution_to_timetable1_is_idempotent() {
+    var timetable = timetable1();
+    Set<Occupation> provided_occupations = new HashSet<>();
+    addOccupation(provided_occupations, "occupation[ac:[c:sys2p3][g:g1][t:t3]][d:jul20][r:a][s:f08t10]", timetable);
+    addOccupation(provided_occupations, "occupation[ac:[c:prog2][g:g2][t:t2]][d:jul20][r:b][s:f08t10]", timetable);
+    addOccupation(provided_occupations, "occupation[ac:[c:prog2][g:g1][t:t2]][d:jul20][r:b][s:f10t12]", timetable);
+    addOccupation(provided_occupations, "occupation[ac:[c:sem1][g:g1][t:t2]][d:jul20][r:b][s:f13t15]", timetable);
+    addOccupation(provided_occupations, "occupation[ac:[c:prog2][g:g1][t:t2]][d:jul23][r:a][s:f08t10]", timetable);
+    addOccupation(provided_occupations, "occupation[ac:[c:prog2][g:g2][t:t2]][d:jul23][r:b][s:f08t10]", timetable);
+    addOccupation(provided_occupations, "occupation[ac:[c:th1][g:g1][t:t1]][d:jul23][r:a][s:f10t12]", timetable);
+    addOccupation(provided_occupations, "occupation[ac:[c:th1][g:g2][t:t1]][d:jul23][r:b][s:f10t12]", timetable);
+    addOccupation(provided_occupations, "occupation[ac:[c:sem1][g:g1][t:t2]][d:jul23][r:a][s:f13t15]", timetable);
+    addOccupation(provided_occupations, "occupation[ac:[c:prog2][g:g2][t:t2]][d:jul25][r:a][s:f08t10]", timetable);
+    addOccupation(provided_occupations, "occupation[ac:[c:sem1][g:g1][t:t2]][d:jul25][r:b][s:f08t10]", timetable);
+    addOccupation(provided_occupations, "occupation[ac:[c:th1][g:g2][t:t1]][d:jul25][r:a][s:f10t12]", timetable);
+    addOccupation(provided_occupations, "occupation[ac:[c:th1][g:g1][t:t1]][d:jul25][r:b][s:f10t12]", timetable);
+    addOccupation(provided_occupations, "occupation[ac:[c:prog2][g:g1][t:t2]][d:jul25][r:b][s:f13t15]", timetable);
+    addOccupation(provided_occupations, "occupation[ac:[c:sys2p3][g:g1][t:t3]][d:jul26][r:b][s:f08t10]", timetable);
+    addOccupation(provided_occupations, "occupation[ac:[c:sem1][g:g1][t:t2]][d:jul27][r:a][s:f08t10]I", timetable);
+    HEITimetableConstraint solved_timetable_constraints = new HEITimetableConstraint(
+        timetable.withOccupations(provided_occupations));
+
+    var solution_occupations = solved_timetable_constraints.solve();
+
+    assertEquals(provided_occupations, solution_occupations);
+  }
+
+  private void addOccupation(Set<Occupation> occupations, String occupationName, HEITimetable timetable) {
+    occupations.add(occupationFrom(occupationName, timetable));
+  }
+
   @Test
   public void sigmalex_the_wise_understands_that_timetable1_has_no_violation() {
-    HEITimetableConstraint timetable_constraints = timetable1();
+    var timetable_constraints = new HEITimetableConstraint(timetable1());
     assertTrue(timetable_constraints.detectViolations().isEmpty());
   }
 }
