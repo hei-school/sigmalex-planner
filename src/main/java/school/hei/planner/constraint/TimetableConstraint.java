@@ -1,19 +1,8 @@
 package school.hei.planner.constraint;
 
 import lombok.Getter;
-import school.hei.sigmalex.linearE.LinearE;
-import school.hei.sigmalex.linearE.instantiableE.B;
-import school.hei.sigmalex.linearE.instantiableE.Bound;
-import school.hei.sigmalex.linearE.instantiableE.BounderQ;
-import school.hei.sigmalex.linearE.instantiableE.Constant;
-import school.hei.sigmalex.linearE.instantiableE.Instantiator;
-import school.hei.sigmalex.linearE.instantiableE.Q;
-import school.hei.sigmalex.linearE.instantiableE.SubstitutionContext;
-import school.hei.sigmalex.linearP.MILP;
-import school.hei.sigmalex.linearP.constraint.Constraint;
-import school.hei.sigmalex.linearP.solver.ORTools;
-import school.hei.planner.HEITimetable;
 import school.hei.planner.Occupation;
+import school.hei.planner.Timetable;
 import school.hei.planner.constraint.sub.a_group_can_only_study_a_course_at_a_time;
 import school.hei.planner.constraint.sub.exclude_days_off;
 import school.hei.planner.constraint.sub.finish_course_hours_with_available_teachers;
@@ -25,11 +14,30 @@ import school.hei.planner.costly.Date;
 import school.hei.planner.costly.Group;
 import school.hei.planner.costly.Room;
 import school.hei.planner.costly.Slot;
+import school.hei.sigmalex.linearE.LinearE;
+import school.hei.sigmalex.linearE.instantiableE.B;
+import school.hei.sigmalex.linearE.instantiableE.Bound;
+import school.hei.sigmalex.linearE.instantiableE.BounderQ;
+import school.hei.sigmalex.linearE.instantiableE.Constant;
+import school.hei.sigmalex.linearE.instantiableE.Instantiator;
+import school.hei.sigmalex.linearE.instantiableE.Q;
+import school.hei.sigmalex.linearE.instantiableE.SubstitutionContext;
+import school.hei.sigmalex.linearP.MILP;
+import school.hei.sigmalex.linearP.constraint.Constraint;
+import school.hei.sigmalex.linearP.solver.ORTools;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
+import static school.hei.planner.Occupation.courseNameFromOccupation;
+import static school.hei.planner.Occupation.dateNameFromOccupation;
+import static school.hei.planner.Occupation.groupNameFromOccupation;
+import static school.hei.planner.Occupation.roomNameFromOccupation;
+import static school.hei.planner.Occupation.slotNameFromOccupation;
+import static school.hei.planner.Occupation.teacherNameFromOccupation;
+import static school.hei.planner.constraint.ThreeValuedLogic.true_3vl;
+import static school.hei.planner.constraint.ThreeValuedLogic.unknown_3vl;
 import static school.hei.sigmalex.linearE.LEFactory.mult;
 import static school.hei.sigmalex.linearE.LEFactory.sigma;
 import static school.hei.sigmalex.linearE.instantiableE.IEFactory.addie;
@@ -39,20 +47,12 @@ import static school.hei.sigmalex.linearP.constraint.Constraint.and;
 import static school.hei.sigmalex.linearP.constraint.Constraint.eq;
 import static school.hei.sigmalex.linearP.constraint.Constraint.geq;
 import static school.hei.sigmalex.linearP.constraint.Constraint.pic;
-import static school.hei.planner.Occupation.courseNameFromOccupation;
-import static school.hei.planner.Occupation.dateNameFromOccupation;
-import static school.hei.planner.Occupation.groupNameFromOccupation;
-import static school.hei.planner.Occupation.roomNameFromOccupation;
-import static school.hei.planner.Occupation.slotNameFromOccupation;
-import static school.hei.planner.Occupation.teacherNameFromOccupation;
-import static school.hei.planner.constraint.ThreeValuedLogic.true_3vl;
-import static school.hei.planner.constraint.ThreeValuedLogic.unknown_3vl;
 
-public class HEITimetableConstraint implements ViolatorConstraint {
+public class TimetableConstraint implements ViolatorConstraint {
 
   private static final String OCCUPATION_VAR_MAIN_NAME = "occupation";
   @Getter
-  protected final HEITimetable timetable;
+  protected final Timetable timetable;
   protected final BounderQ<AwardedCourse> ac = new BounderQ<>("ac");
   protected final BounderQ<Group> g = new BounderQ<>("g");
   protected final BounderQ<Date> d = new BounderQ<>("d");
@@ -68,7 +68,7 @@ public class HEITimetableConstraint implements ViolatorConstraint {
   protected final Q cost_ac_d_s_r = new Q("cost", ac, d, s, r);
 
 
-  public HEITimetableConstraint(HEITimetable timetable) {
+  public TimetableConstraint(Timetable timetable) {
     this.timetable = timetable;
     this.acBound = new Bound<>(ac, timetable.getAwardedCourses());
     this.gBound = new Bound<>(g, timetable.groups().toArray(Group[]::new));
@@ -79,7 +79,7 @@ public class HEITimetableConstraint implements ViolatorConstraint {
     this.o_ac_d_s_r = new B(OCCUPATION_VAR_MAIN_NAME, ac, d, s, r);
   }
 
-  public static Occupation occupationFrom(String occupationString, HEITimetable timetable) {
+  public static Occupation occupationFrom(String occupationString, Timetable timetable) {
     var courseName = courseNameFromOccupation(occupationString);
     var groupName = groupNameFromOccupation(occupationString);
     var teacherName = teacherNameFromOccupation(occupationString);

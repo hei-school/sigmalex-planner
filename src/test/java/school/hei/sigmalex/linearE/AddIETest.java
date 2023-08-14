@@ -1,7 +1,6 @@
 package school.hei.sigmalex.linearE;
 
 import org.junit.jupiter.api.Test;
-import school.hei.sigmalex.linearE.NormalizedLE;
 import school.hei.sigmalex.linearE.instantiableE.Constant;
 import school.hei.sigmalex.linearE.instantiableE.Q;
 import school.hei.sigmalex.linearE.instantiableE.Z;

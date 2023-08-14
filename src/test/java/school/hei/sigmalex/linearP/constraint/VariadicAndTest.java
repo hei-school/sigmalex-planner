@@ -3,7 +3,6 @@ package school.hei.sigmalex.linearP.constraint;
 import org.junit.jupiter.api.Test;
 import school.hei.sigmalex.linearE.NormalizedLE;
 import school.hei.sigmalex.linearE.instantiableE.Q;
-import school.hei.sigmalex.linearP.constraint.NormalizedConstraint;
 import school.hei.sigmalex.linearP.constraint.polytope.DisjunctivePolytopes;
 import school.hei.sigmalex.linearP.constraint.polytope.Polytope;
 

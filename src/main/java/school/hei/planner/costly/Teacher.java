@@ -1,11 +1,16 @@
 package school.hei.planner.costly;
 
 import java.util.Arrays;
+import java.util.List;
 
-public record Teacher(String name, Date... availabilities) implements Costly<Teacher> {
+public record Teacher(String name, List<Date> availabilities) implements Costly<Teacher> {
+
+  public Teacher(String name, Date... availabilities) {
+    this(name, Arrays.stream(availabilities).toList());
+  }
 
   public boolean isAvailableOn(Date date) {
-    return Arrays.asList(availabilities).contains(date);
+    return availabilities.contains(date);
   }
 
   @Override

@@ -1,0 +1,422 @@
+{
+  "awardedCourses": [
+    {
+      "course": {
+        "name": "th1",
+        "duration": 14400.000000000
+      },
+      "group": {
+        "name": "g1"
+      },
+      "teacher": {
+        "name": "t1",
+        "availabilities": [
+          {
+            "localDate": [
+              2023,
+              7,
+              21
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              23
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              24
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              25
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              28
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "course": {
+        "name": "th1",
+        "duration": 14400.000000000
+      },
+      "group": {
+        "name": "g2"
+      },
+      "teacher": {
+        "name": "t1",
+        "availabilities": [
+          {
+            "localDate": [
+              2023,
+              7,
+              21
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              23
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              24
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              25
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              28
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "course": {
+        "name": "prog2",
+        "duration": 21600.000000000
+      },
+      "group": {
+        "name": "g1"
+      },
+      "teacher": {
+        "name": "t2",
+        "availabilities": [
+          {
+            "localDate": [
+              2023,
+              7,
+              20
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              22
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              23
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              24
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              25
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              26
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              27
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "course": {
+        "name": "prog2",
+        "duration": 21600.000000000
+      },
+      "group": {
+        "name": "g2"
+      },
+      "teacher": {
+        "name": "t2",
+        "availabilities": [
+          {
+            "localDate": [
+              2023,
+              7,
+              20
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              22
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              23
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              24
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              25
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              26
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              27
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "course": {
+        "name": "sem1",
+        "duration": 28800.000000000
+      },
+      "group": {
+        "name": "g1"
+      },
+      "teacher": {
+        "name": "t2",
+        "availabilities": [
+          {
+            "localDate": [
+              2023,
+              7,
+              20
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              22
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              23
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              24
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              25
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              26
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              27
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "course": {
+        "name": "sys2p3",
+        "duration": 14400.000000000
+      },
+      "group": {
+        "name": "g1"
+      },
+      "teacher": {
+        "name": "t3",
+        "availabilities": [
+          {
+            "localDate": [
+              2023,
+              7,
+              20
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              26
+            ]
+          },
+          {
+            "localDate": [
+              2023,
+              7,
+              27
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rooms": [
+    {
+      "name": "a"
+    },
+    {
+      "name": "b"
+    }
+  ],
+  "datesAll": [
+    {
+      "localDate": [
+        2023,
+        7,
+        20
+      ]
+    },
+    {
+      "localDate": [
+        2023,
+        7,
+        21
+      ]
+    },
+    {
+      "localDate": [
+        2023,
+        7,
+        22
+      ]
+    },
+    {
+      "localDate": [
+        2023,
+        7,
+        23
+      ]
+    },
+    {
+      "localDate": [
+        2023,
+        7,
+        24
+      ]
+    },
+    {
+      "localDate": [
+        2023,
+        7,
+        25
+      ]
+    },
+    {
+      "localDate": [
+        2023,
+        7,
+        26
+      ]
+    },
+    {
+      "localDate": [
+        2023,
+        7,
+        27
+      ]
+    },
+    {
+      "localDate": [
+        2023,
+        7,
+        28
+      ]
+    }
+  ],
+  "datesOff": [
+    {
+      "localDate": [
+        2023,
+        7,
+        21
+      ]
+    },
+    {
+      "localDate": [
+        2023,
+        7,
+        22
+      ]
+    }
+  ],
+  "slots": [
+    "f08t10",
+    "f10t12",
+    "f13t15",
+    "f15t17"
+  ],
+  "occupations": []
+}

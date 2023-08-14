@@ -1,11 +1,9 @@
 package school.hei.sigmalex.linearP.constraint;
 
+import school.hei.sigmalex.linearE.LEFactory;
 import school.hei.sigmalex.linearE.LinearE;
 import school.hei.sigmalex.linearE.instantiableE.SubstitutionContext;
 import school.hei.sigmalex.linearP.constraint.polytope.DisjunctivePolytopes;
-import school.hei.sigmalex.linearE.LEFactory;
-
-import static school.hei.sigmalex.linearE.LEFactory.add;
 
 public final class Le extends BiLeConstraint {
 

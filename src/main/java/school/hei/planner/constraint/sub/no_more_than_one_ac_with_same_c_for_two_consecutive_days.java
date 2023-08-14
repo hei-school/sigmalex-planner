@@ -1,14 +1,14 @@
 package school.hei.planner.constraint.sub;
 
-import school.hei.sigmalex.linearE.LinearE;
-import school.hei.sigmalex.linearE.instantiableE.B;
-import school.hei.sigmalex.linearP.constraint.Constraint;
-import school.hei.planner.HEITimetable;
 import school.hei.planner.Occupation;
-import school.hei.planner.constraint.HEITimetableConstraint;
+import school.hei.planner.Timetable;
+import school.hei.planner.constraint.TimetableConstraint;
 import school.hei.planner.costly.AwardedCourse;
 import school.hei.planner.costly.Date;
 import school.hei.planner.costly.Slot;
+import school.hei.sigmalex.linearE.LinearE;
+import school.hei.sigmalex.linearE.instantiableE.B;
+import school.hei.sigmalex.linearP.constraint.Constraint;
 
 import static school.hei.sigmalex.linearE.LEFactory.add;
 import static school.hei.sigmalex.linearE.LEFactory.mono;
@@ -16,8 +16,8 @@ import static school.hei.sigmalex.linearP.constraint.Constraint.and;
 import static school.hei.sigmalex.linearP.constraint.Constraint.leq;
 import static school.hei.sigmalex.linearP.constraint.True.TRUE;
 
-public class no_more_than_one_ac_with_same_c_for_two_consecutive_days extends HEITimetableConstraint {
-  public no_more_than_one_ac_with_same_c_for_two_consecutive_days(HEITimetable timetable) {
+public class no_more_than_one_ac_with_same_c_for_two_consecutive_days extends TimetableConstraint {
+  public no_more_than_one_ac_with_same_c_for_two_consecutive_days(Timetable timetable) {
     super(timetable);
   }
 

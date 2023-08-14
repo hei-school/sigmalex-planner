@@ -1,7 +1,7 @@
 package school.hei.planner;
 
 import org.junit.jupiter.api.Test;
-import school.hei.planner.constraint.HEITimetableConstraint;
+import school.hei.planner.constraint.TimetableConstraint;
 import school.hei.planner.constraint.Violation;
 import school.hei.planner.costly.AwardedCourse;
 import school.hei.planner.costly.Course;
@@ -18,7 +18,7 @@ import static java.time.Month.JULY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UnfeasibleHEITest {
+public class UnfeasibleTimetableTest {
 
   @Test
   public void sigmalex_the_wise_can_tell_why_a_timetable_is_unfeasible() {
@@ -43,9 +43,9 @@ public class UnfeasibleHEITest {
         new Date(2023, JULY, 21),
         new Date(2023, JULY, 22)};
     Set<Occupation> occupations = Set.of();
-    var timetable = new HEITimetable(awarded_courses, rooms, dates_all, dates_off, Slot.values(), occupations);
+    var timetable = new Timetable(awarded_courses, rooms, dates_all, dates_off, Slot.values(), occupations);
 
-    var timetable_constraint = new HEITimetableConstraint(timetable);
+    var timetable_constraint = new TimetableConstraint(timetable);
     var solution_occupations = timetable_constraint.solve();
     assertTrue(solution_occupations.isEmpty());
 
@@ -73,9 +73,9 @@ public class UnfeasibleHEITest {
     Set<Occupation> occupations = Set.of(
         new Occupation(ac_g1_th1_t1, date1, Slot.f08t10, ra),
         new Occupation(ac_g1_prog2_t1, date1, Slot.f15t17, ra));
-    var timetable = new HEITimetable(awarded_courses, rooms, dates_all, dates_off, Slot.values(), occupations);
+    var timetable = new Timetable(awarded_courses, rooms, dates_all, dates_off, Slot.values(), occupations);
 
-    var timetable_constraint = new HEITimetableConstraint(timetable);
+    var timetable_constraint = new TimetableConstraint(timetable);
     var solution_occupations = timetable_constraint.solve();
     assertTrue(solution_occupations.isEmpty());
 

@@ -1,10 +1,10 @@
 package school.hei.planner.constraint.sub;
 
+import school.hei.planner.Timetable;
+import school.hei.planner.constraint.TimetableConstraint;
+import school.hei.planner.costly.Slot;
 import school.hei.sigmalex.linearE.instantiableE.Bound;
 import school.hei.sigmalex.linearP.constraint.Constraint;
-import school.hei.planner.HEITimetable;
-import school.hei.planner.constraint.HEITimetableConstraint;
-import school.hei.planner.costly.Slot;
 
 import java.util.Set;
 
@@ -13,8 +13,8 @@ import static school.hei.sigmalex.linearE.LEFactory.sigma;
 import static school.hei.sigmalex.linearP.constraint.Constraint.leq;
 import static school.hei.sigmalex.linearP.constraint.Constraint.pic;
 
-public class no_group_studies_all_day_long extends HEITimetableConstraint {
-  public no_group_studies_all_day_long(HEITimetable timetable) {
+public class no_group_studies_all_day_long extends TimetableConstraint {
+  public no_group_studies_all_day_long(Timetable timetable) {
     super(timetable);
   }
 

@@ -1,17 +1,17 @@
 package school.hei.planner.constraint.sub;
 
+import school.hei.planner.Timetable;
+import school.hei.planner.constraint.TimetableConstraint;
+import school.hei.planner.costly.AwardedCourse;
+import school.hei.planner.costly.Costly;
+import school.hei.planner.costly.Date;
+import school.hei.planner.costly.Slot;
 import school.hei.sigmalex.linearE.instantiableE.Bound;
 import school.hei.sigmalex.linearE.instantiableE.BounderQ;
 import school.hei.sigmalex.linearE.instantiableE.Constant;
 import school.hei.sigmalex.linearE.instantiableE.Instantiator;
 import school.hei.sigmalex.linearE.instantiableE.SubstitutionContext;
 import school.hei.sigmalex.linearP.constraint.Constraint;
-import school.hei.planner.HEITimetable;
-import school.hei.planner.constraint.HEITimetableConstraint;
-import school.hei.planner.costly.AwardedCourse;
-import school.hei.planner.costly.Costly;
-import school.hei.planner.costly.Date;
-import school.hei.planner.costly.Slot;
 
 import java.util.Set;
 
@@ -21,8 +21,8 @@ import static school.hei.sigmalex.linearP.constraint.Constraint.and;
 import static school.hei.sigmalex.linearP.constraint.Constraint.eq;
 import static school.hei.sigmalex.linearP.constraint.Constraint.pic;
 
-public class finish_course_hours_with_available_teachers extends HEITimetableConstraint {
-  public finish_course_hours_with_available_teachers(HEITimetable timetable) {
+public class finish_course_hours_with_available_teachers extends TimetableConstraint {
+  public finish_course_hours_with_available_teachers(Timetable timetable) {
     super(timetable);
   }
 

@@ -1,5 +1,6 @@
 package school.hei.planner;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 import school.hei.planner.costly.AwardedCourse;
 import school.hei.planner.costly.Costly;
@@ -19,7 +20,7 @@ import java.util.Set;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
 
-public class HEITimetable {
+public class Timetable {
   @Getter
   private final AwardedCourse[] awardedCourses;
   private final Map<String, Course> coursesByName;
@@ -46,7 +47,8 @@ public class HEITimetable {
   @Getter
   private final Set<Occupation> occupations;
 
-  public HEITimetable(
+  @JsonCreator
+  public Timetable(
       AwardedCourse[] awardedCourses,
       Room[] rooms,
       Date[] datesAll,
@@ -68,8 +70,8 @@ public class HEITimetable {
     this.slotsByName = noDuplicateName(Arrays.stream(slots).collect(groupingBy(Slot::toString)));
   }
 
-  public HEITimetable withOccupations(Set<Occupation> occupations) {
-    return new HEITimetable(awardedCourses, rooms, datesAll, datesOff, slots, occupations);
+  public Timetable withOccupations(Set<Occupation> occupations) {
+    return new Timetable(awardedCourses, rooms, datesAll, datesOff, slots, occupations);
   }
 
   public Set<Course> courses() {
@@ -88,7 +90,8 @@ public class HEITimetable {
     Map<String, T> res = new HashMap<>();
     byName.forEach((name, tList) -> {
       if (tList.size() > 1) {
-        throw new RuntimeException("A name should be associated with a costly: name=" + name);
+        throw new RuntimeException(String.format(
+            "A var name should be associated with exactly one costly: name=%s, tList=%s", name, tList));
       }
       res.put(name, tList.get(0));
     });

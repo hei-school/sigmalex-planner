@@ -1,6 +1,13 @@
 package school.hei.sigmalex.linearP.constraint;
 
 import org.junit.jupiter.api.Test;
+import school.hei.planner.costly.AwardedCourse;
+import school.hei.planner.costly.Costly;
+import school.hei.planner.costly.Course;
+import school.hei.planner.costly.Date;
+import school.hei.planner.costly.Group;
+import school.hei.planner.costly.Slot;
+import school.hei.planner.costly.Teacher;
 import school.hei.sigmalex.linearE.NormalizedLE;
 import school.hei.sigmalex.linearE.instantiableE.Bound;
 import school.hei.sigmalex.linearE.instantiableE.BounderQ;
@@ -9,16 +16,8 @@ import school.hei.sigmalex.linearE.instantiableE.Instantiator;
 import school.hei.sigmalex.linearE.instantiableE.Q;
 import school.hei.sigmalex.linearE.instantiableE.SubstitutionContext;
 import school.hei.sigmalex.linearE.instantiableE.Z;
-import school.hei.sigmalex.linearP.constraint.NormalizedConstraint;
 import school.hei.sigmalex.linearP.constraint.polytope.DisjunctivePolytopes;
 import school.hei.sigmalex.linearP.constraint.polytope.Polytope;
-import school.hei.planner.costly.AwardedCourse;
-import school.hei.planner.costly.Costly;
-import school.hei.planner.costly.Course;
-import school.hei.planner.costly.Date;
-import school.hei.planner.costly.Group;
-import school.hei.planner.costly.Slot;
-import school.hei.planner.costly.Teacher;
 
 import java.time.Duration;
 import java.util.Map;

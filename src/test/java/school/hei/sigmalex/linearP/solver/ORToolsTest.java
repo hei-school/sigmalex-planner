@@ -6,8 +6,6 @@ import school.hei.sigmalex.linearE.instantiableE.Q;
 import school.hei.sigmalex.linearE.instantiableE.Z;
 import school.hei.sigmalex.linearP.MILP;
 import school.hei.sigmalex.linearP.Solution;
-import school.hei.sigmalex.linearP.solver.ORTools;
-import school.hei.sigmalex.linearP.solver.Solver;
 
 import java.util.Map;
 import java.util.Set;
