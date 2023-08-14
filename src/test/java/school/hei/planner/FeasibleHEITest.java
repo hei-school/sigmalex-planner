@@ -1,17 +1,15 @@
-package school.hei.linearP.hei.test;
+package school.hei.planner;
 
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
-import school.hei.linearP.hei.HEITimetable;
-import school.hei.linearP.hei.Occupation;
-import school.hei.linearP.hei.constraint.HEITimetableConstraint;
-import school.hei.linearP.hei.costly.AwardedCourse;
-import school.hei.linearP.hei.costly.Course;
-import school.hei.linearP.hei.costly.Date;
-import school.hei.linearP.hei.costly.Group;
-import school.hei.linearP.hei.costly.Room;
-import school.hei.linearP.hei.costly.Slot;
-import school.hei.linearP.hei.costly.Teacher;
+import school.hei.planner.constraint.HEITimetableConstraint;
+import school.hei.planner.costly.AwardedCourse;
+import school.hei.planner.costly.Course;
+import school.hei.planner.costly.Date;
+import school.hei.planner.costly.Group;
+import school.hei.planner.costly.Room;
+import school.hei.planner.costly.Slot;
+import school.hei.planner.costly.Teacher;
 
 import java.time.Duration;
 import java.util.HashSet;
@@ -20,8 +18,7 @@ import java.util.Set;
 import static java.time.Month.JULY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static school.hei.linearP.hei.Occupation.toOrderedLines;
-import static school.hei.linearP.hei.constraint.HEITimetableConstraint.occupationFrom;
+import static school.hei.planner.Occupation.toOrderedLines;
 
 public class FeasibleHEITest {
 
@@ -139,7 +136,7 @@ public class FeasibleHEITest {
   }
 
   private void addOccupation(Set<Occupation> occupations, String occupationName, HEITimetable timetable) {
-    occupations.add(occupationFrom(occupationName, timetable));
+    occupations.add(HEITimetableConstraint.occupationFrom(occupationName, timetable));
   }
 
   @Test

@@ -1,9 +1,9 @@
-package school.hei.linearP.hei;
+package school.hei.planner;
 
-import school.hei.linearP.hei.costly.AwardedCourse;
-import school.hei.linearP.hei.costly.Date;
-import school.hei.linearP.hei.costly.Room;
-import school.hei.linearP.hei.costly.Slot;
+import school.hei.planner.costly.AwardedCourse;
+import school.hei.planner.costly.Date;
+import school.hei.planner.costly.Room;
+import school.hei.planner.costly.Slot;
 
 import java.util.Set;
 import java.util.regex.Matcher;

@@ -1,17 +1,15 @@
-package school.hei.linearP.hei.test;
+package school.hei.planner;
 
 import org.junit.jupiter.api.Test;
-import school.hei.linearP.hei.HEITimetable;
-import school.hei.linearP.hei.Occupation;
-import school.hei.linearP.hei.constraint.HEITimetableConstraint;
-import school.hei.linearP.hei.constraint.Violation;
-import school.hei.linearP.hei.costly.AwardedCourse;
-import school.hei.linearP.hei.costly.Course;
-import school.hei.linearP.hei.costly.Date;
-import school.hei.linearP.hei.costly.Group;
-import school.hei.linearP.hei.costly.Room;
-import school.hei.linearP.hei.costly.Slot;
-import school.hei.linearP.hei.costly.Teacher;
+import school.hei.planner.constraint.HEITimetableConstraint;
+import school.hei.planner.constraint.Violation;
+import school.hei.planner.costly.AwardedCourse;
+import school.hei.planner.costly.Course;
+import school.hei.planner.costly.Date;
+import school.hei.planner.costly.Group;
+import school.hei.planner.costly.Room;
+import school.hei.planner.costly.Slot;
+import school.hei.planner.costly.Teacher;
 
 import java.time.Duration;
 import java.util.Set;
@@ -19,8 +17,6 @@ import java.util.Set;
 import static java.time.Month.JULY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static school.hei.linearP.hei.costly.Slot.f08t10;
-import static school.hei.linearP.hei.costly.Slot.f15t17;
 
 public class UnfeasibleHEITest {
 
@@ -75,8 +71,8 @@ public class UnfeasibleHEITest {
     var dates_all = new Date[]{date1};
     var dates_off = new Date[]{};
     Set<Occupation> occupations = Set.of(
-        new Occupation(ac_g1_th1_t1, date1, f08t10, ra),
-        new Occupation(ac_g1_prog2_t1, date1, f15t17, ra));
+        new Occupation(ac_g1_th1_t1, date1, Slot.f08t10, ra),
+        new Occupation(ac_g1_prog2_t1, date1, Slot.f15t17, ra));
     var timetable = new HEITimetable(awarded_courses, rooms, dates_all, dates_off, Slot.values(), occupations);
 
     var timetable_constraint = new HEITimetableConstraint(timetable);

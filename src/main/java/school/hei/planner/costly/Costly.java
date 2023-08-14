@@ -1,4 +1,4 @@
-package school.hei.linearP.hei.costly;
+package school.hei.planner.costly;
 
 import school.hei.linearE.instantiableE.BounderValue;
 

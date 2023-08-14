@@ -1,4 +1,4 @@
-package school.hei.linearP.hei.constraint;
+package school.hei.planner.constraint;
 
 import lombok.Getter;
 import school.hei.linearE.LinearE;
@@ -11,20 +11,20 @@ import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearP.MILP;
 import school.hei.linearP.constraint.Constraint;
-import school.hei.linearP.hei.HEITimetable;
-import school.hei.linearP.hei.Occupation;
-import school.hei.linearP.hei.constraint.sub.a_group_can_only_study_a_course_at_a_time;
-import school.hei.linearP.hei.constraint.sub.exclude_days_off;
-import school.hei.linearP.hei.constraint.sub.finish_course_hours_with_available_teachers;
-import school.hei.linearP.hei.constraint.sub.no_group_studies_all_day_long;
-import school.hei.linearP.hei.constraint.sub.no_more_than_one_ac_with_same_c_for_two_consecutive_days;
-import school.hei.linearP.hei.constraint.sub.only_one_slot_max_per_course_per_day;
-import school.hei.linearP.hei.costly.AwardedCourse;
-import school.hei.linearP.hei.costly.Date;
-import school.hei.linearP.hei.costly.Group;
-import school.hei.linearP.hei.costly.Room;
-import school.hei.linearP.hei.costly.Slot;
 import school.hei.linearP.solver.ORTools;
+import school.hei.planner.HEITimetable;
+import school.hei.planner.Occupation;
+import school.hei.planner.constraint.sub.a_group_can_only_study_a_course_at_a_time;
+import school.hei.planner.constraint.sub.exclude_days_off;
+import school.hei.planner.constraint.sub.finish_course_hours_with_available_teachers;
+import school.hei.planner.constraint.sub.no_group_studies_all_day_long;
+import school.hei.planner.constraint.sub.no_more_than_one_ac_with_same_c_for_two_consecutive_days;
+import school.hei.planner.constraint.sub.only_one_slot_max_per_course_per_day;
+import school.hei.planner.costly.AwardedCourse;
+import school.hei.planner.costly.Date;
+import school.hei.planner.costly.Group;
+import school.hei.planner.costly.Room;
+import school.hei.planner.costly.Slot;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -39,14 +39,14 @@ import static school.hei.linearP.constraint.Constraint.and;
 import static school.hei.linearP.constraint.Constraint.eq;
 import static school.hei.linearP.constraint.Constraint.geq;
 import static school.hei.linearP.constraint.Constraint.pic;
-import static school.hei.linearP.hei.Occupation.courseNameFromOccupation;
-import static school.hei.linearP.hei.Occupation.dateNameFromOccupation;
-import static school.hei.linearP.hei.Occupation.groupNameFromOccupation;
-import static school.hei.linearP.hei.Occupation.roomNameFromOccupation;
-import static school.hei.linearP.hei.Occupation.slotNameFromOccupation;
-import static school.hei.linearP.hei.Occupation.teacherNameFromOccupation;
-import static school.hei.linearP.hei.constraint.ThreeValuedLogic.true_3vl;
-import static school.hei.linearP.hei.constraint.ThreeValuedLogic.unknown_3vl;
+import static school.hei.planner.Occupation.courseNameFromOccupation;
+import static school.hei.planner.Occupation.dateNameFromOccupation;
+import static school.hei.planner.Occupation.groupNameFromOccupation;
+import static school.hei.planner.Occupation.roomNameFromOccupation;
+import static school.hei.planner.Occupation.slotNameFromOccupation;
+import static school.hei.planner.Occupation.teacherNameFromOccupation;
+import static school.hei.planner.constraint.ThreeValuedLogic.true_3vl;
+import static school.hei.planner.constraint.ThreeValuedLogic.unknown_3vl;
 
 public class HEITimetableConstraint implements ViolatorConstraint {
 

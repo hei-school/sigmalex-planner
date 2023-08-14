@@ -1,4 +1,4 @@
-package school.hei.linearP.hei.constraint.sub;
+package school.hei.planner.constraint.sub;
 
 import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.BounderQ;
@@ -6,12 +6,12 @@ import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Instantiator;
 import school.hei.linearE.instantiableE.SubstitutionContext;
 import school.hei.linearP.constraint.Constraint;
-import school.hei.linearP.hei.HEITimetable;
-import school.hei.linearP.hei.constraint.HEITimetableConstraint;
-import school.hei.linearP.hei.costly.AwardedCourse;
-import school.hei.linearP.hei.costly.Costly;
-import school.hei.linearP.hei.costly.Date;
-import school.hei.linearP.hei.costly.Slot;
+import school.hei.planner.HEITimetable;
+import school.hei.planner.constraint.HEITimetableConstraint;
+import school.hei.planner.costly.AwardedCourse;
+import school.hei.planner.costly.Costly;
+import school.hei.planner.costly.Date;
+import school.hei.planner.costly.Slot;
 
 import java.util.Set;
 
@@ -20,7 +20,6 @@ import static school.hei.linearE.LEFactory.sigma;
 import static school.hei.linearP.constraint.Constraint.and;
 import static school.hei.linearP.constraint.Constraint.eq;
 import static school.hei.linearP.constraint.Constraint.pic;
-import static school.hei.linearP.hei.constraint.sub.only_one_slot_max_per_course_per_day.TIME_VIOLATION_REMEDIES;
 
 public class finish_course_hours_with_available_teachers extends HEITimetableConstraint {
   public finish_course_hours_with_available_teachers(HEITimetable timetable) {
@@ -46,6 +45,6 @@ public class finish_course_hours_with_available_teachers extends HEITimetableCon
 
   @Override
   public Set<String> violationRemedySuggestions() {
-    return TIME_VIOLATION_REMEDIES;
+    return only_one_slot_max_per_course_per_day.TIME_VIOLATION_REMEDIES;
   }
 }

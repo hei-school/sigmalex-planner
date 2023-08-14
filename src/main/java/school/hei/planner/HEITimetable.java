@@ -1,14 +1,14 @@
-package school.hei.linearP.hei;
+package school.hei.planner;
 
 import lombok.Getter;
-import school.hei.linearP.hei.costly.AwardedCourse;
-import school.hei.linearP.hei.costly.Costly;
-import school.hei.linearP.hei.costly.Course;
-import school.hei.linearP.hei.costly.Date;
-import school.hei.linearP.hei.costly.Group;
-import school.hei.linearP.hei.costly.Room;
-import school.hei.linearP.hei.costly.Slot;
-import school.hei.linearP.hei.costly.Teacher;
+import school.hei.planner.costly.AwardedCourse;
+import school.hei.planner.costly.Costly;
+import school.hei.planner.costly.Course;
+import school.hei.planner.costly.Date;
+import school.hei.planner.costly.Group;
+import school.hei.planner.costly.Room;
+import school.hei.planner.costly.Slot;
+import school.hei.planner.costly.Teacher;
 
 import java.util.Arrays;
 import java.util.HashMap;

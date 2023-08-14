@@ -1,14 +1,14 @@
-package school.hei.linearP.hei.constraint.sub;
+package school.hei.planner.constraint.sub;
 
 import school.hei.linearE.LinearE;
 import school.hei.linearE.instantiableE.B;
 import school.hei.linearP.constraint.Constraint;
-import school.hei.linearP.hei.HEITimetable;
-import school.hei.linearP.hei.Occupation;
-import school.hei.linearP.hei.constraint.HEITimetableConstraint;
-import school.hei.linearP.hei.costly.AwardedCourse;
-import school.hei.linearP.hei.costly.Date;
-import school.hei.linearP.hei.costly.Slot;
+import school.hei.planner.HEITimetable;
+import school.hei.planner.Occupation;
+import school.hei.planner.constraint.HEITimetableConstraint;
+import school.hei.planner.costly.AwardedCourse;
+import school.hei.planner.costly.Date;
+import school.hei.planner.costly.Slot;
 
 import static school.hei.linearE.LEFactory.add;
 import static school.hei.linearE.LEFactory.mono;

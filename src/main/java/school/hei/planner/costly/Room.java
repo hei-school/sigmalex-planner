@@ -1,4 +1,4 @@
-package school.hei.linearP.hei.costly;
+package school.hei.planner.costly;
 
 public record Room(String name) implements Costly<Room> {
   @Override

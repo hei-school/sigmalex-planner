@@ -1,4 +1,4 @@
-package school.hei.linearP.hei.constraint;
+package school.hei.planner.constraint;
 
 import java.util.Set;
 

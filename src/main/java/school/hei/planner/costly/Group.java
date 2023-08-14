@@ -1,4 +1,4 @@
-package school.hei.linearP.hei.costly;
+package school.hei.planner.costly;
 
 public record Group(String name) implements Costly<Group> {
   @Override

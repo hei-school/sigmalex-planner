@@ -1,8 +1,8 @@
-package school.hei.linearP.hei.constraint.sub;
+package school.hei.planner.constraint.sub;
 
 import school.hei.linearP.constraint.Constraint;
-import school.hei.linearP.hei.HEITimetable;
-import school.hei.linearP.hei.constraint.HEITimetableConstraint;
+import school.hei.planner.HEITimetable;
+import school.hei.planner.constraint.HEITimetableConstraint;
 
 import java.util.Set;
 

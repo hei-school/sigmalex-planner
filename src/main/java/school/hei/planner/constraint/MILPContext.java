@@ -1,4 +1,4 @@
-package school.hei.linearP.hei.constraint;
+package school.hei.planner.constraint;
 
 import school.hei.linearE.LinearE;
 import school.hei.linearP.constraint.Constraint;
