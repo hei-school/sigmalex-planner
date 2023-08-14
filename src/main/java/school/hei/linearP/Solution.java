@@ -19,7 +19,7 @@ public record Solution(double optimalObjective, Map<Variable, Double> optimalVar
   public Map<String, Double> optimalNonNullVariablesForUnboundedName(String vName) {
     Map<String, Double> res = new HashMap<>();
     optimalVariables.forEach((v, c) -> {
-      if (vName.equals(v.name()) && c != 0) {
+      if ((vName.equals(v.name()) || v.boundedName().startsWith(vName + "[")) && c != 0) {
         res.put(v.boundedName(), c);
       }
     });

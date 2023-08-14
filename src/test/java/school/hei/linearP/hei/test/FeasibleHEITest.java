@@ -87,18 +87,23 @@ public class FeasibleHEITest {
 
     var solution_occupations = timetable_constraints.solve();
 
+    assertEquals(16, solution_occupations.size());
     assertEquals(
-        //TODO: binaries var are now fixed... which exhibit even more how the model needs adjustment
-        //  16 occupations expected instead of 13!
         """
+            occupation[ac:[c:sys2p3][g:g1][t:t3]][d:jul20][r:a][s:f08t10]
             occupation[ac:[c:prog2][g:g2][t:t2]][d:jul20][r:b][s:f08t10]
-            occupation[ac:[c:sem1][g:g1][t:t2]][d:jul20][r:a][s:f13t15]
-            occupation[ac:[c:th1][g:g1][t:t1]][d:jul23][r:b][s:f08t10]
-            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul23][r:a][s:f10t12]
+            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul20][r:b][s:f10t12]
+            occupation[ac:[c:sem1][g:g1][t:t2]][d:jul20][r:b][s:f13t15]
+            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul23][r:a][s:f08t10]
+            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul23][r:b][s:f08t10]
+            occupation[ac:[c:th1][g:g1][t:t1]][d:jul23][r:a][s:f10t12]
             occupation[ac:[c:th1][g:g2][t:t1]][d:jul23][r:b][s:f10t12]
-            occupation[ac:[c:sem1][g:g1][t:t2]][d:jul25][r:a][s:f08t10]
-            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul25][r:b][s:f08t10]
-            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul25][r:b][s:f10t12]
+            occupation[ac:[c:sem1][g:g1][t:t2]][d:jul23][r:a][s:f13t15]
+            occupation[ac:[c:prog2][g:g2][t:t2]][d:jul25][r:a][s:f08t10]
+            occupation[ac:[c:sem1][g:g1][t:t2]][d:jul25][r:b][s:f08t10]
+            occupation[ac:[c:th1][g:g2][t:t1]][d:jul25][r:a][s:f10t12]
+            occupation[ac:[c:th1][g:g1][t:t1]][d:jul25][r:b][s:f10t12]
+            occupation[ac:[c:prog2][g:g1][t:t2]][d:jul25][r:b][s:f13t15]
             occupation[ac:[c:sys2p3][g:g1][t:t3]][d:jul26][r:b][s:f08t10]
             occupation[ac:[c:sem1][g:g1][t:t2]][d:jul27][r:a][s:f08t10]""",
         toOrderedLines(solution_occupations));
