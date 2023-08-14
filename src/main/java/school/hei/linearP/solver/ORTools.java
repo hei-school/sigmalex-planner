@@ -1,6 +1,7 @@
 package school.hei.linearP.solver;
 
 import com.google.ortools.linearsolver.MPVariable;
+import school.hei.linearE.instantiableE.B;
 import school.hei.linearE.instantiableE.BounderQ;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.Variable;
@@ -29,7 +30,8 @@ public class ORTools extends Solver {
     lp.variables().forEach(v -> lpvToMpv.put(v, switch (v) {
       case Q q -> solver.makeNumVar(NEGATIVE_INFINITY, POSITIVE_INFINITY, q.boundedName());
       case Z z -> solver.makeIntVar(NEGATIVE_INFINITY, POSITIVE_INFINITY, z.boundedName());
-      case BounderQ bounderQ -> throw new UnsupportedOperationException();
+      case B b -> solver.makeBoolVar(b.boundedName());
+      case BounderQ<?> bounderQ -> throw new UnsupportedOperationException();
     }));
 
     var objective = solver.objective();
@@ -51,6 +53,10 @@ public class ORTools extends Solver {
       constraint.variables().forEach(v -> mpc.setCoefficient(lpvToMpv.get(v), constraint.weight(v)));
     });
 
+    var lpString = solver.exportModelAsLpFormat();
+    System.out.print(lpString.substring(
+        0,
+        lpString.indexOf("Minimize") > 0 ? lpString.indexOf("Minimize") : lpString.indexOf("Maximize")));
     int swigValue = solver.solve().swigValue();
     if (swigValue != 0) {
       return UNFEASIBLE;

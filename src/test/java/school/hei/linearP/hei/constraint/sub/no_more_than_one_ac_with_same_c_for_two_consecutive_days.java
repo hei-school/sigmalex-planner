@@ -1,7 +1,7 @@
 package school.hei.linearP.hei.constraint.sub;
 
 import school.hei.linearE.LinearE;
-import school.hei.linearE.instantiableE.Z;
+import school.hei.linearE.instantiableE.B;
 import school.hei.linearP.constraint.Constraint;
 import school.hei.linearP.hei.HEITimetable;
 import school.hei.linearP.hei.Occupation;
@@ -36,7 +36,7 @@ public class no_more_than_one_ac_with_same_c_for_two_consecutive_days extends HE
     LinearE res = mono(0);
     for (var s : Slot.values()) {
       for (var r : timetable.getRooms()) {
-        res = add(res, new Z(new Occupation(ac, d, s, r).toString()));
+        res = add(res, new B(new Occupation(ac, d, s, r).toString()));
       }
     }
     return res;

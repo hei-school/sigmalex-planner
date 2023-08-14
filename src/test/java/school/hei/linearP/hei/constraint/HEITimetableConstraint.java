@@ -1,13 +1,13 @@
 package school.hei.linearP.hei.constraint;
 
 import school.hei.linearE.LinearE;
+import school.hei.linearE.instantiableE.B;
 import school.hei.linearE.instantiableE.Bound;
 import school.hei.linearE.instantiableE.BounderQ;
 import school.hei.linearE.instantiableE.Constant;
 import school.hei.linearE.instantiableE.Instantiator;
 import school.hei.linearE.instantiableE.Q;
 import school.hei.linearE.instantiableE.SubstitutionContext;
-import school.hei.linearE.instantiableE.Z;
 import school.hei.linearP.MILP;
 import school.hei.linearP.constraint.Constraint;
 import school.hei.linearP.hei.HEITimetable;
@@ -37,7 +37,6 @@ import static school.hei.linearP.OptimizationType.min;
 import static school.hei.linearP.constraint.Constraint.and;
 import static school.hei.linearP.constraint.Constraint.eq;
 import static school.hei.linearP.constraint.Constraint.geq;
-import static school.hei.linearP.constraint.Constraint.leq;
 import static school.hei.linearP.constraint.Constraint.pic;
 import static school.hei.linearP.hei.Occupation.courseNameFromOccupation;
 import static school.hei.linearP.hei.Occupation.dateNameFromOccupation;
@@ -63,7 +62,9 @@ public class HEITimetableConstraint implements ViolatorConstraint {
   protected final Bound<Date> doffBound;
   protected final Bound<Slot> sBound;
   protected final Bound<Room> rBound;
-  protected final Z o_ac_d_s_r;
+  protected final B o_ac_d_s_r;
+  protected final Q cost_ac_d_s_r = new Q("cost", ac, d, s, r);
+
 
   public HEITimetableConstraint(HEITimetable timetable) {
     this.timetable = timetable;
@@ -73,22 +74,16 @@ public class HEITimetableConstraint implements ViolatorConstraint {
     this.doffBound = new Bound<>(d, timetable.getDatesOff());
     this.sBound = new Bound<>(s, timetable.getSlots());
     this.rBound = new Bound<>(r, timetable.getRooms());
-    this.o_ac_d_s_r = new Z(OCCUPATION_VAR_MAIN_NAME, ac, d, s, r);
+    this.o_ac_d_s_r = new B(OCCUPATION_VAR_MAIN_NAME, ac, d, s, r);
   }
 
   protected MILPContext prioritize_early_days_and_slots() {
-    var cost_d_s = new Q("cost", d, s);
-    var cost_ac_d_s_r = new Q("cost", ac, d, s, r);
-    var cost_domains = and(
-        pic(geq(cost_d_s, 0), dBound, sBound),
-        pic(geq(cost_ac_d_s_r, 0), dBound, sBound, rBound));
-
     var cost = sigma(cost_ac_d_s_r, acBound, dBound, sBound, rBound);
     var cost_d_s_unlinked_to_o = addie(multie(d, Slot.SLOTS_IN_A_DAY), s);
     var assign_costs =
         pic(eq(cost_ac_d_s_r, mult(cost_d_s_unlinked_to_o, o_ac_d_s_r)),
             acBound, dBound.wiq(Date::cost), sBound.wiq(Slot::cost), rBound);
-    return new MILPContext(cost, and(cost_domains, assign_costs));
+    return new MILPContext(cost, assign_costs);
   }
 
   public Set<Occupation> solve() {
@@ -96,7 +91,7 @@ public class HEITimetableConstraint implements ViolatorConstraint {
 
     Set<Occupation> res = new HashSet<>();
     var solution_byOccupationString =
-        solution.optimalBoundedVariablesForUnboundedName(OCCUPATION_VAR_MAIN_NAME);
+        solution.optimalNonNullVariablesForUnboundedName(OCCUPATION_VAR_MAIN_NAME);
     solution_byOccupationString.forEach((occupationString, value) -> {
       if (value != 1) {
         throw new RuntimeException(String.format(
@@ -168,12 +163,12 @@ public class HEITimetableConstraint implements ViolatorConstraint {
   }
 
   private Constraint domains() {
-    return pic(and(leq(0, o_ac_d_s_r), leq(o_ac_d_s_r, 1)), acBound, dBound, sBound, rBound);
+    return pic(geq(cost_ac_d_s_r, 0), acBound, dBound, sBound, rBound);
   }
 
   private Constraint already_provided_occupations() {
     return and(timetable.getOccupations().stream()
-        .map(occupation -> eq(new Z(occupation.toString()), 1))
+        .map(occupation -> eq(new B(occupation.toString()), 1))
         .toArray(Constraint[]::new));
   }
 

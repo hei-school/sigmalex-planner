@@ -16,7 +16,7 @@ public record Solution(double optimalObjective, Map<Variable, Double> optimalVar
     return isNaN(optimalObjective);
   }
 
-  public Map<String, Double> optimalBoundedVariablesForUnboundedName(String vName) {
+  public Map<String, Double> optimalNonNullVariablesForUnboundedName(String vName) {
     Map<String, Double> res = new HashMap<>();
     optimalVariables.forEach((v, c) -> {
       if (vName.equals(v.name()) && c != 0) {
