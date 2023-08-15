@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: school.hei.planner.web.AWSLambdaHandler::handleRequest
+      Runtime: java17
+      Architectures:
+        - x86_64
+      MemorySize: 10240
+      Timeout: 300
+      AutoPublishAlias: live
+      SnapStart:
+        ApplyOn: PublishedVersions
+      Tracing: Active
+      Environment:
+        Variables:
+          JAVA_TOOL_OPTIONS: --enable-preview
+      FunctionUrlConfig:
+        AuthType: NONE

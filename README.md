@@ -8,7 +8,7 @@ The name SigmaLex comes from the eponym Domain Specific Language that we use
 to express the different constraints as a mathematician would.
 That is, express constraints declaratively rather than imperatively.
 
-## Try it out
+## Try it out locally
 
 1. Clone the project
 2. Run
@@ -17,3 +17,8 @@ That is, express constraints declaratively rather than imperatively.
 3. Browse [http://localhost:8080/swagger-ui/](http://localhost:8080/swagger-ui/)
 4. Submit and solve [feasible-timetable1.json](feasible-timetable1.json)
 5. Fear the dark magic that provided the solution!
+
+## Try it out online
+
+1. `POST https://qsyiclagit4e5gk5gr7apcyuey0hwcww.lambda-url.eu-west-3.on.aws/timetable` with [feasible-timetable1.json](feasible-timetable1.json) as payload
+2. Fear the dark magic that provided the solution... in a serverless manner!
