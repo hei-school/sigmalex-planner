@@ -10,11 +10,8 @@ Resources:
       Runtime: java17
       Architectures:
         - x86_64
-      MemorySize: 10240
+      MemorySize: 2000
       Timeout: 300
-      AutoPublishAlias: live
-      SnapStart:
-        ApplyOn: PublishedVersions
       Tracing: Active
       Environment:
         Variables:

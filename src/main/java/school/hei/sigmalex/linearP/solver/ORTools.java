@@ -25,6 +25,9 @@ public class ORTools extends Solver {
   protected Solution solve(NormalizedMILP lp) {
     loadNativeLibraries();
     var solver = createSolver("SCIP"); // https://www.scipopt.org/
+    //TODO(concurrency): on a 1mn30s exec on AWS Lambda, only 15s is for solving the milp.
+    //  Note that 1m30 is obtained starting at 1vCPU (which is what we have for 2g mem)
+    //solver.setNumThreads(env.NUM_THREADS);
 
     var lpvToMpv = new HashMap<Variable, MPVariable>();
     lp.variables().forEach(v -> lpvToMpv.put(v, switch (v) {

@@ -20,5 +20,5 @@ That is, express constraints declaratively rather than imperatively.
 
 ## Try it out online
 
-1. `POST https://qsyiclagit4e5gk5gr7apcyuey0hwcww.lambda-url.eu-west-3.on.aws/timetable` with [feasible-timetable1.json](feasible-timetable1.json) as payload
+1. `POST https://65t7ecavfvc5l2uwxi2jdwvkji0aohxd.lambda-url.eu-west-3.on.aws/timetable` with [feasible-timetable1.json](feasible-timetable1.json) as payload
 2. Fear the dark magic that provided the solution... in a serverless manner!
