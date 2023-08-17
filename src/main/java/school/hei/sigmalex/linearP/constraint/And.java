@@ -1,37 +1,60 @@
 package school.hei.sigmalex.linearP.constraint;
 
+import lombok.Getter;
+import lombok.SneakyThrows;
+import school.hei.exception.NotImplemented;
+import school.hei.sigmalex.concurrency.Workers;
 import school.hei.sigmalex.linearE.instantiableE.SubstitutionContext;
+import school.hei.sigmalex.linearE.instantiableE.Variable;
 import school.hei.sigmalex.linearP.constraint.polytope.DisjunctivePolytopes;
 import school.hei.sigmalex.linearP.constraint.polytope.Polytope;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toSet;
 import static school.hei.sigmalex.linearP.constraint.False.FALSE;
 import static school.hei.sigmalex.linearP.constraint.True.TRUE;
 
-public final class And extends BiConstraint {
+public final class And extends Constraint {
 
-  And(Constraint constraint1, Constraint constraint2) {
-    super(constraint1, constraint2);
+  @Getter
+  private final List<Constraint> constraints;
+
+  public And(List<Constraint> constraints) {
+    this.constraints = sanitize(constraints);
   }
 
-  @Override
-  public DisjunctivePolytopes normalize(SubstitutionContext substitutionContext) {
-    if (constraint1.equals(TRUE)) {
-      return constraint2.normalize(substitutionContext);
+  private static DisjunctivePolytopes distributeEachOther(Set<DisjunctivePolytopes> normalizedList) {
+    if (normalizedList.size() == 1) {
+      return normalizedList.stream().toList().get(0);
     }
-    if (constraint2.equals(TRUE)) {
-      return constraint1.normalize(substitutionContext);
+
+    DisjunctivePolytopes res = DisjunctivePolytopes.of();
+    var normalizedArray = normalizedList.toArray(DisjunctivePolytopes[]::new);
+    for (int i = 0; i < normalizedArray.length; i++) {
+      for (int j = i + 1; j < normalizedArray.length; j++) {
+        res = and(res, and(normalizedArray[i], normalizedArray[j]));
+      }
     }
-    if (constraint1.equals(FALSE) || constraint2.equals(FALSE)) {
-      return FALSE.normalize();
+    return res;
+  }
+
+  private static DisjunctivePolytopes and(DisjunctivePolytopes normalized1, DisjunctivePolytopes normalized2) {
+    if (normalized1.isEmpty()) {
+      return normalized2;
+    }
+    if (normalized2.isEmpty()) {
+      return normalized1;
     }
 
     DisjunctivePolytopes res = DisjunctivePolytopes.of();
     // Illustration: ({a}|{b}) & ({c}|{d}) is normalized to: {a&c} | {a&d} | {b&c} | {b&d}
-    for (Polytope polytopeFromConstraint1 : constraint1.normalize(substitutionContext).polytopes()) {
-      for (Polytope polytopeConstraint2 : constraint2.normalize(substitutionContext).polytopes()) {
+    for (var polytopeFromConstraint1 : normalized1.polytopes()) {
+      for (var polytopeConstraint2 : normalized2.polytopes()) {
         res.add(new Polytope(Stream.concat(
                 polytopeFromConstraint1.constraints().stream(),
                 polytopeConstraint2.constraints().stream())
@@ -39,5 +62,85 @@ public final class And extends BiConstraint {
       }
     }
     return res;
+  }
+
+  private static Polytope and(Set<Polytope> polytopes) {
+    var constraints = new ArrayList<NormalizedConstraint>();
+    for (var polytope : polytopes) {
+      constraints.addAll(polytope.constraints());
+    }
+    return Polytope.of(constraints.toArray(NormalizedConstraint[]::new));
+  }
+
+  @SneakyThrows
+  private static Optional<Set<Polytope>> flatten(
+      List<Constraint> constraints, SubstitutionContext substitutionContext) {
+    if (constraints.isEmpty()) {
+      return Optional.empty();
+    }
+    if (constraints.size() == 1) {
+      var constraint = constraints.get(0);
+      return switch (constraint) {
+        case Or or -> Optional.empty();
+        case Not not -> Optional.empty(); // can be optimized, but empty is sound
+
+        case False aFalse -> throw new NotImplemented();
+        case NormalizedConstraint normalizedConstraint -> flatten(constraint, substitutionContext);
+        case True aTrue -> throw new NotImplemented();
+        case Le le -> flatten(constraint, substitutionContext);
+        case Leq leq -> flatten(constraint, substitutionContext);
+
+        case PiConstraint piConstraint -> throw new NotImplemented();
+        case And and -> flatten(and.constraints, substitutionContext);
+      };
+    }
+
+    return Workers.submit(() -> constraints.parallelStream()
+            .map(constraint -> flatten(List.of(constraint), substitutionContext))
+            .reduce(
+                Optional.of(Set.of()),
+                (acc, current) -> acc.isEmpty() || current.isEmpty()
+                    ? Optional.empty()
+                    : Optional.of(Stream.concat(acc.get().stream(), current.get().stream()).collect(toSet()))))
+        .get();
+  }
+
+  private static Optional<Set<Polytope>> flatten(Constraint constraint, SubstitutionContext substitutionContext) {
+    var polytopes = constraint.normalize(substitutionContext).polytopes().stream().toList();
+    if (polytopes.size() != 1) {
+      throw new RuntimeException("Unexpected polytopes length: " + polytopes);
+    }
+    return Optional.of(Set.of(polytopes.get(0)));
+  }
+
+  private List<Constraint> sanitize(List<Constraint> constraints) {
+    if (constraints.size() == 0) {
+      return List.of(TRUE);
+    }
+    if (constraints.contains(FALSE)) {
+      return List.of(FALSE);
+    }
+
+    var res = new ArrayList<>(constraints);
+    res.remove(TRUE);
+    return res;
+  }
+
+  @Override
+  public DisjunctivePolytopes normalize(SubstitutionContext substitutionContext) {
+    Optional<Set<Polytope>> flattenedAndOpt = flatten(constraints, substitutionContext);
+
+    return flattenedAndOpt.isEmpty()
+        ? distributeEachOther(constraints.stream()
+        .map(constraint -> constraint.normalize(substitutionContext))
+        .collect(toSet()))
+        : DisjunctivePolytopes.of(and(flattenedAndOpt.get()));
+  }
+
+  @Override
+  public Set<Variable> variables() {
+    return constraints.stream()
+        .flatMap(constraint -> constraint.variables().stream())
+        .collect(toSet());
   }
 }

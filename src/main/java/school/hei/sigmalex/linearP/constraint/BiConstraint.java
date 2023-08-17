@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toSet;
 
-public abstract sealed class BiConstraint extends Constraint permits And, Or {
+public abstract sealed class BiConstraint extends Constraint permits Or {
 
   protected final Constraint constraint1;
   protected final Constraint constraint2;

@@ -38,4 +38,8 @@ public record DisjunctivePolytopes(Set<Polytope> polytopes) {
         .map(Polytope::simplify)
         .collect(toSet()));
   }
+
+  public boolean isEmpty() {
+    return polytopes.isEmpty();
+  }
 }
