@@ -7,14 +7,18 @@ import school.hei.sigmalex.linearE.instantiableE.SubstitutionContext;
 import school.hei.sigmalex.linearE.instantiableE.Variable;
 import school.hei.sigmalex.linearP.constraint.polytope.DisjunctivePolytopes;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 
 import static school.hei.sigmalex.linearE.LEFactory.mono;
+import static school.hei.sigmalex.linearP.constraint.False.FALSE;
 import static school.hei.sigmalex.linearP.constraint.Le.DEFAULT_EPSILON;
+import static school.hei.sigmalex.linearP.constraint.True.TRUE;
 
 public sealed abstract class Constraint
-    permits BiConstraint, BiLeConstraint, False, NormalizedConstraint, Not, PiConstraint, True {
+    permits BiConstraint, And, BiLeConstraint, False, NormalizedConstraint, Not, PiConstraint, True {
 
   public static Not not(Constraint constraint) {
     return new Not(constraint);
@@ -94,18 +98,14 @@ public sealed abstract class Constraint
   }
 
   public static Constraint and(Constraint... constraints) {
-    if (constraints.length == 0) {
-      return True.TRUE;
-    }
-
-    Constraint nested = constraints[0];
-    for (int i = 1; i < constraints.length; i++) {
-      nested = new And(nested, constraints[i]);
-    }
-    return nested;
+    return new And(Arrays.stream(constraints).toList());
   }
 
   public static Constraint or(Constraint... constraints) {
+    if (constraints.length == 0) {
+      return FALSE;
+    }
+
     Constraint nested = constraints[0];
     for (int i = 1; i < constraints.length; i++) {
       nested = new Or(nested, constraints[i]);
@@ -117,15 +117,15 @@ public sealed abstract class Constraint
     var optSubCtx = Bound.toBSubstitutionContexts(bounds);
     return optSubCtx
         .map(subCtx -> pic(constraint, subCtx))
-        .orElse(True.TRUE);
+        .orElse(TRUE);
   }
 
   private static Constraint pic(Constraint constraint, Set<SubstitutionContext> substitutionContexts) {
-    Constraint res = True.TRUE;
+    var and = new ArrayList<Constraint>();
     for (var substitutionContext : substitutionContexts) {
-      res = new And(res, normalizedSubstitution(constraint, substitutionContext));
+      and.add(normalizedSubstitution(constraint, substitutionContext));
     }
-    return res;
+    return new And(and);
   }
 
   private static Constraint normalizedSubstitution(
@@ -137,7 +137,7 @@ public sealed abstract class Constraint
     return normalized.toDnf();
   }
 
-  public abstract DisjunctivePolytopes normalize(SubstitutionContext substitutionContext); // disjunction is due to Or
+  public abstract DisjunctivePolytopes/*disjunction is due to Or*/ normalize(SubstitutionContext substitutionContext);
 
   public DisjunctivePolytopes normalize() {
     return normalize(new SubstitutionContext(new HashMap<>()));
