@@ -32,4 +32,8 @@ public record SubstitutionContext(Map<Bounder<?>, BounderValue<?>> substitutions
   public boolean containsKey(Bounder<?> bounder) {
     return substitutions.containsKey(bounder);
   }
+
+  public boolean isEmpty() {
+    return substitutions().isEmpty();
+  }
 }

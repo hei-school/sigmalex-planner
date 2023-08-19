@@ -1,24 +1,45 @@
 package school.hei.sigmalex.linearP.constraint;
 
+import lombok.Value;
+import school.hei.sigmalex.linearE.instantiableE.Bounder;
 import school.hei.sigmalex.linearE.instantiableE.SubstitutionContext;
 import school.hei.sigmalex.linearE.instantiableE.Variable;
 import school.hei.sigmalex.linearP.constraint.polytope.DisjunctivePolytopes;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
-public final class PiConstraint extends Constraint {
+@Value
+public class PiConstraint extends Constraint {
 
-  private final Constraint constraint;
-  private final SubstitutionContext substitutionContext;
+  Constraint constraint;
+  Set<SubstitutionContext> substitutionContexts;
 
-  public PiConstraint(Constraint constraint, SubstitutionContext substitutionContext) {
-    this.constraint = constraint;
-    this.substitutionContext = substitutionContext;
+  private static DisjunctivePolytopes normalize(Constraint constraint, Set<SubstitutionContext> substitutionContexts) {
+    var and = new ArrayList<Constraint>();
+    for (var substitutionContext : substitutionContexts) {
+      and.add(normalizedSubstitution(constraint, substitutionContext));
+    }
+    return new And(and).normalize();
+  }
+
+  private static Constraint normalizedSubstitution(
+      Constraint constraint, SubstitutionContext substitutionContext) {
+    var normalized = constraint.normalize(substitutionContext);
+    for (Bounder bounder : substitutionContext.substitutions().keySet()) {
+      normalized = normalized.substitute(bounder, substitutionContext.get(bounder), substitutionContext);
+    }
+    return normalized.toDnf();
   }
 
   @Override
   public DisjunctivePolytopes normalize(SubstitutionContext substitutionContext) {
-    return constraint.normalize(substitutionContext.add(this.substitutionContext));
+    var enrichedSubstitutionContexts = new HashSet<>(substitutionContexts);
+    if (!substitutionContext.isEmpty()) {
+      enrichedSubstitutionContexts.add(substitutionContext);
+    }
+    return normalize(constraint, enrichedSubstitutionContexts);
   }
 
   @Override
