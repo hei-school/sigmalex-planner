@@ -13,10 +13,10 @@ public abstract class Solver {
   private int solvedMilp = 0;
   private int printedSolvedMilp = 0;
 
-  public Solution solve(MILP MILP) {
+  public Solution solve(MILP milp) {
     //TODO(concurrency): on a 1mn30s exec, nearly 1mn is for sigmalex (constraint factory + normify)
     System.out.print("Disjunctive polytopes normalization... ");
-    var normalizedLp = MILP.normify();
+    var normalizedLp = milp.normify();
     System.out.println("done.");
 
     totalMilp = normalizedLp.size();

@@ -1,22 +1,23 @@
 package school.hei.sigmalex.linearP.constraint;
 
+import lombok.extern.slf4j.Slf4j;
 import school.hei.sigmalex.linearE.LinearE;
 import school.hei.sigmalex.linearE.instantiableE.Bound;
-import school.hei.sigmalex.linearE.instantiableE.Bounder;
 import school.hei.sigmalex.linearE.instantiableE.SubstitutionContext;
 import school.hei.sigmalex.linearE.instantiableE.Variable;
 import school.hei.sigmalex.linearP.constraint.polytope.DisjunctivePolytopes;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 
 import static school.hei.sigmalex.linearE.LEFactory.mono;
+import static school.hei.sigmalex.linearE.instantiableE.Bound.toBSubstitutionContexts;
 import static school.hei.sigmalex.linearP.constraint.False.FALSE;
 import static school.hei.sigmalex.linearP.constraint.Le.DEFAULT_EPSILON;
 import static school.hei.sigmalex.linearP.constraint.True.TRUE;
 
+@Slf4j
 public sealed abstract class Constraint
     permits BiConstraint, And, BiLeConstraint, False, NormalizedConstraint, Not, PiConstraint, True {
 
@@ -114,27 +115,10 @@ public sealed abstract class Constraint
   }
 
   public static Constraint pic(Constraint constraint, Bound... bounds) {
-    var optSubCtx = Bound.toBSubstitutionContexts(bounds);
+    var optSubCtx = toBSubstitutionContexts(bounds);
     return optSubCtx
-        .map(subCtx -> pic(constraint, subCtx))
+        .map(subCtx -> (Constraint) new PiConstraint(constraint, subCtx))
         .orElse(TRUE);
-  }
-
-  private static Constraint pic(Constraint constraint, Set<SubstitutionContext> substitutionContexts) {
-    var and = new ArrayList<Constraint>();
-    for (var substitutionContext : substitutionContexts) {
-      and.add(normalizedSubstitution(constraint, substitutionContext));
-    }
-    return new And(and);
-  }
-
-  private static Constraint normalizedSubstitution(
-      Constraint constraint, SubstitutionContext substitutionContext) {
-    var normalized = constraint.normalize(substitutionContext);
-    for (Bounder bounder : substitutionContext.substitutions().keySet()) {
-      normalized = normalized.substitute(bounder, substitutionContext.get(bounder), substitutionContext);
-    }
-    return normalized.toDnf();
   }
 
   public abstract DisjunctivePolytopes/*disjunction is due to Or*/ normalize(SubstitutionContext substitutionContext);

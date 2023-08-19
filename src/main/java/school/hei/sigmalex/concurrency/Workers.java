@@ -13,8 +13,8 @@ import static java.util.concurrent.Executors.newWorkStealingPool;
 public class Workers {
 
   private static final ExecutorService THREAD_POOL = newThreadPool();
-  private static int totalSubmittedTasks = 0;
   private final static int LOG_EVERY_MULTIPLE_OF = 250;
+  private static int totalSubmittedTasks = 0;
 
   private static ExecutorService newThreadPool() {
     return newWorkStealingPool(10);

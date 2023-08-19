@@ -90,7 +90,7 @@ public final class And extends Constraint {
         case Le le -> flatten(constraint, substitutionContext);
         case Leq leq -> flatten(constraint, substitutionContext);
 
-        case PiConstraint piConstraint -> throw new NotImplemented();
+        case PiConstraint piConstraint -> flatten(constraint, substitutionContext);
         case And and -> flatten(and.constraints, substitutionContext);
       };
     }
@@ -108,7 +108,7 @@ public final class And extends Constraint {
   private static Optional<Set<Polytope>> flatten(Constraint constraint, SubstitutionContext substitutionContext) {
     var polytopes = constraint.normalize(substitutionContext).polytopes().stream().toList();
     if (polytopes.size() != 1) {
-      throw new RuntimeException("Unexpected polytopes length: " + polytopes);
+      return Optional.empty();
     }
     return Optional.of(Set.of(polytopes.get(0)));
   }
