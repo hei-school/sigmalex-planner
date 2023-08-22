@@ -6,6 +6,7 @@ import school.hei.sigmalex.linearE.instantiableE.InstantiableE;
 import school.hei.sigmalex.linearE.instantiableE.Variable;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class LEFactory {
@@ -28,23 +29,23 @@ public class LEFactory {
 
 
   public static Add add(LinearE e1, LinearE e2) {
-    return new Add(e1, e2);
+    return new Add(List.of(e1, e2));
   }
 
   public static Add add(Variable v1, Variable v2) {
-    return new Add(mono(v1), mono(v2));
+    return add(mono(v1), mono(v2));
   }
 
   public static Add add(Variable v1, LinearE le2) {
-    return new Add(mono(v1), le2);
+    return add(mono(v1), le2);
   }
 
   public static Add add(LinearE le1, Variable v2) {
-    return new Add(le1, mono(v2));
+    return add(le1, mono(v2));
   }
 
   public static Add add(LinearE le1, double c) {
-    return new Add(le1, mono(c));
+    return add(le1, mono(c));
   }
 
   public static Mult mult(double c, LinearE le) {
@@ -64,7 +65,7 @@ public class LEFactory {
   }
 
   public static Add sub(LinearE le1, LinearE le2) {
-    return new Add(le1, new Mult(new Constant(-1), le2));
+    return add(le1, new Mult(new Constant(-1), le2));
   }
 
   public static Add sub(double c, LinearE le) {
@@ -80,9 +81,7 @@ public class LEFactory {
   }
 
   public static LinearE vadd(LinearE... leArray) {
-    return Arrays.stream(leArray)
-        .reduce(Add::new)
-        .orElse(mono(0.));
+    return new Add(Arrays.stream(leArray).toList());
   }
 
   public static LinearE vadd(Variable... variables) {

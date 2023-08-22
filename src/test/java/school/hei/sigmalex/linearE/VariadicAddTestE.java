@@ -19,8 +19,8 @@ class VariadicAddTestE {
         new NormalizedLE(4),
         vadd(mono(1), mono(3)).normify());
     assertEquals(
-        new NormalizedLE(2.6),
-        vadd(mono(0.3), mono(1), mono(1.3)).normify());
+        new NormalizedLE(2.5),
+        vadd(mono(0.2), mono(1), mono(1.3)).normify());
   }
 
   @Test
