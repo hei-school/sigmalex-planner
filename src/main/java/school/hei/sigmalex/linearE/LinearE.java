@@ -12,6 +12,5 @@ public sealed interface LinearE permits Add, Mono, Mult, NormalizedLE, Sigma {
     return normalize(SubstitutionContext.of()).simplify();
   }
 
-
   Set<Variable> variables();
 }

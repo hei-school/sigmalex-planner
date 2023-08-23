@@ -14,6 +14,7 @@ import school.hei.sigmalex.linearE.instantiableE.exception.ArithmeticConversionE
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -115,10 +116,9 @@ class SigmaTest {
         sigma(hours_weekend_le, weekend_bound).normify());
 
     var add_day_to_z = add(mono(weekend), hours_weekend_le);
-    var e = assertThrows(
-        RuntimeException.class,
+    assertThrows(
+        ExecutionException.class,
         () -> sigma(add_day_to_z, weekend_bound).normify());
-    assertEquals(ArithmeticConversionException.class, e.getCause().getClass());
   }
 
   @Test
