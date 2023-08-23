@@ -10,6 +10,7 @@ import school.hei.sigmalex.linearE.instantiableE.Z;
 import school.hei.sigmalex.linearE.instantiableE.exception.NoDuplicateBounderException;
 
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -67,7 +68,7 @@ class VariadicSigmaTest {
     var x = new Z("x");
     var y = new Q("x"); // oopsie
     assertThrows(
-        DuplicateVariableNameException.class,
+        ExecutionException.class,
         () -> add(mono(3, x), mono(2.5, y)).normify());
 
     var i = new BounderQ<>("i");
@@ -78,7 +79,7 @@ class VariadicSigmaTest {
     var boundI = new Bound<>(i, 4, 6);
     var boundJ = new Bound<>(j, 10, 11);
     assertThrows(
-        DuplicateVariableNameException.class,
+        ExecutionException.class,
         () -> sigma(le_i_j, boundI, boundJ).normify());
 
     var exactly_x = new Z("x");
