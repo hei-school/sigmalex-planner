@@ -46,10 +46,9 @@ public class CartesianProduct implements BiFunction<Set<?>, Set<?>, Set<?>> {
   }
 
   private static Object flattenCp(Object cp) {
-    if (!(cp instanceof List)) {
+    if (!(cp instanceof List cpAsList)) {
       return cp;
     }
-    var cpAsList = (List) cp;
     if (!(cpAsList.get(0) instanceof List)) {
       return cp;
     }

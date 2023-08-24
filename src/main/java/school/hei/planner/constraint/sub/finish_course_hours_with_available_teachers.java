@@ -40,7 +40,7 @@ public class finish_course_hours_with_available_teachers extends TimetableConstr
     return pic(and(
             eq(ac, mult(sh, sigma(o_ac_d_s_r, dBound, sBound, rBound))),
             eq(ac, mult(sh, sigma(mult(ta, o_ac_d_s_r), dBound, sBound, rBound, taBound.wi(taInstantiator))))),
-        acBound.wiq(AwardedCourse::durationInHours));
+        acBound.wiq(ac -> ac.durationInHours() + 0.));
   }
 
   @Override

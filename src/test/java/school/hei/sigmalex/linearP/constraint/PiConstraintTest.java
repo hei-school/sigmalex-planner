@@ -180,7 +180,7 @@ class PiConstraintTest {
     var sh = Slot.DURATION.toHours();
     var finish_courses_hours_with_teacher =
         pic(leq(ac, mult(sh, sigma(o_ac_d, dBound))),
-            acBound.wiq(AwardedCourse::durationInHours));
+            acBound.wiq(lambda_ac -> lambda_ac.durationInHours() + 0.));
 
     assertEquals(
         DisjunctivePolytopes.of(Polytope.of(

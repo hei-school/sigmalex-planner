@@ -43,7 +43,7 @@ public class UnfeasibleTimetableTest {
         new Date(2023, JULY, 21),
         new Date(2023, JULY, 22)};
     Set<Occupation> occupations = Set.of();
-    var timetable = new Timetable(awarded_courses, rooms, dates_all, dates_off, Slot.values(), occupations);
+    var timetable = new Timetable("id", awarded_courses, rooms, dates_all, dates_off, Slot.values(), occupations);
 
     var timetable_constraint = new TimetableConstraint(timetable);
     var solution_occupations = timetable_constraint.solve();
@@ -73,7 +73,7 @@ public class UnfeasibleTimetableTest {
     Set<Occupation> occupations = Set.of(
         new Occupation(ac_g1_th1_t1, date1, Slot.f08t10, ra),
         new Occupation(ac_g1_prog2_t1, date1, Slot.f15t17, ra));
-    var timetable = new Timetable(awarded_courses, rooms, dates_all, dates_off, Slot.values(), occupations);
+    var timetable = new Timetable("id", awarded_courses, rooms, dates_all, dates_off, Slot.values(), occupations);
 
     var timetable_constraint = new TimetableConstraint(timetable);
     var solution_occupations = timetable_constraint.solve();

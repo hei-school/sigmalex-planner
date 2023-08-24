@@ -21,40 +21,39 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
 
 public class Timetable {
+
+  @Getter
+  private final Id id;
   @Getter
   private final AwardedCourse[] awardedCourses;
   private final Map<String, Course> coursesByName;
   private final Map<String, Group> groupsByName;
   private final Map<String, Teacher> teachersByName;
-
-
   @Getter
   private final Room[] rooms;
   private final Map<String, Room> roomsByName;
-
   @Getter
   private final Date[] datesAll;
   private final Map<String, Date> datesAllByName;
-
   @Getter
   private final Date[] datesOff;
-
   @Getter
   private final Slot[] slots;
   private final Map<String, Slot> slotsByName;
-
-
   @Getter
   private final Set<Occupation> occupations;
 
+
   @JsonCreator
   public Timetable(
+      String id,
       AwardedCourse[] awardedCourses,
       Room[] rooms,
       Date[] datesAll,
       Date[] datesOff,
       Slot[] slots,
       Set<Occupation> occupations) {
+    this.id = new Id(id);
     this.awardedCourses = awardedCourses;
     this.rooms = rooms;
     this.datesAll = datesAll;
@@ -70,8 +69,31 @@ public class Timetable {
     this.slotsByName = noDuplicateName(Arrays.stream(slots).collect(groupingBy(Slot::toString)));
   }
 
+  public Timetable(
+      Id id,
+      AwardedCourse[] awardedCourses,
+      Room[] rooms,
+      Date[] datesAll,
+      Date[] datesOff,
+      Slot[] slots,
+      Set<Occupation> occupations) {
+    this(id.value, awardedCourses, rooms, datesAll, datesOff, slots, occupations);
+  }
+
+  public Timetable withId(String id) {
+    return new Timetable(id, awardedCourses, rooms, datesAll, datesOff, slots, occupations);
+  }
+
   public Timetable withOccupations(Set<Occupation> occupations) {
-    return new Timetable(awardedCourses, rooms, datesAll, datesOff, slots, occupations);
+    return new Timetable(id, awardedCourses, rooms, datesAll, datesOff, slots, occupations);
+  }
+
+  public Timetable withDatesAll(Date[] datesAll) {
+    return new Timetable(id, awardedCourses, rooms, datesAll, datesOff, slots, occupations);
+  }
+
+  public Timetable withAwardedCourses(AwardedCourse[] awardedCourses) {
+    return new Timetable(id, awardedCourses, rooms, datesAll, datesOff, slots, occupations);
   }
 
   public Set<Course> courses() {
@@ -102,7 +124,6 @@ public class Timetable {
     return coursesByName.get(name);
   }
 
-
   public Group groupByName(String name) {
     return groupsByName.get(name);
   }
@@ -115,12 +136,18 @@ public class Timetable {
     return datesAllByName.get(name);
   }
 
-
   public Slot slotByName(String name) {
     return slotsByName.get(name);
   }
 
   public Room roomByName(String name) {
     return roomsByName.get(name);
+  }
+
+  public record Id(String value) {
+    @Override
+    public String toString() {
+      return value;
+    }
   }
 }
