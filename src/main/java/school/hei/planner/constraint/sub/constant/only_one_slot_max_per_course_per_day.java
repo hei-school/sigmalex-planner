@@ -1,4 +1,4 @@
-package school.hei.planner.constraint.sub;
+package school.hei.planner.constraint.sub.constant;
 
 import school.hei.planner.Timetable;
 import school.hei.planner.constraint.TimetableConstraint;
@@ -17,8 +17,8 @@ public class only_one_slot_max_per_course_per_day extends TimetableConstraint {
       "Increase teacher availabilities",
       "Decrease course hours");
 
-  public only_one_slot_max_per_course_per_day(Timetable timetable) {
-    super(timetable);
+  public only_one_slot_max_per_course_per_day(Timetable timetable, boolean withExpConstraints) {
+    super(timetable, withExpConstraints);
   }
 
   @Override

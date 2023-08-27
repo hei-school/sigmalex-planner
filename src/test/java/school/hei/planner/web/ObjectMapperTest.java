@@ -8,6 +8,7 @@ import school.hei.planner.costly.AwardedCourse;
 import school.hei.planner.costly.Course;
 import school.hei.planner.costly.Date;
 import school.hei.planner.costly.Group;
+import school.hei.planner.costly.Location;
 import school.hei.planner.costly.Room;
 import school.hei.planner.costly.Slot;
 import school.hei.planner.costly.Teacher;
@@ -35,12 +36,13 @@ class ObjectMapperTest {
     var awarded_courses = new AwardedCourse[]{ac_g1_th1_t1, ac_g1_prog2_t1};
     var ra = new Room("a");
     var rooms = new Room[]{ra};
+    var locations = new Location[]{new Location("l1", Set.of(ra))};
     var dates_all = new Date[]{date1};
     var dates_off = new Date[]{};
     Set<Occupation> occupations = Set.of(
         new Occupation(ac_g1_th1_t1, date1, Slot.f08t10, ra),
         new Occupation(ac_g1_prog2_t1, date1, Slot.f15t17, ra));
-    var timetable = new Timetable("id", awarded_courses, rooms, dates_all, dates_off, Slot.values(), occupations);
+    var timetable = new Timetable("id", awarded_courses, rooms, locations, dates_all, dates_off, Slot.values(), occupations);
 
     var om = new ObjectMapper();
     var serialized = om.writeValueAsString(timetable);

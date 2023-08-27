@@ -22,6 +22,14 @@ public record Bound<Costly>(Bounder<Costly> bounder, BounderValue<?>... values) 
     this(k, IntStream.range(kMin, kMax + 1).mapToObj(Constant::new).toArray(Constant[]::new));
   }
 
+  public static <Costly> Bound<Costly> bound(Bounder<Costly> bounder, BounderValue<?>... values) {
+    return new Bound<>(bounder, values);
+  }
+
+  public static <Costly> Bound<Costly> bound(Bounder<Costly> bounder, Set<? extends BounderValue<?>> values) {
+    return new Bound<>(bounder, values.toArray(BounderValue[]::new));
+  }
+
   public static Optional<Set<SubstitutionContext>> toBSubstitutionContexts(Bound<?>... bounds) {
     for (var bound : bounds) {
       if (bound.values.length == 0) {

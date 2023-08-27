@@ -1,14 +1,16 @@
 package school.hei.planner.constraint;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import school.hei.planner.Occupation;
 import school.hei.planner.Timetable;
-import school.hei.planner.constraint.sub.a_group_can_only_study_a_course_at_a_time;
-import school.hei.planner.constraint.sub.exclude_days_off;
-import school.hei.planner.constraint.sub.finish_course_hours_with_available_teachers;
-import school.hei.planner.constraint.sub.no_group_studies_all_day_long;
-import school.hei.planner.constraint.sub.no_more_than_one_ac_with_same_c_for_two_consecutive_days;
-import school.hei.planner.constraint.sub.only_one_slot_max_per_course_per_day;
+import school.hei.planner.constraint.sub.constant.a_group_can_only_study_a_course_at_a_time;
+import school.hei.planner.constraint.sub.constant.exclude_days_off;
+import school.hei.planner.constraint.sub.constant.finish_course_hours_with_available_teachers;
+import school.hei.planner.constraint.sub.constant.no_group_studies_all_day_long;
+import school.hei.planner.constraint.sub.constant.no_more_than_one_ac_with_same_c_for_two_consecutive_days;
+import school.hei.planner.constraint.sub.constant.only_one_slot_max_per_course_per_day;
+import school.hei.planner.constraint.sub.exp.a_teacher_cannot_move_location_half_a_day;
 import school.hei.planner.costly.AwardedCourse;
 import school.hei.planner.costly.Date;
 import school.hei.planner.costly.Group;
@@ -48,6 +50,7 @@ import static school.hei.sigmalex.linearP.constraint.Constraint.eq;
 import static school.hei.sigmalex.linearP.constraint.Constraint.geq;
 import static school.hei.sigmalex.linearP.constraint.Constraint.pic;
 
+@Slf4j
 public class TimetableConstraint implements ViolatorConstraint {
 
   private static final String OCCUPATION_VAR_MAIN_NAME = "occupation";
@@ -67,8 +70,9 @@ public class TimetableConstraint implements ViolatorConstraint {
   protected final B o_ac_d_s_r;
   protected final Q cost_ac_d_s_r = new Q("cost", ac, d, s, r);
 
+  private final boolean withExpConstraints;
 
-  public TimetableConstraint(Timetable timetable) {
+  public TimetableConstraint(Timetable timetable, boolean withExpConstraints) {
     this.timetable = timetable;
     this.acBound = new Bound<>(ac, timetable.getAwardedCourses());
     this.gBound = new Bound<>(g, timetable.groups().toArray(Group[]::new));
@@ -77,6 +81,11 @@ public class TimetableConstraint implements ViolatorConstraint {
     this.sBound = new Bound<>(s, timetable.getSlots());
     this.rBound = new Bound<>(r, timetable.getRooms());
     this.o_ac_d_s_r = new B(OCCUPATION_VAR_MAIN_NAME, ac, d, s, r);
+    this.withExpConstraints = withExpConstraints;
+  }
+
+  public TimetableConstraint(Timetable timetable) {
+    this(timetable, false);
   }
 
   public static Occupation occupationFrom(String occupationString, Timetable timetable) {
@@ -174,21 +183,47 @@ public class TimetableConstraint implements ViolatorConstraint {
         .toArray(Constraint[]::new));
   }
 
-  private Set<ViolatorConstraint> subViolableConstraints() {
+  private Set<ViolatorConstraint> constConstraints() {
     return Set.of(
-        new exclude_days_off(timetable),
-        new only_one_slot_max_per_course_per_day(timetable),
-        new no_group_studies_all_day_long(timetable),
-        new a_group_can_only_study_a_course_at_a_time(timetable),
-        new no_more_than_one_ac_with_same_c_for_two_consecutive_days(timetable),
-        new finish_course_hours_with_available_teachers(timetable));
+        new exclude_days_off(timetable, withExpConstraints),
+        new only_one_slot_max_per_course_per_day(timetable, withExpConstraints),
+        new no_group_studies_all_day_long(timetable, withExpConstraints),
+        new a_group_can_only_study_a_course_at_a_time(timetable, withExpConstraints),
+        new no_more_than_one_ac_with_same_c_for_two_consecutive_days(timetable, withExpConstraints),
+        new finish_course_hours_with_available_teachers(timetable, withExpConstraints));
+  }
+
+  private Set<ViolatorConstraint> expConstraints() {
+    return Set.of(
+        new a_teacher_cannot_move_location_half_a_day(timetable, withExpConstraints));
   }
 
   private Set<Constraint> subConstraints() {
-    return subViolableConstraints().stream()
+    var constConstraint = and(constConstraints().stream()
         .map(ViolatorConstraint::constraint)
-        .collect(toSet());
+        .collect(toSet()));
+
+    if (withExpConstraints) {
+      var expConstraint = and(expConstraints().stream()
+          .map(ViolatorConstraint::constraint)
+          .collect(toSet()));
+      return Set.of(constConstraint, expConstraint);
+    }
+
+    return Set.of(constConstraint);
   }
+
+  private Set<ViolatorConstraint> subViolableConstraints() {
+    var constConstraints = constConstraints();
+    if (withExpConstraints) {
+      var res = new HashSet<>(constConstraints);
+      res.addAll(expConstraints());
+      return res;
+    }
+
+    return constConstraints;
+  }
+
 
   @Override
   public Constraint constraint() {

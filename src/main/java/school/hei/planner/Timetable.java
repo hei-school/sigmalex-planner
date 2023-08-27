@@ -7,6 +7,7 @@ import school.hei.planner.costly.Costly;
 import school.hei.planner.costly.Course;
 import school.hei.planner.costly.Date;
 import school.hei.planner.costly.Group;
+import school.hei.planner.costly.Location;
 import school.hei.planner.costly.Room;
 import school.hei.planner.costly.Slot;
 import school.hei.planner.costly.Teacher;
@@ -31,6 +32,8 @@ public class Timetable {
   private final Map<String, Teacher> teachersByName;
   @Getter
   private final Room[] rooms;
+  @Getter
+  private final Location[] locations;
   private final Map<String, Room> roomsByName;
   @Getter
   private final Date[] datesAll;
@@ -49,6 +52,7 @@ public class Timetable {
       String id,
       AwardedCourse[] awardedCourses,
       Room[] rooms,
+      Location[] locations,
       Date[] datesAll,
       Date[] datesOff,
       Slot[] slots,
@@ -56,6 +60,7 @@ public class Timetable {
     this.id = new Id(id);
     this.awardedCourses = awardedCourses;
     this.rooms = rooms;
+    this.locations = locations;
     this.datesAll = datesAll;
     this.datesOff = datesOff;
     this.slots = slots;
@@ -73,27 +78,28 @@ public class Timetable {
       Id id,
       AwardedCourse[] awardedCourses,
       Room[] rooms,
+      Location[] locations,
       Date[] datesAll,
       Date[] datesOff,
       Slot[] slots,
       Set<Occupation> occupations) {
-    this(id.value, awardedCourses, rooms, datesAll, datesOff, slots, occupations);
+    this(id.value, awardedCourses, rooms, locations, datesAll, datesOff, slots, occupations);
   }
 
   public Timetable withId(String id) {
-    return new Timetable(id, awardedCourses, rooms, datesAll, datesOff, slots, occupations);
+    return new Timetable(id, awardedCourses, rooms, locations, datesAll, datesOff, slots, occupations);
   }
 
   public Timetable withOccupations(Set<Occupation> occupations) {
-    return new Timetable(id, awardedCourses, rooms, datesAll, datesOff, slots, occupations);
+    return new Timetable(id, awardedCourses, rooms, locations, datesAll, datesOff, slots, occupations);
   }
 
   public Timetable withDatesAll(Date[] datesAll) {
-    return new Timetable(id, awardedCourses, rooms, datesAll, datesOff, slots, occupations);
+    return new Timetable(id, awardedCourses, rooms, locations, datesAll, datesOff, slots, occupations);
   }
 
   public Timetable withAwardedCourses(AwardedCourse[] awardedCourses) {
-    return new Timetable(id, awardedCourses, rooms, datesAll, datesOff, slots, occupations);
+    return new Timetable(id, awardedCourses, rooms, locations, datesAll, datesOff, slots, occupations);
   }
 
   public Set<Course> courses() {

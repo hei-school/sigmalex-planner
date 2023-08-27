@@ -1,4 +1,4 @@
-package school.hei.planner.constraint.sub;
+package school.hei.planner.constraint.sub.constant;
 
 import school.hei.planner.Timetable;
 import school.hei.planner.constraint.TimetableConstraint;
@@ -6,7 +6,6 @@ import school.hei.planner.costly.AwardedCourse;
 import school.hei.planner.costly.Costly;
 import school.hei.planner.costly.Date;
 import school.hei.planner.costly.Slot;
-import school.hei.sigmalex.linearE.instantiableE.Bound;
 import school.hei.sigmalex.linearE.instantiableE.BounderQ;
 import school.hei.sigmalex.linearE.instantiableE.Constant;
 import school.hei.sigmalex.linearE.instantiableE.Instantiator;
@@ -17,19 +16,20 @@ import java.util.Set;
 
 import static school.hei.sigmalex.linearE.LEFactory.mult;
 import static school.hei.sigmalex.linearE.LEFactory.sigma;
+import static school.hei.sigmalex.linearE.instantiableE.Bound.bound;
 import static school.hei.sigmalex.linearP.constraint.Constraint.and;
 import static school.hei.sigmalex.linearP.constraint.Constraint.eq;
 import static school.hei.sigmalex.linearP.constraint.Constraint.pic;
 
 public class finish_course_hours_with_available_teachers extends TimetableConstraint {
-  public finish_course_hours_with_available_teachers(Timetable timetable) {
-    super(timetable);
+  public finish_course_hours_with_available_teachers(Timetable timetable, boolean withExpConstraints) {
+    super(timetable, withExpConstraints);
   }
 
   @Override
   public Constraint constraint() {
     var ta = new BounderQ<Costly<?>>("ta"); // teacher availability
-    var taBound = new Bound<>(ta, () -> null);
+    var taBound = bound(ta, () -> null);
     Instantiator<Costly<?>> taInstantiator = (Costly<?> costly, SubstitutionContext ctx) -> {
       var ctx_ac = (AwardedCourse) (ctx.get(ac).costly());
       var ctx_t = ctx_ac.teacher();

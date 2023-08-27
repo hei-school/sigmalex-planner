@@ -28,6 +28,10 @@ public record DisjunctivePolytopes(Set<Polytope> polytopes) {
   }
 
   public Constraint toDnf() {
+    if (polytopes.size() == 1) {
+      return polytopes.toArray(Polytope[]::new)[0].toCnf();
+    }
+
     return Constraint.or(polytopes.stream()
         .map(Polytope::toCnf)
         .toArray(Constraint[]::new));

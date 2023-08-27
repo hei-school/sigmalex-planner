@@ -1,4 +1,4 @@
-package school.hei.planner.constraint.sub;
+package school.hei.planner.constraint.sub.constant;
 
 import school.hei.planner.Timetable;
 import school.hei.planner.constraint.TimetableConstraint;
@@ -8,8 +8,8 @@ import static school.hei.sigmalex.linearP.constraint.Constraint.eq;
 import static school.hei.sigmalex.linearP.constraint.Constraint.pic;
 
 public class exclude_days_off extends TimetableConstraint {
-  public exclude_days_off(Timetable timetable) {
-    super(timetable);
+  public exclude_days_off(Timetable timetable, boolean withExpConstraints) {
+    super(timetable, withExpConstraints);
   }
 
   @Override

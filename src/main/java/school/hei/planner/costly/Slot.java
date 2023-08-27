@@ -3,6 +3,10 @@ package school.hei.planner.costly;
 import lombok.AllArgsConstructor;
 
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
 
 @AllArgsConstructor
 public enum Slot implements Costly<Slot> {
@@ -16,6 +20,18 @@ public enum Slot implements Costly<Slot> {
   private static final double DEFAULT_COST_WEIGHT = 10;
   private final String name;
   private final double cost;
+
+  public static Set<Slot> valuesSet() {
+    return Arrays.stream(Slot.values()).collect(toSet());
+  }
+
+  public static Set<Slot> morning() {
+    return Set.of(f08t10, f10t12);
+  }
+
+  public static Set<Slot> afternoon() {
+    return Set.of(f13t15, f15t17);
+  }
 
   @Override
   public String toString() {

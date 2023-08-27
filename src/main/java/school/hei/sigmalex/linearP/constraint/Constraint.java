@@ -19,7 +19,7 @@ import static school.hei.sigmalex.linearP.constraint.True.TRUE;
 
 @Slf4j
 public sealed abstract class Constraint
-    permits BiConstraint, And, BiLeConstraint, False, NormalizedConstraint, Not, PiConstraint, True {
+    permits BiLeConstraint, False, ListConstraint, NormalizedConstraint, Not, PiConstraint, True {
 
   public static Not not(Constraint constraint) {
     return new Not(constraint);
@@ -89,6 +89,10 @@ public sealed abstract class Constraint
     return eq(mono(v), le);
   }
 
+  public static Constraint eq(LinearE le, double c) {
+    return eq(le, mono(c));
+  }
+
   //TODO: contextual instantiation from sigma inside pic does __not__ work with neq
   public static Constraint neq(LinearE le, double c) {
     return not(eq(le, mono(c)));
@@ -102,16 +106,16 @@ public sealed abstract class Constraint
     return new And(Arrays.stream(constraints).toList());
   }
 
+  public static Constraint and(Set<Constraint> constraints) {
+    return new And(constraints.stream().toList());
+  }
+
   public static Constraint or(Constraint... constraints) {
     if (constraints.length == 0) {
       return FALSE;
     }
 
-    Constraint nested = constraints[0];
-    for (int i = 1; i < constraints.length; i++) {
-      nested = new Or(nested, constraints[i]);
-    }
-    return nested;
+    return new Or(Arrays.stream(constraints).toList());
   }
 
   public static Constraint pic(Constraint constraint, Bound... bounds) {
@@ -125,6 +129,10 @@ public sealed abstract class Constraint
 
   public DisjunctivePolytopes normalize() {
     return normalize(new SubstitutionContext(new HashMap<>()));
+  }
+
+  public DisjunctivePolytopes normify() {
+    return normalize().simplify();
   }
 
   public abstract Set<Variable> variables();

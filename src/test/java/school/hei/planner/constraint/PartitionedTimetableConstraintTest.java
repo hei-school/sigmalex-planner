@@ -7,6 +7,7 @@ import school.hei.planner.costly.AwardedCourse;
 import school.hei.planner.costly.Course;
 import school.hei.planner.costly.Date;
 import school.hei.planner.costly.Group;
+import school.hei.planner.costly.Location;
 import school.hei.planner.costly.Room;
 import school.hei.planner.costly.Slot;
 import school.hei.planner.costly.Teacher;
@@ -59,6 +60,7 @@ class PartitionedTimetableConstraintTest {
     var ra = new Room("a");
     var rb = new Room("b");
     var rooms = new Room[]{ra, rb};
+    var locations = new Location[]{new Location("l1", Set.of(ra, rb))};
 
     var dates_all = new Date[31];
     for (int date = 1; date <= 31; date++) {
@@ -69,7 +71,7 @@ class PartitionedTimetableConstraintTest {
 
     Set<Occupation> occupations = Set.of();
 
-    return new Timetable("id", awarded_courses, rooms, dates_all, dates_off, Slot.values(), occupations);
+    return new Timetable("id", awarded_courses, rooms, locations, dates_all, dates_off, Slot.values(), occupations);
   }
 
   @Test
@@ -114,5 +116,13 @@ class PartitionedTimetableConstraintTest {
 
     var solution2 = solutions.get(partitionKeys[2]);
     assertEquals(8, solution2.size());
+  }
+
+  @Test
+  void can_solve_partition0() {
+    var partitioned = new PartitionedTimetableConstraint(one_month_timetable(), 12);
+
+    var solution_occupations = partitioned.getPartitions().get(new Timetable.Id("id_partition-0")).solve();
+    assertEquals(24, solution_occupations.size());
   }
 }

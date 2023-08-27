@@ -25,10 +25,12 @@ public final class Not extends Constraint {
       case True t -> FALSE;
       case Not not -> not.constraint;
       case NormalizedConstraint norm -> not(norm.normalize(substitutionContext));
-      case And and -> or(and.getConstraints().stream()
+      case And and -> or(and.constraints.stream()
           .map(Constraint::not)
           .toArray(Constraint[]::new));
-      case Or or -> and(not(or.constraint1), not(or.constraint2));
+      case Or or -> and(or.constraints.stream()
+          .map(Constraint::not)
+          .toArray(Constraint[]::new));
       case Leq leq -> le(leq.le2, leq.le1);
       case Le le -> not(le.normalize(substitutionContext));
       case PiConstraint pi -> not(pi.normalize());

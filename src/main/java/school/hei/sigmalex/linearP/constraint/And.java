@@ -1,6 +1,5 @@
 package school.hei.sigmalex.linearP.constraint;
 
-import lombok.Getter;
 import lombok.SneakyThrows;
 import school.hei.exception.NotImplemented;
 import school.hei.sigmalex.concurrency.Workers;
@@ -19,13 +18,10 @@ import static java.util.stream.Collectors.toSet;
 import static school.hei.sigmalex.linearP.constraint.False.FALSE;
 import static school.hei.sigmalex.linearP.constraint.True.TRUE;
 
-public final class And extends Constraint {
-
-  @Getter
-  private final List<Constraint> constraints;
+public final class And extends ListConstraint {
 
   public And(List<Constraint> constraints) {
-    this.constraints = sanitize(constraints);
+    super(sanitize(constraints));
   }
 
   private static DisjunctivePolytopes distributeEachOther(Set<DisjunctivePolytopes> normalizedList) {
@@ -37,13 +33,13 @@ public final class And extends Constraint {
     var normalizedArray = normalizedList.toArray(DisjunctivePolytopes[]::new);
     for (int i = 0; i < normalizedArray.length; i++) {
       for (int j = i + 1; j < normalizedArray.length; j++) {
-        res = and(res, and(normalizedArray[i], normalizedArray[j]));
+        res = andPolytopes(res, andPolytopes(normalizedArray[i], normalizedArray[j]));
       }
     }
     return res;
   }
 
-  private static DisjunctivePolytopes and(DisjunctivePolytopes normalized1, DisjunctivePolytopes normalized2) {
+  private static DisjunctivePolytopes andPolytopes(DisjunctivePolytopes normalized1, DisjunctivePolytopes normalized2) {
     if (normalized1.isEmpty()) {
       return normalized2;
     }
@@ -64,7 +60,7 @@ public final class And extends Constraint {
     return res;
   }
 
-  private static Polytope and(Set<Polytope> polytopes) {
+  private static Polytope andPolytopes(Set<Polytope> polytopes) {
     var constraints = new ArrayList<NormalizedConstraint>();
     for (var polytope : polytopes) {
       constraints.addAll(polytope.constraints());
@@ -113,7 +109,7 @@ public final class And extends Constraint {
     return Optional.of(Set.of(polytopes.get(0)));
   }
 
-  private List<Constraint> sanitize(List<Constraint> constraints) {
+  private static List<Constraint> sanitize(List<Constraint> constraints) {
     if (constraints.size() == 0) {
       return List.of(TRUE);
     }
@@ -134,7 +130,7 @@ public final class And extends Constraint {
         ? distributeEachOther(constraints.stream()
         .map(constraint -> constraint.normalize(substitutionContext))
         .collect(toSet()))
-        : DisjunctivePolytopes.of(and(flattenedAndOpt.get()));
+        : DisjunctivePolytopes.of(andPolytopes(flattenedAndOpt.get()));
   }
 
   @Override

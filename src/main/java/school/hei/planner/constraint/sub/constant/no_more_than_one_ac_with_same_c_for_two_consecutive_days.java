@@ -1,4 +1,4 @@
-package school.hei.planner.constraint.sub;
+package school.hei.planner.constraint.sub.constant;
 
 import school.hei.planner.Occupation;
 import school.hei.planner.Timetable;
@@ -17,8 +17,8 @@ import static school.hei.sigmalex.linearP.constraint.Constraint.leq;
 import static school.hei.sigmalex.linearP.constraint.True.TRUE;
 
 public class no_more_than_one_ac_with_same_c_for_two_consecutive_days extends TimetableConstraint {
-  public no_more_than_one_ac_with_same_c_for_two_consecutive_days(Timetable timetable) {
-    super(timetable);
+  public no_more_than_one_ac_with_same_c_for_two_consecutive_days(Timetable timetable, boolean withExpConstraints) {
+    super(timetable, withExpConstraints);
   }
 
   @Override

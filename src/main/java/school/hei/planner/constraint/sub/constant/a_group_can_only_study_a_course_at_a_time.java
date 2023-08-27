@@ -1,4 +1,4 @@
-package school.hei.planner.constraint.sub;
+package school.hei.planner.constraint.sub.constant;
 
 import school.hei.planner.Timetable;
 import school.hei.planner.constraint.TimetableConstraint;
@@ -11,8 +11,8 @@ import static school.hei.sigmalex.linearP.constraint.Constraint.leq;
 import static school.hei.sigmalex.linearP.constraint.Constraint.pic;
 
 public class a_group_can_only_study_a_course_at_a_time extends TimetableConstraint {
-  public a_group_can_only_study_a_course_at_a_time(Timetable timetable) {
-    super(timetable);
+  public a_group_can_only_study_a_course_at_a_time(Timetable timetable, boolean withExpConstraints) {
+    super(timetable, withExpConstraints);
   }
 
   @Override

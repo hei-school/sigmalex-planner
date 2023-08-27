@@ -17,7 +17,7 @@ public class Workers {
   private static int totalSubmittedTasks = 0;
 
   private static ExecutorService newThreadPool() {
-    return newWorkStealingPool(100);
+    return newWorkStealingPool(10);
   }
 
   @SneakyThrows
