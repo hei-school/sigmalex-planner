@@ -47,8 +47,8 @@ import static school.hei.sigmalex.linearE.instantiableE.IEFactory.multie;
 import static school.hei.sigmalex.linearP.OptimizationType.min;
 import static school.hei.sigmalex.linearP.constraint.Constraint.and;
 import static school.hei.sigmalex.linearP.constraint.Constraint.eq;
+import static school.hei.sigmalex.linearP.constraint.Constraint.forall;
 import static school.hei.sigmalex.linearP.constraint.Constraint.geq;
-import static school.hei.sigmalex.linearP.constraint.Constraint.pic;
 
 @Slf4j
 public class TimetableConstraint implements ViolatorConstraint {
@@ -109,7 +109,7 @@ public class TimetableConstraint implements ViolatorConstraint {
     var cost = sigma(cost_ac_d_s_r, acBound, dBound, sBound, rBound);
     var cost_d_s_unlinked_to_o = addie(multie(d, Slot.SLOTS_IN_A_DAY), s);
     var assign_costs =
-        pic(eq(cost_ac_d_s_r, mult(cost_d_s_unlinked_to_o, o_ac_d_s_r)),
+        forall(eq(cost_ac_d_s_r, mult(cost_d_s_unlinked_to_o, o_ac_d_s_r)),
             acBound, dBound.wiq(Date::cost), sBound.wiq(Slot::cost), rBound);
     return new MILPContext(cost, assign_costs);
   }
@@ -174,7 +174,7 @@ public class TimetableConstraint implements ViolatorConstraint {
   }
 
   private Constraint domains() {
-    return pic(geq(cost_ac_d_s_r, 0), acBound, dBound, sBound, rBound);
+    return forall(geq(cost_ac_d_s_r, 0), acBound, dBound, sBound, rBound);
   }
 
   private Constraint already_provided_occupations() {

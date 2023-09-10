@@ -33,7 +33,7 @@ public final class Not extends Constraint {
           .toArray(Constraint[]::new));
       case Leq leq -> le(leq.le2, leq.le1);
       case Le le -> not(le.normalize(substitutionContext));
-      case PiConstraint pi -> not(pi.normalize());
+      case ForallConstraint forall -> not(forall.normalize());
     }).normalize(substitutionContext);
   }
 

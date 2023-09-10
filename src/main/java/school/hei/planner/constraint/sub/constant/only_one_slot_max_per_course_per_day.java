@@ -7,8 +7,8 @@ import school.hei.sigmalex.linearP.constraint.Constraint;
 import java.util.Set;
 
 import static school.hei.sigmalex.linearE.LEFactory.sigma;
+import static school.hei.sigmalex.linearP.constraint.Constraint.forall;
 import static school.hei.sigmalex.linearP.constraint.Constraint.leq;
-import static school.hei.sigmalex.linearP.constraint.Constraint.pic;
 
 public class only_one_slot_max_per_course_per_day extends TimetableConstraint {
 
@@ -23,7 +23,7 @@ public class only_one_slot_max_per_course_per_day extends TimetableConstraint {
 
   @Override
   public Constraint constraint() {
-    return pic(leq(sigma(o_ac_d_s_r, sBound, rBound), 1), acBound, dBound);
+    return forall(leq(sigma(o_ac_d_s_r, sBound, rBound), 1), acBound, dBound);
   }
 
   @Override

@@ -23,8 +23,8 @@ import static school.hei.sigmalex.linearE.LEFactory.sigma;
 import static school.hei.sigmalex.linearE.instantiableE.Bound.bound;
 import static school.hei.sigmalex.linearP.constraint.Constraint.and;
 import static school.hei.sigmalex.linearP.constraint.Constraint.eq;
+import static school.hei.sigmalex.linearP.constraint.Constraint.forall;
 import static school.hei.sigmalex.linearP.constraint.Constraint.or;
-import static school.hei.sigmalex.linearP.constraint.Constraint.pic;
 
 @Slf4j
 public class a_teacher_cannot_move_location_half_a_day extends TimetableConstraint {
@@ -51,7 +51,7 @@ public class a_teacher_cannot_move_location_half_a_day extends TimetableConstrai
       return costly.equals(ctx_ac.teacher()) ? new Constant<>(1) : new Constant<>(0);
     };
 
-    return pic(or(
+    return forall(or(
             eq(sigma(mult(t, o_ac_d_s_r), acBound, dBound, sBound, rLocation0Bound), 0),
             eq(sigma(mult(t, o_ac_d_s_r), acBound, dBound, sBound, rLocation1Bound), 0)),
         tBound.wi(tInstantiator));

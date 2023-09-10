@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Value
-public class PiConstraint extends Constraint {
+public class ForallConstraint extends Constraint {
 
   Constraint constraint;
   Set<SubstitutionContext> substitutionContexts;

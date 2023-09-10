@@ -19,7 +19,7 @@ import static school.hei.sigmalex.linearP.constraint.True.TRUE;
 
 @Slf4j
 public sealed abstract class Constraint
-    permits BiLeConstraint, False, ListConstraint, NormalizedConstraint, Not, PiConstraint, True {
+    permits BiLeConstraint, False, ListConstraint, NormalizedConstraint, Not, ForallConstraint, True {
 
   public static Not not(Constraint constraint) {
     return new Not(constraint);
@@ -118,10 +118,10 @@ public sealed abstract class Constraint
     return new Or(Arrays.stream(constraints).toList());
   }
 
-  public static Constraint pic(Constraint constraint, Bound... bounds) {
+  public static Constraint forall(Constraint constraint, Bound... bounds) {
     var optSubCtx = toBSubstitutionContexts(bounds);
     return optSubCtx
-        .map(subCtx -> (Constraint) new PiConstraint(constraint, subCtx))
+        .map(subCtx -> (Constraint) new ForallConstraint(constraint, subCtx))
         .orElse(TRUE);
   }
 

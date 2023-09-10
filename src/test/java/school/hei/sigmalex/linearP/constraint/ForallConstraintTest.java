@@ -33,11 +33,11 @@ import static school.hei.sigmalex.linearE.LEFactory.vadd;
 import static school.hei.sigmalex.linearE.instantiableE.Constant.ONE;
 import static school.hei.sigmalex.linearE.instantiableE.Constant.ZERO;
 import static school.hei.sigmalex.linearP.constraint.Constraint.eq;
+import static school.hei.sigmalex.linearP.constraint.Constraint.forall;
 import static school.hei.sigmalex.linearP.constraint.Constraint.geq;
 import static school.hei.sigmalex.linearP.constraint.Constraint.leq;
-import static school.hei.sigmalex.linearP.constraint.Constraint.pic;
 
-class PiConstraintTest {
+class ForallConstraintTest {
 
   @Test
   public void sigma_le_and_pi_constraint() {
@@ -64,7 +64,7 @@ class PiConstraintTest {
         DisjunctivePolytopes.of(Polytope.of(
             getExpectedNormalizedConstraint.apply("[k:1]"),
             getExpectedNormalizedConstraint.apply("[k:2]"))),
-        pic(leq(sigma(le_i_j, sigmaBoundJ, sigmaBoundI), 0), picBoundK).normalize().simplify());
+        forall(leq(sigma(le_i_j, sigmaBoundJ, sigmaBoundI), 0), picBoundK).normalize().simplify());
   }
 
   @Test
@@ -87,7 +87,7 @@ class PiConstraintTest {
             getExpectedNormalizedConstraint.apply("x[i:4][j:11]"),
             getExpectedNormalizedConstraint.apply("x[i:5][j:11]"),
             getExpectedNormalizedConstraint.apply("x[i:6][j:11]"))),
-        pic(geq(x_i_j, 0), boundI, boundJ).normalize().simplify());
+        forall(geq(x_i_j, 0), boundI, boundJ).normalize().simplify());
   }
 
   @Test
@@ -109,7 +109,7 @@ class PiConstraintTest {
         ((Teacher) teacher).isAvailableOn((Date) (ctx.get(d).costly())) ? new Constant<>(1) : new Constant<>(0);
 
     var teacher_must_be_available =
-        pic(eq(o_ac_d, mono(ta)), acBound, dBound, taBound.wi(instantiator));
+        forall(eq(o_ac_d, mono(ta)), acBound, dBound, taBound.wi(instantiator));
 
     assertEquals(
         DisjunctivePolytopes.of(Polytope.of(
@@ -145,7 +145,7 @@ class PiConstraintTest {
     };
 
     var teacher_must_be_available =
-        pic(eq(sigma(mult(ta, o_ac_d), acBound, dBound, taBound.wi(instantiator)), mono(g)),
+        forall(eq(sigma(mult(ta, o_ac_d), acBound, dBound, taBound.wi(instantiator)), mono(g)),
             gBound.wi(costly -> new Constant<>(7)));
 
     assertEquals(
@@ -179,7 +179,7 @@ class PiConstraintTest {
 
     var sh = Slot.DURATION.toHours();
     var finish_courses_hours_with_teacher =
-        pic(leq(ac, mult(sh, sigma(o_ac_d, dBound))),
+        forall(leq(ac, mult(sh, sigma(o_ac_d, dBound))),
             acBound.wiq(lambda_ac -> lambda_ac.durationInHours() + 0.));
 
     assertEquals(

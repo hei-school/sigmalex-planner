@@ -19,7 +19,7 @@ import static school.hei.sigmalex.linearE.LEFactory.sigma;
 import static school.hei.sigmalex.linearE.instantiableE.Bound.bound;
 import static school.hei.sigmalex.linearP.constraint.Constraint.and;
 import static school.hei.sigmalex.linearP.constraint.Constraint.eq;
-import static school.hei.sigmalex.linearP.constraint.Constraint.pic;
+import static school.hei.sigmalex.linearP.constraint.Constraint.forall;
 
 public class finish_course_hours_with_available_teachers extends TimetableConstraint {
   public finish_course_hours_with_available_teachers(Timetable timetable, boolean withExpConstraints) {
@@ -37,7 +37,7 @@ public class finish_course_hours_with_available_teachers extends TimetableConstr
       return ctx_t.isAvailableOn(ctx_d) ? new Constant<>(1) : new Constant<>(0);
     };
     var sh = Slot.DURATION.toHours();
-    return pic(and(
+    return forall(and(
             eq(ac, mult(sh, sigma(o_ac_d_s_r, dBound, sBound, rBound))),
             eq(ac, mult(sh, sigma(mult(ta, o_ac_d_s_r), dBound, sBound, rBound, taBound.wi(taInstantiator))))),
         acBound.wiq(ac -> ac.durationInHours() + 0.));

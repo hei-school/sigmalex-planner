@@ -86,7 +86,7 @@ public final class And extends ListConstraint {
         case Le le -> flatten(constraint, substitutionContext);
         case Leq leq -> flatten(constraint, substitutionContext);
 
-        case PiConstraint piConstraint -> flatten(constraint, substitutionContext);
+        case ForallConstraint forallConstraint -> flatten(constraint, substitutionContext);
         case And and -> flatten(and.constraints, substitutionContext);
       };
     }

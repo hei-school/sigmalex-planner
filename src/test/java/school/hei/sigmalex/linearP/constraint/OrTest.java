@@ -15,8 +15,8 @@ import static java.time.Month.JULY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static school.hei.sigmalex.linearE.instantiableE.Bound.bound;
 import static school.hei.sigmalex.linearP.constraint.Constraint.eq;
+import static school.hei.sigmalex.linearP.constraint.Constraint.forall;
 import static school.hei.sigmalex.linearP.constraint.Constraint.or;
-import static school.hei.sigmalex.linearP.constraint.Constraint.pic;
 
 class OrTest {
 
@@ -26,7 +26,7 @@ class OrTest {
     var d2 = new BounderQ<>("d2");
     var d1Bound = bound(d1, new Date(2023, JULY, 20));
     var d2Bound = bound(d2, new Date(2023, JULY, 21));
-    var constraint = pic(or(
+    var constraint = forall(or(
             eq(d1, 0),
             eq(d2, 0)),
         d1Bound.wiq(costly -> 1.), d2Bound.wiq(costly -> 1.));
@@ -48,7 +48,7 @@ class OrTest {
     var d2 = new BounderQ<>("d2");
     var d1Bound = bound(d1, new Date(2023, JULY, 20));
     var d2Bound = bound(d2, new Date(2023, JULY, 21));
-    var constraint = pic(or(
+    var constraint = forall(or(
             eq(d1, 0),
             eq(d2, 0)),
         d1Bound.wiq(costly -> 1.), d2Bound.wiq(costly -> 2.));
@@ -72,7 +72,7 @@ class OrTest {
     var d2 = new BounderQ<>("d2");
     var d1Bound = bound(d1, new Date(2023, JULY, 20));
     var d2Bound = bound(d2, new Date(2023, JULY, 21), new Date(2023, JULY, 22));
-    var constraint = pic(or(
+    var constraint = forall(or(
             eq(d1, 0),
             eq(d2, 0)),
         d1Bound.wiq(costly -> 1.), d2Bound.wiq(costly -> (double) ((Date) costly).getLocalDate().getDayOfMonth()));
