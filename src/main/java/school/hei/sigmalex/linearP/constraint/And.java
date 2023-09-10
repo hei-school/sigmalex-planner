@@ -5,10 +5,12 @@ import school.hei.exception.NotImplemented;
 import school.hei.sigmalex.concurrency.Workers;
 import school.hei.sigmalex.linearE.instantiableE.SubstitutionContext;
 import school.hei.sigmalex.linearE.instantiableE.Variable;
+import school.hei.sigmalex.linearP.constraint.polytope.ConjunctivePolytopes;
 import school.hei.sigmalex.linearP.constraint.polytope.DisjunctivePolytopes;
 import school.hei.sigmalex.linearP.constraint.polytope.Polytope;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -40,7 +42,8 @@ public final class And extends ListConstraint {
     return res;
   }
 
-  private static DisjunctivePolytopes andPolytopes(DisjunctivePolytopes normalized1, DisjunctivePolytopes normalized2) {
+  private static DisjunctivePolytopes andPolytopes(
+      DisjunctivePolytopes normalized1, DisjunctivePolytopes normalized2) {
     if (normalized1.isEmpty()) {
       return normalized2;
     }
@@ -61,40 +64,33 @@ public final class And extends ListConstraint {
     return res;
   }
 
-  private static Polytope andPolytopes(Set<Polytope> polytopes) {
-    var constraints = new ArrayList<NormalizedConstraint>();
-    for (var polytope : polytopes) {
-      constraints.addAll(polytope.constraints());
-    }
-    return Polytope.of(constraints.toArray(NormalizedConstraint[]::new));
-  }
-
   @SneakyThrows
-  private static Optional<Set<Polytope>> flatten(
+  private static Optional<ConjunctivePolytopes> toConjunctivePolytopesOpt(
       List<Constraint> constraints, SubstitutionContext substitutionContext) {
     if (constraints.isEmpty()) {
       return Optional.empty();
     }
     if (constraints.size() == 1) {
-      return flatten(constraints.get(0), substitutionContext);
+      return toConjunctivePolytopesOpt(constraints.get(0), substitutionContext);
     }
 
     return Workers.submit(() -> constraints.parallelStream()
-            .map(constraint -> flatten(constraint, substitutionContext))
+            .map(constraint -> toConjunctivePolytopesOpt(constraint, substitutionContext))
             .reduce(
-                Optional.of(Set.of()),
+                Optional.of(ConjunctivePolytopes.of()),
                 (acc, current) -> acc.isEmpty() || current.isEmpty()
                     ? Optional.empty()
-                    : Optional.of(Stream.concat(acc.get().stream(), current.get().stream()).collect(toSet()))))
+                    : Optional.of(acc.get().add(current.get()))))
         .get();
   }
 
-  private static Optional<Set<Polytope>> flatten(Constraint constraint, SubstitutionContext substitutionContext) {
-    BiFunction<Constraint, SubstitutionContext, Optional<Set<Polytope>>> doIt = (lambdaCtr, lambdaCtx) -> {
-      var polytopes = lambdaCtr.normalize(lambdaCtx).polytopes().stream().toList();
+  private static Optional<ConjunctivePolytopes> toConjunctivePolytopesOpt(
+      Constraint constraint, SubstitutionContext substitutionContext) {
+    BiFunction<Constraint, SubstitutionContext, Optional<ConjunctivePolytopes>> doIt = (lambdaCtr, lambdaCtx) -> {
+      var polytopes = new HashSet<>(lambdaCtr.normalize(lambdaCtx).polytopes());
       return polytopes.size() != 1
           ? Optional.empty()
-          : Optional.of(Set.of(polytopes.get(0)));
+          : Optional.of(new ConjunctivePolytopes(polytopes));
     };
     return switch (constraint) {
       case Or or -> Optional.empty();
@@ -107,7 +103,7 @@ public final class And extends ListConstraint {
       case Leq leq -> doIt.apply(constraint, substitutionContext);
 
       case ForallConstraint forallConstraint -> doIt.apply(constraint, substitutionContext);
-      case And and -> flatten(and.constraints, substitutionContext);
+      case And and -> toConjunctivePolytopesOpt(and.constraints, substitutionContext);
     };
   }
 
@@ -126,13 +122,13 @@ public final class And extends ListConstraint {
 
   @Override
   public DisjunctivePolytopes normalize(SubstitutionContext substitutionContext) {
-    Optional<Set<Polytope>> flattenedAndOpt = flatten(constraints, substitutionContext);
+    var flattenedAndOpt = toConjunctivePolytopesOpt(constraints, substitutionContext);
 
     return flattenedAndOpt.isEmpty()
         ? distributeEachOther(constraints.stream()
         .map(constraint -> constraint.normalize(substitutionContext))
         .collect(toSet()))
-        : DisjunctivePolytopes.of(andPolytopes(flattenedAndOpt.get()));
+        : DisjunctivePolytopes.of(flattenedAndOpt.get().merge());
   }
 
   @Override
