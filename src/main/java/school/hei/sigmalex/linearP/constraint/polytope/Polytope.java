@@ -8,14 +8,16 @@ import school.hei.sigmalex.linearP.constraint.Constraint;
 import school.hei.sigmalex.linearP.constraint.NormalizedConstraint;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 
 public record Polytope(Set<NormalizedConstraint> constraints) {
 
   public static Polytope of(NormalizedConstraint... constraints) {
-    return new Polytope(Arrays.stream(constraints).collect(toSet()));
+    return new Polytope(Arrays.stream(constraints).collect(toUnmodifiableSet()));
   }
 
   public Constraint toCnf() {
@@ -32,5 +34,11 @@ public record Polytope(Set<NormalizedConstraint> constraints) {
     return new Polytope(constraints.stream()
         .map(NormalizedConstraint::simplify)
         .collect(toSet()));
+  }
+
+  public Polytope add(Polytope polytope) {
+    var newConstraints = new HashSet<>(constraints);
+    newConstraints.addAll(polytope.constraints);
+    return new Polytope(newConstraints);
   }
 }

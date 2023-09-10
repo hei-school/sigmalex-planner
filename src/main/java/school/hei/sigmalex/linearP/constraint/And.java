@@ -5,7 +5,6 @@ import school.hei.exception.NotImplemented;
 import school.hei.sigmalex.concurrency.Workers;
 import school.hei.sigmalex.linearE.instantiableE.SubstitutionContext;
 import school.hei.sigmalex.linearE.instantiableE.Variable;
-import school.hei.sigmalex.linearP.constraint.polytope.ConjunctivePolytopes;
 import school.hei.sigmalex.linearP.constraint.polytope.DisjunctivePolytopes;
 import school.hei.sigmalex.linearP.constraint.polytope.Polytope;
 
@@ -65,32 +64,32 @@ public final class And extends ListConstraint {
   }
 
   @SneakyThrows
-  private static Optional<ConjunctivePolytopes> toConjunctivePolytopesOpt(
+  private static Optional<Polytope> toPolytopeOpt(
       List<Constraint> constraints, SubstitutionContext substitutionContext) {
     if (constraints.isEmpty()) {
       return Optional.empty();
     }
     if (constraints.size() == 1) {
-      return toConjunctivePolytopesOpt(constraints.get(0), substitutionContext);
+      return toPolytopeOpt(constraints.get(0), substitutionContext);
     }
 
     return Workers.submit(() -> constraints.parallelStream()
-            .map(constraint -> toConjunctivePolytopesOpt(constraint, substitutionContext))
+            .map(constraint -> toPolytopeOpt(constraint, substitutionContext))
             .reduce(
-                Optional.of(ConjunctivePolytopes.of()),
+                Optional.of(Polytope.of()),
                 (acc, current) -> acc.isEmpty() || current.isEmpty()
                     ? Optional.empty()
                     : Optional.of(acc.get().add(current.get()))))
         .get();
   }
 
-  private static Optional<ConjunctivePolytopes> toConjunctivePolytopesOpt(
+  private static Optional<Polytope> toPolytopeOpt(
       Constraint constraint, SubstitutionContext substitutionContext) {
-    BiFunction<Constraint, SubstitutionContext, Optional<ConjunctivePolytopes>> doIt = (lambdaCtr, lambdaCtx) -> {
+    BiFunction<Constraint, SubstitutionContext, Optional<Polytope>> doIt = (lambdaCtr, lambdaCtx) -> {
       var polytopes = new HashSet<>(lambdaCtr.normalize(lambdaCtx).polytopes());
       return polytopes.size() != 1
           ? Optional.empty()
-          : Optional.of(new ConjunctivePolytopes(polytopes));
+          : Optional.of(polytopes.toArray(Polytope[]::new)[0]);
     };
     return switch (constraint) {
       case Or or -> Optional.empty();
@@ -103,7 +102,7 @@ public final class And extends ListConstraint {
       case Leq leq -> doIt.apply(constraint, substitutionContext);
 
       case ForallConstraint forallConstraint -> doIt.apply(constraint, substitutionContext);
-      case And and -> toConjunctivePolytopesOpt(and.constraints, substitutionContext);
+      case And and -> toPolytopeOpt(and.constraints, substitutionContext);
     };
   }
 
@@ -122,13 +121,13 @@ public final class And extends ListConstraint {
 
   @Override
   public DisjunctivePolytopes normalize(SubstitutionContext substitutionContext) {
-    var flattenedAndOpt = toConjunctivePolytopesOpt(constraints, substitutionContext);
+    var polytopeOpt = toPolytopeOpt(constraints, substitutionContext);
 
-    return flattenedAndOpt.isEmpty()
+    return polytopeOpt.isEmpty()
         ? distributeEachOther(constraints.stream()
         .map(constraint -> constraint.normalize(substitutionContext))
         .collect(toSet()))
-        : DisjunctivePolytopes.of(flattenedAndOpt.get().merge());
+        : DisjunctivePolytopes.of(polytopeOpt.get());
   }
 
   @Override
