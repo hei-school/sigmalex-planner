@@ -5,6 +5,7 @@ import school.hei.sigmalex.concurrency.Workers;
 import school.hei.sigmalex.linearE.instantiableE.SubstitutionContext;
 import school.hei.sigmalex.linearE.instantiableE.Variable;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +25,7 @@ public record Add(List<LinearE> leList) implements LinearE {
   }
 
   private NormalizedLE addToNormalized(NormalizedLE actual, NormalizedLE toAdd) {
-    var newWeightedV = toAdd.weightedV();
+    var newWeightedV = new HashMap<>(toAdd.weightedV());
     actual.weightedV().forEach((v, vValue) -> {
       if (newWeightedV.containsKey(v)) {
         newWeightedV.put(v, addie(newWeightedV.get(v), vValue));
