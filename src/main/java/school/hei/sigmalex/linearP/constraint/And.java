@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toSet;
@@ -75,24 +76,11 @@ public final class And extends ListConstraint {
       return Optional.empty();
     }
     if (constraints.size() == 1) {
-      var constraint = constraints.get(0);
-      return switch (constraint) {
-        case Or or -> Optional.empty();
-        case Not not -> Optional.empty(); // can be optimized, but empty is sound
-
-        case False aFalse -> throw new NotImplemented();
-        case NormalizedConstraint normalizedConstraint -> flatten(constraint, substitutionContext);
-        case True aTrue -> throw new NotImplemented();
-        case Le le -> flatten(constraint, substitutionContext);
-        case Leq leq -> flatten(constraint, substitutionContext);
-
-        case ForallConstraint forallConstraint -> flatten(constraint, substitutionContext);
-        case And and -> flatten(and.constraints, substitutionContext);
-      };
+      return flatten(constraints.get(0), substitutionContext);
     }
 
     return Workers.submit(() -> constraints.parallelStream()
-            .map(constraint -> flatten(List.of(constraint), substitutionContext))
+            .map(constraint -> flatten(constraint, substitutionContext))
             .reduce(
                 Optional.of(Set.of()),
                 (acc, current) -> acc.isEmpty() || current.isEmpty()
@@ -102,11 +90,25 @@ public final class And extends ListConstraint {
   }
 
   private static Optional<Set<Polytope>> flatten(Constraint constraint, SubstitutionContext substitutionContext) {
-    var polytopes = constraint.normalize(substitutionContext).polytopes().stream().toList();
-    if (polytopes.size() != 1) {
-      return Optional.empty();
-    }
-    return Optional.of(Set.of(polytopes.get(0)));
+    BiFunction<Constraint, SubstitutionContext, Optional<Set<Polytope>>> doIt = (lambdaCtr, lambdaCtx) -> {
+      var polytopes = lambdaCtr.normalize(lambdaCtx).polytopes().stream().toList();
+      return polytopes.size() != 1
+          ? Optional.empty()
+          : Optional.of(Set.of(polytopes.get(0)));
+    };
+    return switch (constraint) {
+      case Or or -> Optional.empty();
+      case Not not -> Optional.empty(); // can be optimized, but empty is sound
+
+      case False aFalse -> throw new NotImplemented();
+      case NormalizedConstraint normalizedConstraint -> doIt.apply(constraint, substitutionContext);
+      case True aTrue -> throw new NotImplemented();
+      case Le le -> doIt.apply(constraint, substitutionContext);
+      case Leq leq -> doIt.apply(constraint, substitutionContext);
+
+      case ForallConstraint forallConstraint -> doIt.apply(constraint, substitutionContext);
+      case And and -> flatten(and.constraints, substitutionContext);
+    };
   }
 
   private static List<Constraint> sanitize(List<Constraint> constraints) {
