@@ -25,7 +25,6 @@ public record Add(List<LinearE> leList) implements LinearE {
 
   private NormalizedLE addToNormalized(NormalizedLE actual, NormalizedLE toAdd) {
     var newWeightedV = toAdd.weightedV();
-    var newE = toAdd.e();
     actual.weightedV().forEach((v, vValue) -> {
       if (newWeightedV.containsKey(v)) {
         newWeightedV.put(v, addie(newWeightedV.get(v), vValue));
@@ -33,7 +32,7 @@ public record Add(List<LinearE> leList) implements LinearE {
         newWeightedV.put(v, vValue);
       }
     });
-    return new NormalizedLE(newWeightedV, addie(newE, actual.e()));
+    return new NormalizedLE(newWeightedV, addie(actual.e(), toAdd.e()));
   }
 
   @Override
