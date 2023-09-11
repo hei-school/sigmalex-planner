@@ -17,7 +17,8 @@ public record Mult(InstantiableE e, LinearE le) implements LinearE {
     var normalizedLeToMult = le.normalize(substitutionContext);
     var weightedV = new HashMap<Variable, InstantiableE>();
     normalizedLeToMult.weightedV().forEach((v, cToMult) -> weightedV.put(v, new MultIE(e, (cToMult))));
-    return new NormalizedLE(weightedV, multie(e, normalizedLeToMult.e())).substituteAll(substitutionContext);
+    return new NormalizedLE(weightedV, multie(e, normalizedLeToMult.e()))
+        .substituteAll(substitutionContext);
   }
 
   @Override

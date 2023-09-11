@@ -11,6 +11,7 @@ import school.hei.sigmalex.linearE.instantiableE.SubstitutionContext;
 import school.hei.sigmalex.linearE.instantiableE.Variable;
 import school.hei.sigmalex.linearE.instantiableE.exception.ArithmeticConversionException;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -155,9 +156,14 @@ public final class NormalizedLE implements LinearE {
   }
 
   public NormalizedLE substituteAll(SubstitutionContext substitutionContext) {
-    var res = this;
     var substitutions = substitutionContext.substitutions();
-    for (var bounder : substitutionContext.substitutions().keySet()) {
+    var bounderVariables = substitutions.keySet().stream().map(Bounder::variable).collect(toSet());
+    if (!Collections.disjoint(weightedV.keySet(), bounderVariables)) {
+      return this;
+    }
+
+    var res = this;
+    for (var bounder : substitutions.keySet()) {
       res = res.substitute(bounder, substitutions.get(bounder), substitutionContext);
     }
     return res;
