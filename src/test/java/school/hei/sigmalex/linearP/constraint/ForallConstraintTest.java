@@ -148,18 +148,18 @@ class ForallConstraintTest {
         forall(eq(sigma(mult(ta, o_ac_d), acBound, dBound, taBound.wi(instantiator)), mono(g)),
             gBound.wi(costly -> new Constant<>(7)));
 
-    assertEquals(
-        DisjunctivePolytopes.of(Polytope.of(
-            new NormalizedConstraint(new NormalizedLE(Map.of(
-                new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul20]"), new Constant<>(1),
-                new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul21]"), new Constant<>(0)),
-                new Constant<>(-7))),
-            new NormalizedConstraint(new NormalizedLE(Map.of(
-                new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul20]"), new Constant<>(-1),
-                new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul21]"), new Constant<>(0)),
-                new Constant<>(7)))
-        )).toString(), //TODO: have to resort to string equality as fails otherwise. Prolly bounder names involved.
-        teacher_must_be_available.normalize().simplify().toString());
+    var actual = teacher_must_be_available.normalize().simplify();
+    var expected = DisjunctivePolytopes.of(Polytope.of(
+        new NormalizedConstraint(new NormalizedLE(Map.of(
+            new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul20]"), new Constant<>(1),
+            new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul21]"), new Constant<>(0)),
+            new Constant<>(-7))),
+        new NormalizedConstraint(new NormalizedLE(Map.of(
+            new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul20]"), new Constant<>(-1),
+            new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul21]"), new Constant<>(0)),
+            new Constant<>(7)))
+    ));
+    assertEquals(expected, actual); //TODO: hashCode on Set<Polytope> due to custom var equality breaks this
   }
 
   @Test

@@ -58,7 +58,7 @@ public final class BounderQ<Costly> extends InstantiableV<Costly> implements Bou
   }
 
   @Override
-  public Variable toNew(SubstitutionContext substitutionContext) {
+  public Variable construct(String name, SubstitutionContext substitutionContext) {
     return new BounderQ<>(name, substitutionContext);
   }
 

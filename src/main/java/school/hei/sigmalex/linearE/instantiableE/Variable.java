@@ -69,7 +69,11 @@ public abstract sealed class Variable permits InstantiableV, NonInstantiableV {
     return toNew(newBounderSubstitutions);
   }
 
-  public abstract Variable toNew(SubstitutionContext substitutionContext);
+  public abstract Variable construct(String name, SubstitutionContext substitutionContext);
+
+  public final Variable toNew(SubstitutionContext substitutionContext) {
+    return construct(name, substitutionContext);
+  }
 
   @Override
   public boolean equals(Object o) {

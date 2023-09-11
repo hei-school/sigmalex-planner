@@ -1,5 +1,6 @@
 package school.hei.sigmalex.linearE;
 
+import lombok.EqualsAndHashCode;
 import school.hei.sigmalex.linearE.exception.DuplicateVariableNameException;
 import school.hei.sigmalex.linearE.instantiableE.AddIE;
 import school.hei.sigmalex.linearE.instantiableE.Bounder;
@@ -11,11 +12,9 @@ import school.hei.sigmalex.linearE.instantiableE.SubstitutionContext;
 import school.hei.sigmalex.linearE.instantiableE.Variable;
 import school.hei.sigmalex.linearE.instantiableE.exception.ArithmeticConversionException;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
@@ -26,6 +25,7 @@ import static school.hei.sigmalex.linearP.constraint.Le.DEFAULT_EPSILON;
 /**
  * normalizedLe := toLinear(weightedV) + e <= 0
  */
+@EqualsAndHashCode
 public final class NormalizedLE implements LinearE {
 
   private final Map<Variable, InstantiableE> weightedV;
@@ -82,19 +82,6 @@ public final class NormalizedLE implements LinearE {
   @Override
   public Set<Variable> variables() {
     return weightedV.keySet();
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    NormalizedLE that = (NormalizedLE) o;
-    return Objects.equals(weightedV, that.weightedV) && Objects.equals(e, that.e);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(weightedV, e);
   }
 
   @Override
@@ -157,11 +144,6 @@ public final class NormalizedLE implements LinearE {
 
   public NormalizedLE substituteAll(SubstitutionContext substitutionContext) {
     var substitutions = substitutionContext.substitutions();
-    var bounderVariables = substitutions.keySet().stream().map(Bounder::variable).collect(toSet());
-    if (!Collections.disjoint(weightedV.keySet(), bounderVariables)) {
-      return this;
-    }
-
     var res = this;
     for (var bounder : substitutions.keySet()) {
       res = res.substitute(bounder, substitutions.get(bounder), substitutionContext);

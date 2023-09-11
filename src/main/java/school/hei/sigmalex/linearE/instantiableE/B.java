@@ -20,7 +20,7 @@ public final class B extends NonInstantiableV implements Bounder<Void> {
   }
 
   @Override
-  public Variable toNew(SubstitutionContext substitutionContext) {
+  public Variable construct(String name, SubstitutionContext substitutionContext) {
     return new B(name, substitutionContext);
   }
 
