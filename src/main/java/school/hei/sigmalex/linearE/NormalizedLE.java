@@ -66,7 +66,11 @@ public final class NormalizedLE implements LinearE {
 
   @Override
   public LinearE substitute(SubstitutionContext substitutionContext) {
-    return substituteAll(substitutionContext);
+    var actual = substituteAll(substitutionContext);
+    var next = actual.substituteAll(substitutionContext);
+    return actual.toString().equals(next.toString()) // TODO(polytope-equality)
+        ? actual
+        : next.substitute(substitutionContext);
   }
 
   public NormalizedLE simplify() {

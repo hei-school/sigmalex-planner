@@ -22,6 +22,9 @@ import static school.hei.sigmalex.linearE.LEFactory.add;
 import static school.hei.sigmalex.linearE.LEFactory.mono;
 import static school.hei.sigmalex.linearE.LEFactory.mult;
 import static school.hei.sigmalex.linearE.LEFactory.sigma;
+import static school.hei.sigmalex.linearE.SigmaTest.InstantiableDays.monday;
+import static school.hei.sigmalex.linearE.SigmaTest.InstantiableDays.saturday;
+import static school.hei.sigmalex.linearE.SigmaTest.InstantiableDays.sunday;
 import static school.hei.sigmalex.linearE.instantiableE.Constant.ONE;
 import static school.hei.sigmalex.linearE.instantiableE.Constant.ZERO;
 import static school.hei.sigmalex.linearE.instantiableE.IEFactory.multie;
@@ -126,7 +129,7 @@ class SigmaTest {
   public void weekend_as_bounder_with_dynamic_instantiation() {
     var weekend = new BounderQ<InstantiableDays>("w");
     var hours_weekend = new Z("hours", weekend);
-    var weekend_bound = new Bound<>(weekend, InstantiableDays.saturday, InstantiableDays.sunday);
+    var weekend_bound = new Bound<>(weekend, saturday, sunday);
 
     assertEquals(
         new NormalizedLE(
@@ -143,8 +146,8 @@ class SigmaTest {
   public void weekend_as_bounder_with_nested_dynamic_instantiation() {
     var weekend = new BounderQ<InstantiableDays>("w");
     var working_day = new BounderQ<InstantiableDays>("d");
-    var weekend_bound = new Bound<>(weekend, InstantiableDays.saturday, InstantiableDays.sunday);
-    var working_bound = new Bound<>(working_day, InstantiableDays.monday);
+    var weekend_bound = new Bound<>(weekend, saturday, sunday);
+    var working_bound = new Bound<>(working_day, monday);
 
     var le = add(mono(working_day), mono(weekend));
     var correctly_ordered_bounds = new Bound[]{
@@ -159,8 +162,8 @@ class SigmaTest {
   public void weekend_as_bounder_with_nested_contextual_instantiation() {
     var weekend = new BounderQ<InstantiableDays>("w");
     var working_day = new BounderQ<InstantiableDays>("d");
-    var weekend_bound = new Bound<>(weekend, InstantiableDays.saturday, InstantiableDays.sunday);
-    var working_bound = new Bound<>(working_day, InstantiableDays.monday);
+    var weekend_bound = new Bound<>(weekend, saturday, sunday);
+    var working_bound = new Bound<>(working_day, monday);
 
     var le = add(mono(working_day), mono(weekend));
     Instantiator<InstantiableDays> contextual_wi = (day, ctx) -> {

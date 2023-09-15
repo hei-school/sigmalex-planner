@@ -99,7 +99,7 @@ public class LEFactory {
 
     LinearE res = mono(Constant.ZERO);
     for (var substitutionContext : substitutionContexts) {
-      res = add(res, le.substitute(substitutionContext));
+      res = add(res, new Substitute(le, substitutionContext));
     }
 
     return res;

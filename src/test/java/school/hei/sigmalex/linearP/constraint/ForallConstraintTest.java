@@ -161,7 +161,7 @@ class ForallConstraintTest {
             new Constant<>(7)))
     ));
     assertEquals(
-        //TODO: hashCode on Set<Polytope> due to custom var equality breaks equality non-stringified object
+        //TODO(polytope-equality): hashCode on Set<Polytope> due to custom var equality breaks equality non-stringified object
         //  event stringification is flaky due to Sets which are unordered
         expected.toString(), actual.toString());
   }

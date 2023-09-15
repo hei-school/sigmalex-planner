@@ -28,7 +28,8 @@ public final class BounderQ<Costly> extends InstantiableV<Costly> implements Bou
 
   @Override
   public double simplify() {
-    throw new MissingInstantiationException("Earlier instantiation should have prevented current simplification");
+    throw new MissingInstantiationException(
+        "Earlier instantiation should have prevented current simplification: " + name);
   }
 
   @Override

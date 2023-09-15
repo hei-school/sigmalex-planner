@@ -21,7 +21,11 @@ public record Mono(InstantiableE e, Optional<Variable> optV) implements LinearE 
 
   @Override
   public LinearE substitute(SubstitutionContext substitutionContext) {
-    return normalize().substitute(substitutionContext);
+    var normalized = normalize();
+    var substituted = normalized
+        //TODO: need to handle nested instantiation? see weekend_as_bounder_with_nested_dynamic_instantiation
+        .substitute(substitutionContext);
+    return substituted;
   }
 
   @Override
