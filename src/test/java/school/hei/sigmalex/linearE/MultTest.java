@@ -27,6 +27,6 @@ class MultTest {
             mono(0.2),
             mono(2, x), mono(3, y), mono(-0.5, y), mono(1, x),
             mono(0.9))
-        ).normify());
+        ).subnormify());
   }
 }

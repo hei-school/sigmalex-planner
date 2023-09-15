@@ -16,12 +16,19 @@ public record Add(List<LinearE> leList) implements LinearE {
 
   @SneakyThrows
   @Override
-  public NormalizedLE normalize(SubstitutionContext substitutionContext) {
+  public NormalizedLE normalize() {
     return Workers.submit(() -> leList.parallelStream()
-            .map(le -> le.normalize(substitutionContext))
+            .map(LinearE::normalize)
             .reduce(new NormalizedLE(0), this::addToNormalized))
-        .get()
-        .substituteAll(substitutionContext);
+        .get();
+  }
+
+  @Override
+  public NormalizedLE substitute(SubstitutionContext substitutionContext) {
+    return new Add(leList.stream()
+        .map(linearE -> linearE.substitute(substitutionContext))
+        .toList())
+        .normalize();
   }
 
   private NormalizedLE addToNormalized(NormalizedLE actual, NormalizedLE toAdd) {

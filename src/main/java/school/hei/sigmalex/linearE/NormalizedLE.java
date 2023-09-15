@@ -60,8 +60,13 @@ public final class NormalizedLE implements LinearE {
   }
 
   @Override
-  public NormalizedLE normalize(SubstitutionContext substitutionContext) {
+  public NormalizedLE normalize() {
     return this;
+  }
+
+  @Override
+  public LinearE substitute(SubstitutionContext substitutionContext) {
+    return substituteAll(substitutionContext);
   }
 
   public NormalizedLE simplify() {
@@ -142,7 +147,7 @@ public final class NormalizedLE implements LinearE {
     }
   }
 
-  public NormalizedLE substituteAll(SubstitutionContext substitutionContext) {
+  private NormalizedLE substituteAll(SubstitutionContext substitutionContext) {
     var substitutions = substitutionContext.substitutions();
     var res = this;
     for (var bounder : substitutions.keySet()) {

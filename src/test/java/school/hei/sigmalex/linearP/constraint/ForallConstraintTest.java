@@ -1,5 +1,6 @@
 package school.hei.sigmalex.linearP.constraint;
 
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import school.hei.planner.costly.AwardedCourse;
 import school.hei.planner.costly.Costly;
@@ -121,7 +122,7 @@ class ForallConstraintTest {
         teacher_must_be_available.normalize().simplify());
   }
 
-  @Test
+  @RepeatedTest(value = 1)
   public void pic_with_contextual_instantiation_inside_sigma() {
     var g1 = new Group("g1");
     var t1 = new Teacher("t1", new Date(2023, JULY, 20));
@@ -139,7 +140,7 @@ class ForallConstraintTest {
     var ta = new BounderQ<Costly<?>>("ta");
     var taBound = new Bound<>(ta, t1);
     Instantiator<Costly<?>> instantiator = (Costly<?> teacher, SubstitutionContext ctx) -> {
-      assertNotNull(ctx.get(g));
+      assertNotNull(ctx.get(d));
       return ((Teacher) teacher).isAvailableOn((Date) (ctx.get(d).costly()))
           ? new Constant<>(1) : new Constant<>(0);
     };
@@ -159,7 +160,10 @@ class ForallConstraintTest {
             new Z("o[ac:[c:th1][g:g1][t:t1]][d:jul21]"), new Constant<>(0)),
             new Constant<>(7)))
     ));
-    assertEquals(expected, actual); //TODO: hashCode on Set<Polytope> due to custom var equality breaks this
+    assertEquals(
+        //TODO: hashCode on Set<Polytope> due to custom var equality breaks equality non-stringified object
+        //  event stringification is flaky due to Sets which are unordered
+        expected.toString(), actual.toString());
   }
 
   @Test

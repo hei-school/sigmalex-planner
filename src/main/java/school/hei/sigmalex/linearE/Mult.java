@@ -13,12 +13,16 @@ import static school.hei.sigmalex.linearE.instantiableE.IEFactory.multie;
 public record Mult(InstantiableE e, LinearE le) implements LinearE {
 
   @Override
-  public NormalizedLE normalize(SubstitutionContext substitutionContext) {
-    var normalizedLeToMult = le.normalize(substitutionContext);
+  public NormalizedLE normalize() {
+    var normalizedLeToMult = le.normalize();
     var weightedV = new HashMap<Variable, InstantiableE>();
     normalizedLeToMult.weightedV().forEach((v, cToMult) -> weightedV.put(v, new MultIE(e, (cToMult))));
-    return new NormalizedLE(weightedV, multie(e, normalizedLeToMult.e()))
-        .substituteAll(substitutionContext);
+    return new NormalizedLE(weightedV, multie(e, normalizedLeToMult.e()));
+  }
+
+  @Override
+  public LinearE substitute(SubstitutionContext substitutionContext) {
+    return normalize().substitute(substitutionContext);
   }
 
   @Override

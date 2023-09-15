@@ -14,10 +14,10 @@ import school.hei.sigmalex.linearE.instantiableE.exception.ArithmeticConversionE
 
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static school.hei.sigmalex.linearE.LEFactory.add;
 import static school.hei.sigmalex.linearE.LEFactory.mono;
 import static school.hei.sigmalex.linearE.LEFactory.mult;
@@ -33,7 +33,7 @@ class SigmaTest {
     int n = 10;
     assertEquals(
         new NormalizedLE(n * (n + 1) / 2.),
-        sigma(mono(k), new Bound<>(k, 1, n)).normify());
+        sigma(mono(k), new Bound<>(k, 1, n)).subnormify());
   }
 
   @Test
@@ -47,7 +47,7 @@ class SigmaTest {
         sigma(
             add(mono(a), mult(d, add(mono(k), mono(-1)))),
             new Bound<>(k, 1, n))
-            .normify());
+            .subnormify());
   }
 
   @Test
@@ -64,7 +64,7 @@ class SigmaTest {
                 new Q("x[i:5]"), new Constant<>(3),
                 new Q("x[i:6]"), new Constant<>(3)),
             ZERO),
-        sigma(le_i, boundI).normify());
+        sigma(le_i, boundI).subnormify());
 
     var j = new BounderQ<>("j");
     var x_i_j = new Q("x", Set.of(i, j));
@@ -80,7 +80,7 @@ class SigmaTest {
                 new Q("x[i:5][j:11]"), new Constant<>(3),
                 new Q("x[i:6][j:11]"), new Constant<>(3)),
             ZERO),
-        sigma(sigma(le_i_j, boundI), boundJ).normify());
+        sigma(sigma(le_i_j, boundI), boundJ).subnormify());
   }
 
   @Test
@@ -92,12 +92,12 @@ class SigmaTest {
     var boundI = new Bound<>(i, 4, 6);
     assertEquals(
         new NormalizedLE(Map.of(j, new Constant<>(9)), new Constant<>(30)),
-        sigma(le, boundI).normify());
+        sigma(le, boundI).subnormify());
 
     var boundJ = new Bound<>(j, 10, 11);
     assertEquals(
         new NormalizedLE(Map.of(), new Constant<>(249)),
-        sigma(sigma(le, boundI), boundJ).normify());
+        sigma(sigma(le, boundI), boundJ).subnormify());
   }
 
   @Test
@@ -113,12 +113,13 @@ class SigmaTest {
                 new Z("hours[w:saturday]"), ONE,
                 new Z("hours[w:sunday]"), ONE),
             ZERO),
-        sigma(hours_weekend_le, weekend_bound).normify());
+        sigma(hours_weekend_le, weekend_bound).subnormify());
 
     var add_day_to_z = add(mono(weekend), hours_weekend_le);
-    assertThrows(
-        ExecutionException.class,
-        () -> sigma(add_day_to_z, weekend_bound).normify());
+    var e = assertThrows(
+        RuntimeException.class,
+        () -> sigma(add_day_to_z, weekend_bound).subnormify());
+    assertTrue(e.getCause() instanceof ArithmeticConversionException);
   }
 
   @Test
@@ -135,7 +136,7 @@ class SigmaTest {
             new Constant<>(26)),
         sigma(add(mono(hours_weekend), mono(weekend)),
             weekend_bound.wi(day -> multie(2, day.order)))
-            .normify());
+            .subnormify());
   }
 
   @Test
@@ -151,7 +152,7 @@ class SigmaTest {
         weekend_bound.wiq(day -> 3. * day.order)};
     assertEquals(
         new NormalizedLE(Map.of(), new Constant<>(117)),
-        sigma(le, correctly_ordered_bounds).normify());
+        sigma(le, correctly_ordered_bounds).subnormify());
   }
 
   @Test
@@ -171,7 +172,7 @@ class SigmaTest {
         weekend_bound.wi(contextual_wi)};
     assertEquals(
         new NormalizedLE(Map.of(), new Constant<>(156)),
-        sigma(le, correctly_ordered_bounds).normify());
+        sigma(le, correctly_ordered_bounds).subnormify());
   }
 
   enum NonInstantiableDays implements BounderValue<NonInstantiableDays> {

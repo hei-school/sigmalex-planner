@@ -13,11 +13,15 @@ import static school.hei.sigmalex.linearE.instantiableE.Constant.ZERO;
 public record Mono(InstantiableE e, Optional<Variable> optV) implements LinearE {
 
   @Override
-  public NormalizedLE normalize(SubstitutionContext substitutionContext) {
+  public NormalizedLE normalize() {
     return optV
         .map(v -> new NormalizedLE(Map.of(v, e), ZERO))
-        .orElseGet(() -> new NormalizedLE(Map.of(), e))
-        .substituteAll(substitutionContext);
+        .orElseGet(() -> new NormalizedLE(Map.of(), e));
+  }
+
+  @Override
+  public LinearE substitute(SubstitutionContext substitutionContext) {
+    return normalize().substitute(substitutionContext);
   }
 
   @Override

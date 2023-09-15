@@ -5,11 +5,13 @@ import school.hei.sigmalex.linearE.instantiableE.Variable;
 
 import java.util.Set;
 
-public sealed interface LinearE permits Add, Mono, Mult, NormalizedLE, Sigma {
-  NormalizedLE normalize(SubstitutionContext substitutionContext);
+public sealed interface LinearE permits Add, Mono, Mult, NormalizedLE {
+  NormalizedLE normalize();
 
-  default NormalizedLE normify() {
-    return normalize(SubstitutionContext.of()).simplify();
+  LinearE substitute(SubstitutionContext substitutionContext);
+
+  default NormalizedLE subnormify() {
+    return substitute(SubstitutionContext.of()).normalize().simplify();
   }
 
   Set<Variable> variables();

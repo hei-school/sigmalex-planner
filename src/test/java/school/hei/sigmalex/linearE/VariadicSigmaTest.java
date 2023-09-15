@@ -29,8 +29,8 @@ class VariadicSigmaTest {
     var boundI = new Bound<>(i, 4, 6);
     var boundJ = new Bound<>(j, 10, 11);
     assertEquals(
-        sigma(sigma(le, boundI), boundJ).normify(),
-        sigma(le, boundI, boundJ).normify());
+        sigma(sigma(le, boundI), boundJ).subnormify(),
+        sigma(le, boundI, boundJ).subnormify());
   }
 
   @Test
@@ -52,7 +52,7 @@ class VariadicSigmaTest {
                 new Q("x[i:5][j:11]"), new Constant<>(3),
                 new Q("x[i:6][j:11]"), new Constant<>(3)),
             new Constant<>(93)),
-        sigma(le_i_j, boundJ, boundI).normify());
+        sigma(le_i_j, boundJ, boundI).subnormify());
   }
 
   @Test
@@ -68,7 +68,7 @@ class VariadicSigmaTest {
     var y = new Q("x"); // oopsie
     assertThrows(
         ExecutionException.class,
-        () -> add(mono(3, x), mono(2.5, y)).normify());
+        () -> add(mono(3, x), mono(2.5, y)).subnormify());
 
     var i = new BounderQ<>("i");
     var j = new BounderQ<>("j");
@@ -79,7 +79,7 @@ class VariadicSigmaTest {
     var boundJ = new Bound<>(j, 10, 11);
     assertThrows(
         ExecutionException.class,
-        () -> sigma(le_i_j, boundI, boundJ).normify());
+        () -> sigma(le_i_j, boundI, boundJ).subnormify());
 
     var exactly_x = new Z("x");
     var normified =
@@ -89,7 +89,7 @@ class VariadicSigmaTest {
         // it could be that for the user wanted to
         // refer to the same Z variable through two different ways.
         add(mono(3, x), mono(2.5, exactly_x))
-            .normify();
+            .subnormify();
     assertNotNull(normified);
   }
 }

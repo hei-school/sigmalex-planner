@@ -48,7 +48,7 @@ public record MILP(
         .map(polytope -> new NormalizedMILP(
             name,
             optimizationType,
-            objective.normify(),
+            objective.subnormify(),
             polytope.constraints().stream()
                 .map(NormalizedConstraint::simplify)
                 .collect(toSet())))
